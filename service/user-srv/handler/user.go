@@ -3,7 +3,10 @@ package handler
 import (
 	"context"
 	"errors"
+	"fmt"
 	"regexp"
+
+	"gitee.com/rushteam/micro-service/service/user-srv/model"
 
 	"gitee.com/rushteam/micro-service/common/pb/user_srv"
 	"github.com/micro/go-log"
@@ -36,9 +39,11 @@ func (wx *UserServiceHandler) Login(ctx context.Context, req *user_srv.LoginReq,
 		if len(req.AccessToken) < 6 { //密码不得小于6位
 			return errors.New("密码错误")
 		}
-		userModel.LoginByPhone(req.Openid, req.AccessToken)
+		db =
+		login := model.LoginByPhone(req.Openid, req.AccessToken)
+		fmt.Println(login)
 	} else { //三方登陆
-		req.AccessToken
+
 	}
 	return nil
 }

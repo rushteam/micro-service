@@ -6,7 +6,8 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-type Login struct {
+//LoginModel ..
+type LoginModel struct {
 	gorm.Model
 	ID           int64 `gorm:"PRIMARY_KEY;AUTO_INCREMENT;"`
 	Platform     string
@@ -16,10 +17,17 @@ type Login struct {
 	AccessExpire time.Time
 }
 
-func (Login) TableName() string {
+//TableName ..
+func (LoginModel) TableName() string {
 	return "user_login"
 }
 
-func UserLogin(db) {
-	db.Where("openid = ?", "jinzhu").First(&user)
+//LoginByPhone ...
+func LoginByPhone(db *gorm.DB, phone, pwd string) *LoginModel {
+	var login LoginModel
+	db.Where("platform = ?", "phone").Where("openid = ?", phone).First(&login)
+	if login.AccessToken != pwd {
+		return nil
+	}
+	return &login
 }

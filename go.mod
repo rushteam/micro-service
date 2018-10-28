@@ -32,7 +32,7 @@ require (
 	github.com/envoyproxy/go-control-plane v0.6.1 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/go-ldap/ldap v2.5.1+incompatible // indirect
-	github.com/go-log/log v0.1.0 // indirect
+	github.com/go-log/log v0.1.0
 	github.com/go-ole/go-ole v1.2.1 // indirect
 	github.com/go-sql-driver/mysql v1.4.0 // indirect
 	github.com/go-test/deep v1.0.1 // indirect
