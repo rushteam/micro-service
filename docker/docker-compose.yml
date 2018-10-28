@@ -15,7 +15,7 @@ services:
       MYSQL_ROOT_PASSWORD: dream
     volumes:
       - ./mysql/data:/var/lib/mysql
-      - ./mysql/config/my.cnf:/etc/my.cnf
+      - ./mysql/config/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
       - ./mysql/init:/docker-entrypoint-initdb.d/
     ports:
       - '3306:3306'

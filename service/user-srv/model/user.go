@@ -2,13 +2,11 @@ package model
 
 import (
 	"time"
-
-	"github.com/jinzhu/gorm"
 )
 
 //LoginModel ..
 type LoginModel struct {
-	gorm.Model
+	// gorm.Model
 	ID           int64 `gorm:"PRIMARY_KEY;AUTO_INCREMENT;"`
 	Platform     string
 	Openid       string
@@ -25,7 +23,10 @@ func (LoginModel) TableName() string {
 //LoginByPhone ...
 func LoginByPhone(phone, pwd string) *LoginModel {
 	var login LoginModel
-	DB.Where("platform = ?", "phone").Where("openid = ?", phone).First(&login)
+	result := DB.Where("platform = ?", "phone").Where("openid = ?", phone).First(&login)
+	if result.Error != nil {
+		return nil
+	}
 	if login.AccessToken != pwd {
 		return nil
 	}
