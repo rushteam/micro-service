@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"log"
 
 	"gitee.com/rushteam/micro-service/common/pb/user_srv"
@@ -12,12 +11,15 @@ import (
 
 var (
 	//SERVICE_NAME service's name
-	SERVICE_NAME = "user-srv"
+	SERVICE_NAME = "go.micro.user_srv"
+	//SERVICE_VERSION service's version
+	SERVICE_VERSION = "latest"
 )
 
 func main() {
 	service := micro.NewService(
 		micro.Name(SERVICE_NAME),
+		micro.Version(SERVICE_VERSION),
 		micro.Flags(
 			cli.StringFlag{
 				Name:   "config_path",
@@ -26,14 +28,15 @@ func main() {
 			},
 		),
 	)
-	var ctx = context.TODO()
+	// var ctx = context.TODO()
 	service.Init(
 		micro.Action(func(c *cli.Context) {
 			// var configFile = "./config.yaml"
 			// if len(c.String("config_path")) > 0 {
 			// 	configFile = c.String("config_path")
 			// }
-			user_srv.RegisterUserServiceHandler(service.Server(), handler.NewUserServiceHandler(ctx))
+			user_srv.RegisterUserServiceHandler(service.Server(), new(handler.UserServiceHandler))
+			// user_srv.RegisterUserServiceHandler(service.Server(), handler.NewUserServiceHandler(ctx))
 		}),
 	)
 

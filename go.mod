@@ -71,6 +71,8 @@ require (
 	github.com/hashicorp/vault-plugin-secrets-kv v0.0.0-20180825215324-5a464a61f7de // indirect
 	github.com/hashicorp/yamux v0.0.0-20181012175058-2f1d1f20f75d // indirect
 	github.com/jefferai/jsonx v0.0.0-20160721235117-9cc31c3135ee // indirect
+	github.com/jinzhu/gorm v1.9.1
+	github.com/jinzhu/inflection v0.0.0-20180308033659-04140366298a // indirect
 	github.com/joncalhoun/qson v0.0.0-20170526102502-8a9cab3a62b1 // indirect
 	github.com/keybase/go-crypto v0.0.0-20181017165231-e696c8039bba // indirect
 	github.com/kr/pretty v0.1.0 // indirect
@@ -80,7 +82,7 @@ require (
 	github.com/micro/cli v0.0.0-20180830071301-8b9d33ec2f19
 	github.com/micro/go-api v0.4.0 // indirect
 	github.com/micro/go-bot v0.0.0-20181008074751-2a941fc0fbe4 // indirect
-	github.com/micro/go-log v0.0.0-20170512141327-cbfa9447f9b6 // indirect
+	github.com/micro/go-log v0.0.0-20170512141327-cbfa9447f9b6
 	github.com/micro/go-micro v0.12.0
 	github.com/micro/go-rcache v0.0.0-20180418165751-a581a57b5133 // indirect
 	github.com/micro/hipchat v0.0.0-20160328000638-4c67119ac956 // indirect
