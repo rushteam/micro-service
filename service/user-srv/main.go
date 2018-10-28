@@ -1,9 +1,10 @@
 package main
 
 import (
+	"gitee.com/rushteam/micro-service/service/user-srv/model"
+	"gitee.com/rushteam/micro-service/common/db"
 	"log"
 
-	"gitee.com/coremicro/auth/common/db"
 	"gitee.com/rushteam/micro-service/common/pb/user_srv"
 	"gitee.com/rushteam/micro-service/service/user-srv/handler"
 	"github.com/micro/cli"
@@ -36,11 +37,12 @@ func main() {
 			// if len(c.String("config_path")) > 0 {
 			// 	configFile = c.String("config_path")
 			// }
+			db.InitDB("root:123321@tcp(192.168.33.10:3306)/auth?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s")
+			db.DB.LogMode(true)
+			model.SetDB(db.DB)
 			user_srv.RegisterUserServiceHandler(service.Server(), new(handler.UserServiceHandler))
 			// user_srv.RegisterUserServiceHandler(service.Server(), handler.NewUserServiceHandler(ctx))
-
-			db.InitDB("root:123321@tcp(192.168.33.10:3306)/auth?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s")
-			model.SetDB(db.DB)
+			
 		}),
 	)
 

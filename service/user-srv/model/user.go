@@ -23,9 +23,9 @@ func (LoginModel) TableName() string {
 }
 
 //LoginByPhone ...
-func LoginByPhone(db *gorm.DB, phone, pwd string) *LoginModel {
+func LoginByPhone(phone, pwd string) *LoginModel {
 	var login LoginModel
-	db.Where("platform = ?", "phone").Where("openid = ?", phone).First(&login)
+	DB.Where("platform = ?", "phone").Where("openid = ?", phone).First(&login)
 	if login.AccessToken != pwd {
 		return nil
 	}
