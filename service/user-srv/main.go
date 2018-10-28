@@ -37,7 +37,7 @@ func main() {
 			// if len(c.String("config_path")) > 0 {
 			// 	configFile = c.String("config_path")
 			// }
-			db.InitDB("root:123321@tcp(192.168.33.10:3306)/auth?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s")
+			db.InitDB("root:123321@tcp(127.0.0.1:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s")
 			db.DB.LogMode(true)
 			model.SetDB(db.DB)
 			user_srv.RegisterUserServiceHandler(service.Server(), new(handler.UserServiceHandler))
