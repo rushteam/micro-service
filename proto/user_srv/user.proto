@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package user_srv;
+
+service UserService {
+    rpc Login(LoginReq) returns (LoginRsq) {}
+}
+message LoginReq {
+    string platform = 1; //password(email phone username) qq wx weibo 
+    string openid = 2;
+    string access_token = 3;
+}
+message LoginRsq {
+    int64 uid = 1;
+}
