@@ -4,6 +4,7 @@ package user_srv;
 
 service UserService {
     rpc Login(LoginReq) returns (LoginRsq) {}
+    rpc User(UserReq) returns (UserRsq) {}
 }
 message LoginReq {
     string platform = 1; //password(email phone username) qq wx weibo 
@@ -13,3 +14,20 @@ message LoginReq {
 message LoginRsq {
     int64 uid = 1;
 }
+message UserReq {
+    int64 uid = 1;
+}
+message UserRsq {
+    int64 uid = 1;
+    string nickname = 2;
+    string gender = 3;
+    string avatar = 4;
+    string updated_at = 5;
+    string created_at = 6;
+}
+uid	bigint(20) Auto Increment	用户id
+nickname	varchar(32)	昵称
+gender	char(1) [0]	性别@1:男@2:女
+avatar	varchar(255)	头像
+updated_at	timestamp [current_timestamp()]	更新时间
+created_at	timestamp [current_timestamp()]	创建时间

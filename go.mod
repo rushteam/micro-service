@@ -19,7 +19,6 @@ require (
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 // indirect
 	github.com/boltdb/bolt v1.3.1 // indirect
 	github.com/cenkalti/backoff v2.0.0+incompatible // indirect
-	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
 	github.com/circonus-labs/circonus-gometrics v2.2.4+incompatible // indirect
 	github.com/circonus-labs/circonusllhist v0.0.0-20180430145027-5eb751da55c6 // indirect
 	github.com/containerd/continuity v0.0.0-20181023183536-c220ac4f01b8 // indirect
@@ -30,9 +29,10 @@ require (
 	github.com/duosecurity/duo_api_golang v0.0.0-20181024123116-92fea9203dbc // indirect
 	github.com/elazarl/go-bindata-assetfs v1.0.0 // indirect
 	github.com/envoyproxy/go-control-plane v0.6.1 // indirect
+	github.com/erikstmartin/go-testdb v0.0.0-20160219214506-8d10e4a1bae5 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/go-ldap/ldap v2.5.1+incompatible // indirect
-	github.com/go-log/log v0.1.0
+	github.com/go-log/log v0.1.0 // indirect
 	github.com/go-ole/go-ole v1.2.1 // indirect
 	github.com/go-sql-driver/mysql v1.4.0 // indirect
 	github.com/go-test/deep v1.0.1 // indirect
@@ -42,9 +42,6 @@ require (
 	github.com/golang/snappy v0.0.0-20180518054509-2e65f85255db // indirect
 	github.com/google/go-cmp v0.2.0 // indirect
 	github.com/google/go-github v17.0.0+incompatible // indirect
-	github.com/gorilla/handlers v1.4.0 // indirect
-	github.com/gorilla/mux v1.6.2 // indirect
-	github.com/gorilla/websocket v1.4.0 // indirect
 	github.com/gotestyourself/gotestyourself v2.1.0+incompatible // indirect
 	github.com/hashicorp/consul v1.3.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.0 // indirect
@@ -73,22 +70,18 @@ require (
 	github.com/jefferai/jsonx v0.0.0-20160721235117-9cc31c3135ee // indirect
 	github.com/jinzhu/gorm v1.9.1
 	github.com/jinzhu/inflection v0.0.0-20180308033659-04140366298a // indirect
-	github.com/joncalhoun/qson v0.0.0-20170526102502-8a9cab3a62b1 // indirect
+	github.com/jinzhu/now v0.0.0-20180511015916-ed742868f2ae // indirect
 	github.com/keybase/go-crypto v0.0.0-20181017165231-e696c8039bba // indirect
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/lib/pq v1.0.0 // indirect
 	github.com/lyft/protoc-gen-validate v0.0.8 // indirect
+	github.com/mattn/go-sqlite3 v1.10.0 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/micro/cli v0.0.0-20180830071301-8b9d33ec2f19
-	github.com/micro/go-api v0.4.0 // indirect
-	github.com/micro/go-bot v0.0.0-20181008074751-2a941fc0fbe4 // indirect
 	github.com/micro/go-log v0.0.0-20170512141327-cbfa9447f9b6
 	github.com/micro/go-micro v0.12.0
 	github.com/micro/go-rcache v0.0.0-20180418165751-a581a57b5133 // indirect
-	github.com/micro/hipchat v0.0.0-20160328000638-4c67119ac956 // indirect
 	github.com/micro/mdns v0.0.0-20160929165650-cdf30746f9f7 // indirect
-	github.com/micro/micro v0.14.0 // indirect
-	github.com/micro/protoc-gen-micro v0.4.0 // indirect
 	github.com/micro/util v0.0.0-20180417104657-4b7ed83e8520 // indirect
 	github.com/miekg/dns v1.0.14 // indirect
 	github.com/mitchellh/cli v1.0.0 // indirect
@@ -96,7 +89,6 @@ require (
 	github.com/mitchellh/go-testing-interface v1.0.0 // indirect
 	github.com/mitchellh/hashstructure v1.0.0 // indirect
 	github.com/mitchellh/mapstructure v1.1.2 // indirect
-	github.com/nlopes/slack v0.4.0 // indirect
 	github.com/opencontainers/go-digest v1.0.0-rc1 // indirect
 	github.com/opencontainers/image-spec v1.0.1 // indirect
 	github.com/opencontainers/runc v0.1.1 // indirect
@@ -110,14 +102,12 @@ require (
 	github.com/prometheus/common v0.0.0-20181020173914-7e9e6cabbd39 // indirect
 	github.com/prometheus/procfs v0.0.0-20181005140218-185b4288413d // indirect
 	github.com/ryanuber/go-glob v0.0.0-20170128012129-256dc444b735 // indirect
-	github.com/serenize/snaker v0.0.0-20171204205717-a683aaf2d516 // indirect
 	github.com/shirou/gopsutil v2.17.12+incompatible // indirect
 	github.com/shirou/w32 v0.0.0-20160930032740-bb4de0191aa4 // indirect
 	github.com/stretchr/objx v0.1.1 // indirect
 	github.com/tv42/httpunix v0.0.0-20150427012821-b75d8614f926 // indirect
-	github.com/xlab/treeprint v0.0.0-20180616005107-d6fb6747feb6 // indirect
 	golang.org/x/crypto v0.0.0-20181025213731-e84da0312774 // indirect
-	golang.org/x/net v0.0.0-20181023162649-9b4f9f5ad519
+	golang.org/x/net v0.0.0-20181023162649-9b4f9f5ad519 // indirect
 	golang.org/x/sys v0.0.0-20181026203630-95b1ffbd15a5 // indirect
 	google.golang.org/grpc v1.16.0 // indirect
 	gopkg.in/asn1-ber.v1 v1.0.0-20170511165959-379148ca0225 // indirect
