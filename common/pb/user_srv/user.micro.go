@@ -10,6 +10,8 @@ It is generated from these files:
 It has these top-level messages:
 	LoginReq
 	LoginRsq
+	UserReq
+	UserRsq
 */
 package user_srv
 
@@ -43,6 +45,7 @@ var _ server.Option
 
 type UserService interface {
 	Login(ctx context.Context, in *LoginReq, opts ...client.CallOption) (*LoginRsq, error)
+	User(ctx context.Context, in *UserReq, opts ...client.CallOption) (*UserRsq, error)
 }
 
 type userService struct {
@@ -73,21 +76,33 @@ func (c *userService) Login(ctx context.Context, in *LoginReq, opts ...client.Ca
 	return out, nil
 }
 
+func (c *userService) User(ctx context.Context, in *UserReq, opts ...client.CallOption) (*UserRsq, error) {
+	req := c.c.NewRequest(c.name, "UserService.User", in)
+	out := new(UserRsq)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for UserService service
 
 type UserServiceHandler interface {
 	Login(context.Context, *LoginReq, *LoginRsq) error
+	User(context.Context, *UserReq, *UserRsq) error
 }
 
-func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts ...server.HandlerOption) {
+func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts ...server.HandlerOption) error {
 	type userService interface {
 		Login(ctx context.Context, in *LoginReq, out *LoginRsq) error
+		User(ctx context.Context, in *UserReq, out *UserRsq) error
 	}
 	type UserService struct {
 		userService
 	}
 	h := &userServiceHandler{hdlr}
-	s.Handle(s.NewHandler(&UserService{h}, opts...))
+	return s.Handle(s.NewHandler(&UserService{h}, opts...))
 }
 
 type userServiceHandler struct {
@@ -96,4 +111,8 @@ type userServiceHandler struct {
 
 func (h *userServiceHandler) Login(ctx context.Context, in *LoginReq, out *LoginRsq) error {
 	return h.UserServiceHandler.Login(ctx, in, out)
+}
+
+func (h *userServiceHandler) User(ctx context.Context, in *UserReq, out *UserRsq) error {
+	return h.UserServiceHandler.User(ctx, in, out)
 }

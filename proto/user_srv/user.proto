@@ -25,9 +25,3 @@ message UserRsq {
     string updated_at = 5;
     string created_at = 6;
 }
-uid	bigint(20) Auto Increment	用户id
-nickname	varchar(32)	昵称
-gender	char(1) [0]	性别@1:男@2:女
-avatar	varchar(255)	头像
-updated_at	timestamp [current_timestamp()]	更新时间
-created_at	timestamp [current_timestamp()]	创建时间

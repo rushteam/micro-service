@@ -52,3 +52,9 @@ func (wx *UserServiceHandler) Login(ctx context.Context, req *user_srv.LoginReq,
 	}
 	return nil
 }
+
+//User ..
+func (wx *UserServiceHandler) User(ctx context.Context, req *user_srv.UserReq, rsp *user_srv.UserRsq) error {
+	log.Log("[access] UserServiceHandler.User")
+	return nil
+}
