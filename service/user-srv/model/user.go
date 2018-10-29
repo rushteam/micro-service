@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"time"
 )
 
@@ -13,6 +14,7 @@ type LoginModel struct {
 	Verified     string
 	AccessToken  string
 	AccessExpire time.Time
+	UID          int64 `gorm:"column:uid"`
 }
 
 //TableName ..
@@ -20,15 +22,16 @@ func (LoginModel) TableName() string {
 	return "user_login"
 }
 
-//LoginByPhone ...
-func LoginByPhone(phone, pwd string) *LoginModel {
+//LoginByPassword ...
+func LoginByPassword(typ, openid, pwd string) (*LoginModel, error) {
 	var login LoginModel
-	result := DB.Where("platform = ?", "phone").Where("openid = ?", phone).First(&login)
+	// return &login, nil
+	result := DB.Where("platform = ?", typ).Where("openid = ?", openid).First(&login)
 	if result.Error != nil {
-		return nil
+		return nil, errors.New("用户不存在")
 	}
 	if login.AccessToken != pwd {
-		return nil
+		return nil, errors.New("密码错误")
 	}
-	return &login
+	return &login, nil
 }
