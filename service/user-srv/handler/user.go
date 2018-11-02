@@ -35,7 +35,7 @@ func (wx *UserServiceHandler) Login(ctx context.Context, req *user_srv.LoginReq,
 	//phone or email or username
 	typList := []string{"phone", "email", "username"}
 	if utils.SliceIndexOf(req.Platform, typList) >= 0 { //账号登陆
-		if !validatePhone(req.Openid) {
+		if req.Platform == "phone" && !validatePhone(req.Openid) {
 			return errors.New("手机号格式错误")
 		}
 		if len(req.AccessToken) < 6 { //密码不得小于6位
@@ -56,5 +56,15 @@ func (wx *UserServiceHandler) Login(ctx context.Context, req *user_srv.LoginReq,
 //User ..
 func (wx *UserServiceHandler) User(ctx context.Context, req *user_srv.UserReq, rsp *user_srv.UserRsq) error {
 	log.Log("[access] UserServiceHandler.User")
+	user, err := model.UserModel.UserByUID(req.Uid)
+	if err != nil {
+		return errors.New("用户名不存在")
+	}
+	rsp.Uid = user.UID
+	rsp.Nickname = user.Nickname
+	rsp.Gender = user.Gender
+	rsp.Avatar = user.Avatar
+	rsp.CreatedAt = user.CreatedAt.Format("2006-01-02 15:04:05")
+	rsp.UpdatedAt = user.UpdatedAt.Format("2006-01-02 15:04:05")
 	return nil
 }
