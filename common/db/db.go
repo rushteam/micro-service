@@ -95,7 +95,6 @@ func CreateDb(dbType, sourceDSN string) *gorm.DB {
 
 //InitDefaultDb ..
 func (p *Pool) InitDefaultDb(dbType, sourceDSN string, logMode bool) *gorm.DB {
-	// p.SetDb(Default, Master, db)
 	groupName := Default
 	poolName := Master
 	if _, ok := p.Db[groupName]; !ok {
