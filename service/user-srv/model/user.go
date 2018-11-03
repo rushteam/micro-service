@@ -22,9 +22,9 @@ func (UserModel) TableName() string {
 }
 
 //UserByUID ...
-func (UserModel) UserByUID(uid int64) (*UserModel, error) {
+func UserByUID(uid int64) (*UserModel, error) {
 	var user UserModel
-	result := DB.Where("uid = ?", uid).First(&user)
+	result := Db().Where("uid = ?", uid).First(&user)
 	if result.Error != nil {
 		return nil, errors.New("用户不存在")
 	}

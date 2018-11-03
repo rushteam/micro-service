@@ -26,7 +26,7 @@ func (LoginModel) TableName() string {
 func LoginByPassword(typ, openid, pwd string) (*LoginModel, error) {
 	var login LoginModel
 	// return &login, nil
-	result := DB.Where("platform = ?", typ).Where("openid = ?", openid).First(&login)
+	result := Db().Where("platform = ?", typ).Where("openid = ?", openid).First(&login)
 	if result.Error != nil {
 		return nil, errors.New("用户不存在")
 	}

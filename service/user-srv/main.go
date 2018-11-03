@@ -1,9 +1,10 @@
 package main
 
 import (
-	"gitee.com/rushteam/micro-service/service/user-srv/model"
-	"gitee.com/rushteam/micro-service/common/db"
 	"log"
+
+	"gitee.com/rushteam/micro-service/common/db"
+	"gitee.com/rushteam/micro-service/service/user-srv/model"
 
 	"gitee.com/rushteam/micro-service/common/pb/user_srv"
 	"gitee.com/rushteam/micro-service/service/user-srv/handler"
@@ -37,12 +38,12 @@ func main() {
 			// if len(c.String("config_path")) > 0 {
 			// 	configFile = c.String("config_path")
 			// }
-			db.InitDB("root:dream@tcp(127.0.0.1:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s")
-			db.DB.LogMode(true)
-			model.SetDB(db.DB)
+			dbSource := "root:dream@tcp(127.0.0.1:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"
+			pool := db.InitDb("mysql",dbSource,true)
+			model.Init(pool)
 			user_srv.RegisterUserServiceHandler(service.Server(), new(handler.UserServiceHandler))
 			// user_srv.RegisterUserServiceHandler(service.Server(), handler.NewUserServiceHandler(ctx))
-			
+
 		}),
 	)
 

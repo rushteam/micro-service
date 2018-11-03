@@ -56,7 +56,7 @@ func (wx *UserServiceHandler) Login(ctx context.Context, req *user_srv.LoginReq,
 //User ..
 func (wx *UserServiceHandler) User(ctx context.Context, req *user_srv.UserReq, rsp *user_srv.UserRsq) error {
 	log.Log("[access] UserServiceHandler.User")
-	user, err := model.UserModel.UserByUID(req.Uid)
+	user, err := model.UserByUID(req.Uid)
 	if err != nil {
 		return errors.New("用户名不存在")
 	}
