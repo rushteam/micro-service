@@ -97,22 +97,26 @@ func (s *UserService) Create(ctx context.Context, req *user_srv.CreateReq, rsp *
 	u.Gender = req.Userinfo.Gender
 	err := Model.UserAdd(u)
 	if err != nil {
+		Model.Callback()
 		return errors.BadRequest("UserService.Create", "注册失败,请重试")
 	}
+	var loginN = 0
 	for _, login := range req.LoginList {
-		if utils.SliceIndexOf(login.Platform, localLoginList) >= 0 { //账号登陆
-			_, err = Model.LoginAdd(
-				req.Userinfo.Uid,
-				login.Platform,
-				login.Openid,
-				login.AccessToken)
-			if err !=nil {
-				Model.Callback()
-				return errors.BadRequest("UserService.Create", "注册失败,账号已经存在"+err.Error())
-			}
-		} else {  //三方登录
+		_, err = Model.LoginAdd(
+			req.Userinfo.Uid,
+			login.Platform,
+			login.Openid,
+			login.AccessToken)
+		if err != nil {
+			Model.Callback()
+			return errors.BadRequest("UserService.Create", "注册失败,账号已经存在")
 		}
+		loginN++
 	}
-
+	if loginN <1 {
+		Model.Callback()
+		return errors.BadRequest("UserService.Create", "注册失败,信息不完整")
+	}
+	Model.Commit()
 	return nil
 }
