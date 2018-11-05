@@ -41,7 +41,7 @@ func main() {
 			dbSource := "root:dream@tcp(127.0.0.1:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"
 			pool := db.InitDb("mysql",dbSource,true)
 			model.Init(pool)
-			user_srv.RegisterUserServiceHandler(service.Server(), new(handler.UserServiceHandler))
+			user_srv.RegisterUserServiceHandler(service.Server(), new(handler.UserService))
 			// user_srv.RegisterUserServiceHandler(service.Server(), handler.NewUserServiceHandler(ctx))
 
 		}),

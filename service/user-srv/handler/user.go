@@ -2,8 +2,9 @@ package handler
 
 import (
 	"context"
-	"errors"
 	"regexp"
+
+	"github.com/micro/go-micro/errors"
 
 	"gitee.com/rushteam/micro-service/common/utils"
 
@@ -14,8 +15,8 @@ import (
 	// "go.uber.org/zap"
 )
 
-//UserServiceHandler ...
-type UserServiceHandler struct {
+//UserService ...
+type UserService struct {
 	// logger *zap.Logger
 }
 
@@ -30,20 +31,23 @@ func validatePhone(phone string) bool {
 }
 
 //Login ...
-func (wx *UserServiceHandler) Login(ctx context.Context, req *user_srv.LoginReq, rsp *user_srv.LoginRsq) error {
-	log.Log("[access] UserServiceHandler.Login")
+func (wx *UserService) Login(ctx context.Context, req *user_srv.LoginReq, rsp *user_srv.LoginRsq) error {
+	log.Log("[access] UserService.Login")
 	//phone or email or username
 	typList := []string{"phone", "email", "username"}
 	if utils.SliceIndexOf(req.Platform, typList) >= 0 { //账号登陆
 		if req.Platform == "phone" && !validatePhone(req.Openid) {
-			return errors.New("手机号格式错误")
+			// return errors.New("手机号格式错误")
+			return errors.BadRequest("UserService.Login", "手机号格式错误")
 		}
 		if len(req.AccessToken) < 6 { //密码不得小于6位
-			return errors.New("密码错误")
+			// return errors.New("密码错误")
+			return errors.BadRequest("UserService.Login", "密码错误")
 		}
 		login, err := model.LoginByPassword(req.Platform, req.Openid, req.AccessToken)
 		if err != nil {
-			return errors.New("用户名或密码错误")
+			return errors.BadRequest("UserService.Login", "用户名或密码错误")
+			// return errors.New("用户名或密码错误")
 		}
 		// fmt.Println(login)
 		rsp.Uid = login.UID
@@ -54,11 +58,12 @@ func (wx *UserServiceHandler) Login(ctx context.Context, req *user_srv.LoginReq,
 }
 
 //User ..
-func (wx *UserServiceHandler) User(ctx context.Context, req *user_srv.UserReq, rsp *user_srv.UserRsq) error {
-	log.Log("[access] UserServiceHandler.User")
+func (wx *UserService) User(ctx context.Context, req *user_srv.UserReq, rsp *user_srv.UserRsq) error {
+	log.Log("[access] UserService.User")
 	user, err := model.UserByUID(req.Uid)
 	if err != nil {
-		return errors.New("用户名不存在")
+		return errors.BadRequest("UserService.Login", "用户名不存在")
+		// return errors.New("用户名不存在")
 	}
 	rsp.Uid = user.UID
 	rsp.Nickname = user.Nickname
