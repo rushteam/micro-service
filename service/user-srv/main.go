@@ -43,7 +43,6 @@ func main() {
 			model.Init(pool)
 			user_srv.RegisterUserServiceHandler(service.Server(), new(handler.UserService))
 			// user_srv.RegisterUserServiceHandler(service.Server(), handler.NewUserServiceHandler(ctx))
-
 		}),
 	)
 
