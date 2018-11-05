@@ -130,6 +130,7 @@ func (s *UserService) Bind(ctx context.Context, req *user_srv.CreateReq, rsp *us
 	if req.GetUserinfo() == nil {
 		return errors.BadRequest("UserService.Bind", "用户信息不全")
 	}
+	//todo 这里用token？还是uid
 	if req.Userinfo.GetUid() == 0 {
 		return errors.BadRequest("UserService.Bind", "UID不能为空")
 	}
