@@ -7,14 +7,14 @@ service UserService {
     rpc Login(LoginReq) returns (LoginRsp) {}
     //创建用户
     rpc Create(CreateReq) returns (UserRsp) {}
-     //用户信息
-     rpc User(UserReq) returns (UserRsp) {}
     //绑定用户
     rpc Bind(CreateReq) returns (UserRsp) {}
     //解绑用户
-    rpc UnBind(CreateReq) returns (UserRsp) {}
+    rpc UnBind(UserReq) returns (UserRsp) {}
+    //用户信息
+    rpc User(UserReq) returns (UserRsp) {}
     //更新用户
-    rpc Update(CreateReq) returns (UserRsp) {}
+    rpc Update(UserReq) returns (UserRsp) {}
 }
 message LoginReq {
     string platform = 1; //password(email phone username) qq wx weibo 

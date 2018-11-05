@@ -46,10 +46,18 @@ var _ server.Option
 // Client API for UserService service
 
 type UserService interface {
+	// 用户登录
 	Login(ctx context.Context, in *LoginReq, opts ...client.CallOption) (*LoginRsp, error)
-	User(ctx context.Context, in *UserReq, opts ...client.CallOption) (*UserRsp, error)
+	// 创建用户
 	Create(ctx context.Context, in *CreateReq, opts ...client.CallOption) (*UserRsp, error)
+	// 绑定用户
 	Bind(ctx context.Context, in *CreateReq, opts ...client.CallOption) (*UserRsp, error)
+	// 解绑用户
+	UnBind(ctx context.Context, in *UserReq, opts ...client.CallOption) (*UserRsp, error)
+	// 用户信息
+	User(ctx context.Context, in *UserReq, opts ...client.CallOption) (*UserRsp, error)
+	// 更新用户
+	Update(ctx context.Context, in *UserReq, opts ...client.CallOption) (*UserRsp, error)
 }
 
 type userService struct {
@@ -80,16 +88,6 @@ func (c *userService) Login(ctx context.Context, in *LoginReq, opts ...client.Ca
 	return out, nil
 }
 
-func (c *userService) User(ctx context.Context, in *UserReq, opts ...client.CallOption) (*UserRsp, error) {
-	req := c.c.NewRequest(c.name, "UserService.User", in)
-	out := new(UserRsp)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *userService) Create(ctx context.Context, in *CreateReq, opts ...client.CallOption) (*UserRsp, error) {
 	req := c.c.NewRequest(c.name, "UserService.Create", in)
 	out := new(UserRsp)
@@ -110,21 +108,61 @@ func (c *userService) Bind(ctx context.Context, in *CreateReq, opts ...client.Ca
 	return out, nil
 }
 
+func (c *userService) UnBind(ctx context.Context, in *UserReq, opts ...client.CallOption) (*UserRsp, error) {
+	req := c.c.NewRequest(c.name, "UserService.UnBind", in)
+	out := new(UserRsp)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) User(ctx context.Context, in *UserReq, opts ...client.CallOption) (*UserRsp, error) {
+	req := c.c.NewRequest(c.name, "UserService.User", in)
+	out := new(UserRsp)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) Update(ctx context.Context, in *UserReq, opts ...client.CallOption) (*UserRsp, error) {
+	req := c.c.NewRequest(c.name, "UserService.Update", in)
+	out := new(UserRsp)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for UserService service
 
 type UserServiceHandler interface {
+	// 用户登录
 	Login(context.Context, *LoginReq, *LoginRsp) error
-	User(context.Context, *UserReq, *UserRsp) error
+	// 创建用户
 	Create(context.Context, *CreateReq, *UserRsp) error
+	// 绑定用户
 	Bind(context.Context, *CreateReq, *UserRsp) error
+	// 解绑用户
+	UnBind(context.Context, *UserReq, *UserRsp) error
+	// 用户信息
+	User(context.Context, *UserReq, *UserRsp) error
+	// 更新用户
+	Update(context.Context, *UserReq, *UserRsp) error
 }
 
 func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts ...server.HandlerOption) error {
 	type userService interface {
 		Login(ctx context.Context, in *LoginReq, out *LoginRsp) error
-		User(ctx context.Context, in *UserReq, out *UserRsp) error
 		Create(ctx context.Context, in *CreateReq, out *UserRsp) error
 		Bind(ctx context.Context, in *CreateReq, out *UserRsp) error
+		UnBind(ctx context.Context, in *UserReq, out *UserRsp) error
+		User(ctx context.Context, in *UserReq, out *UserRsp) error
+		Update(ctx context.Context, in *UserReq, out *UserRsp) error
 	}
 	type UserService struct {
 		userService
@@ -141,14 +179,22 @@ func (h *userServiceHandler) Login(ctx context.Context, in *LoginReq, out *Login
 	return h.UserServiceHandler.Login(ctx, in, out)
 }
 
-func (h *userServiceHandler) User(ctx context.Context, in *UserReq, out *UserRsp) error {
-	return h.UserServiceHandler.User(ctx, in, out)
-}
-
 func (h *userServiceHandler) Create(ctx context.Context, in *CreateReq, out *UserRsp) error {
 	return h.UserServiceHandler.Create(ctx, in, out)
 }
 
 func (h *userServiceHandler) Bind(ctx context.Context, in *CreateReq, out *UserRsp) error {
 	return h.UserServiceHandler.Bind(ctx, in, out)
+}
+
+func (h *userServiceHandler) UnBind(ctx context.Context, in *UserReq, out *UserRsp) error {
+	return h.UserServiceHandler.UnBind(ctx, in, out)
+}
+
+func (h *userServiceHandler) User(ctx context.Context, in *UserReq, out *UserRsp) error {
+	return h.UserServiceHandler.User(ctx, in, out)
+}
+
+func (h *userServiceHandler) Update(ctx context.Context, in *UserReq, out *UserRsp) error {
+	return h.UserServiceHandler.Update(ctx, in, out)
 }
