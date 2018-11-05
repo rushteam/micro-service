@@ -23,15 +23,30 @@ func (LoginModel) TableName() string {
 }
 
 //LoginByPassword ...
-func LoginByPassword(typ, openid, pwd string) (*LoginModel, error) {
+func (sess *Session) LoginByPassword(typ, openid, pwd string) (*LoginModel, error) {
 	var login LoginModel
 	// return &login, nil
-	result := Db().Where("platform = ?", typ).Where("openid = ?", openid).First(&login)
+	result := sess.Where("platform = ?", typ).Where("openid = ?", openid).First(&login)
 	if result.Error != nil {
 		return nil, errors.New("用户不存在")
 	}
 	if login.AccessToken != pwd {
 		return nil, errors.New("密码错误")
+	}
+	return &login, nil
+}
+
+//LoginAdd ..
+func (sess *Session) LoginAdd(uid int64, platform, openid, accessToken string) (*LoginModel, error) {
+	var login LoginModel
+	login.UID = uid
+	login.Openid = openid
+	login.Platform = platform
+	login.AccessToken = accessToken
+	// return &login, nil
+	result := sess.Create(login)
+	if result.Error != nil {
+		return nil, errors.New("账户创建失败")
 	}
 	return &login, nil
 }

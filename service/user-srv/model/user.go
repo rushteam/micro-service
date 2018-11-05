@@ -22,11 +22,20 @@ func (UserModel) TableName() string {
 }
 
 //UserByUID ...
-func UserByUID(uid int64) (*UserModel, error) {
+func (sess *Session) UserByUID(uid int64) (*UserModel, error) {
 	var user UserModel
-	result := Db().Where("uid = ?", uid).First(&user)
+	result := sess.Where("uid = ?", uid).First(&user)
 	if result.Error != nil {
 		return nil, errors.New("用户不存在")
 	}
 	return &user, nil
+}
+
+//UserAdd ..
+func (sess *Session) UserAdd(u *UserModel) error {
+	result := sess.Create(u)
+	if result.Error != nil {
+		return errors.New("账户创建失败")
+	}
+	return nil
 }

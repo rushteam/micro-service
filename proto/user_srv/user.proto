@@ -9,7 +9,7 @@ service UserService {
 }
 message LoginReq {
     string platform = 1; //password(email phone username) qq wx weibo 
-    string client_id = 2;
+    string openid = 2;
     string access_token = 3;
 }
 message LoginRsq {

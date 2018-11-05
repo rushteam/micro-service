@@ -18,11 +18,21 @@ func Init(dbPool DbPool) {
 	pool = dbPool
 }
 
+//Session ..
+type Session struct {
+	*gorm.DB
+}
+
 //Db ..
-func Db() *gorm.DB {
+func Db() *Session {
 	db, err := pool.GetDb(db.Default, db.Master)
 	if err != nil {
 		panic(err.Error())
 	}
-	return db
+	return &Session{db}
+}
+
+//Begin ..
+func Begin() *Session {
+	return &Session{Db().Begin()}
 }
