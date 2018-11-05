@@ -30,12 +30,13 @@ func validatePhone(phone string) bool {
 	return reg.MatchString(phone)
 }
 
+var localLoginList = []string{"phone", "email", "username"}
+
 //Login ...
 func (s *UserService) Login(ctx context.Context, req *user_srv.LoginReq, rsp *user_srv.LoginRsq) error {
 	log.Log("[access] UserService.Login")
 	//phone or email or username
-	typList := []string{"phone", "email", "username"}
-	if utils.SliceIndexOf(req.Platform, typList) >= 0 { //账号登陆
+	if utils.SliceIndexOf(req.Platform, localLoginList) >= 0 { //账号登陆
 		if req.Platform == "phone" && !validatePhone(req.ClientId) {
 			// return errors.New("手机号格式错误")
 			return errors.BadRequest("UserService.Login", "手机号格式错误")
@@ -73,8 +74,20 @@ func (s *UserService) User(ctx context.Context, req *user_srv.UserReq, rsp *user
 	rsp.Userinfo.UpdatedAt = user.UpdatedAt.Format("2006-01-02 15:04:05")
 	return nil
 }
+
 //Create ..
 func (s *UserService) Create(ctx context.Context, req *user_srv.CreateReq, rsp *user_srv.UserRsq) error {
 	log.Log("[access] UserService.Create")
+	if len(req.LoginList) < 1 {
+		return errors.BadRequest("UserService.Create", "至少需要一种登录方式")
+	}
+	// req.Userinfo
+	// model.CreateUser(req.Userinfo.Nickname)
+	for _, login := range req.LoginList {
+		if utils.SliceIndexOf(login.Platform, localLoginList) >= 0 { //账号登陆
+
+		}
+	}
+
 	return nil
 }
