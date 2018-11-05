@@ -3,10 +3,16 @@ syntax = "proto3";
 package user_srv;
 
 service UserService {
+    //用户登录
     rpc Login(LoginReq) returns (LoginRsp) {}
+    //用户信息
     rpc User(UserReq) returns (UserRsp) {}
+    //创建用户
     rpc Create(CreateReq) returns (UserRsp) {}
+    //绑定用户
     rpc Bind(CreateReq) returns (UserRsp) {}
+    //更新用户
+    rpc Update(CreateReq) returns (UserRsp) {}
 }
 message LoginReq {
     string platform = 1; //password(email phone username) qq wx weibo 
