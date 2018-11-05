@@ -33,7 +33,7 @@ func validatePhone(phone string) bool {
 var localLoginList = []string{"phone", "email", "username"}
 
 //Login ...
-func (s *UserService) Login(ctx context.Context, req *user_srv.LoginReq, rsp *user_srv.LoginRsq) error {
+func (s *UserService) Login(ctx context.Context, req *user_srv.LoginReq, rsp *user_srv.LoginRsp) error {
 	log.Log("[access] UserService.Login")
 	//phone or email or username
 	Model := model.Db()
@@ -60,7 +60,7 @@ func (s *UserService) Login(ctx context.Context, req *user_srv.LoginReq, rsp *us
 }
 
 //User ..
-func (s *UserService) User(ctx context.Context, req *user_srv.UserReq, rsp *user_srv.UserRsq) error {
+func (s *UserService) User(ctx context.Context, req *user_srv.UserReq, rsp *user_srv.UserRsp) error {
 	log.Log("[access] UserService.User")
 	Model := model.Db()
 	user, err := Model.UserByUID(req.Uid)
@@ -78,7 +78,7 @@ func (s *UserService) User(ctx context.Context, req *user_srv.UserReq, rsp *user
 }
 
 //Create ..
-func (s *UserService) Create(ctx context.Context, req *user_srv.CreateReq, rsp *user_srv.UserRsq) error {
+func (s *UserService) Create(ctx context.Context, req *user_srv.CreateReq, rsp *user_srv.UserRsp) error {
 	log.Log("[access] UserService.Create")
 	if len(req.LoginList) < 1 {
 		return errors.BadRequest("UserService.Create", "注册失败,账号信息不全")
@@ -113,9 +113,44 @@ func (s *UserService) Create(ctx context.Context, req *user_srv.CreateReq, rsp *
 		}
 		loginN++
 	}
-	if loginN <1 {
+	if loginN < 1 {
 		Model.Callback()
 		return errors.BadRequest("UserService.Create", "注册失败,信息不完整")
+	}
+	Model.Commit()
+	return nil
+}
+
+//Bind ...
+func (s *UserService) Bind(ctx context.Context, req *user_srv.CreateReq, rsp *user_srv.UserRsp) error {
+	log.Log("[access] UserService.Bind")
+	if len(req.LoginList) < 1 {
+		return errors.BadRequest("UserService.Bind", "账号信息不全")
+	}
+	if req.GetUserinfo() == nil {
+		return errors.BadRequest("UserService.Bind", "用户信息不全")
+	}
+	if req.Userinfo.GetUid() == 0 {
+		return errors.BadRequest("UserService.Bind", "UID不能为空")
+	}
+	Model := model.Begin()
+	var err error
+	var loginN = 0
+	for _, login := range req.LoginList {
+		_, err = Model.LoginAdd(
+			req.Userinfo.Uid,
+			login.Platform,
+			login.Openid,
+			login.AccessToken)
+		if err != nil {
+			Model.Callback()
+			return errors.BadRequest("UserService.Bind", "该账号已绑定其他用户")
+		}
+		loginN++
+	}
+	if loginN < 1 {
+		Model.Callback()
+		return errors.BadRequest("UserService.Bind", "信息不完整")
 	}
 	Model.Commit()
 	return nil

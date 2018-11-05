@@ -3,22 +3,23 @@ syntax = "proto3";
 package user_srv;
 
 service UserService {
-    rpc Login(LoginReq) returns (LoginRsq) {}
-    rpc User(UserReq) returns (UserRsq) {}
-    rpc Create(CreateReq) returns (UserRsq) {}
+    rpc Login(LoginReq) returns (LoginRsp) {}
+    rpc User(UserReq) returns (UserRsp) {}
+    rpc Create(CreateReq) returns (UserRsp) {}
+    rpc Bind(CreateReq) returns (UserRsp) {}
 }
 message LoginReq {
     string platform = 1; //password(email phone username) qq wx weibo 
     string openid = 2;
     string access_token = 3;
 }
-message LoginRsq {
+message LoginRsp {
     int64 uid = 1;
 }
 message UserReq {
     int64 uid = 1;
 }
-message UserRsq {
+message UserRsp {
     Userinfo userinfo =1;
 }
 message Userinfo {

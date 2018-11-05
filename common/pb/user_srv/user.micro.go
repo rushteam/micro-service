@@ -9,9 +9,9 @@ It is generated from these files:
 
 It has these top-level messages:
 	LoginReq
-	LoginRsq
+	LoginRsp
 	UserReq
-	UserRsq
+	UserRsp
 	Userinfo
 	CreateReq
 */
@@ -46,9 +46,10 @@ var _ server.Option
 // Client API for UserService service
 
 type UserService interface {
-	Login(ctx context.Context, in *LoginReq, opts ...client.CallOption) (*LoginRsq, error)
-	User(ctx context.Context, in *UserReq, opts ...client.CallOption) (*UserRsq, error)
-	Create(ctx context.Context, in *CreateReq, opts ...client.CallOption) (*UserRsq, error)
+	Login(ctx context.Context, in *LoginReq, opts ...client.CallOption) (*LoginRsp, error)
+	User(ctx context.Context, in *UserReq, opts ...client.CallOption) (*UserRsp, error)
+	Create(ctx context.Context, in *CreateReq, opts ...client.CallOption) (*UserRsp, error)
+	Bind(ctx context.Context, in *CreateReq, opts ...client.CallOption) (*UserRsp, error)
 }
 
 type userService struct {
@@ -69,9 +70,9 @@ func NewUserService(name string, c client.Client) UserService {
 	}
 }
 
-func (c *userService) Login(ctx context.Context, in *LoginReq, opts ...client.CallOption) (*LoginRsq, error) {
+func (c *userService) Login(ctx context.Context, in *LoginReq, opts ...client.CallOption) (*LoginRsp, error) {
 	req := c.c.NewRequest(c.name, "UserService.Login", in)
-	out := new(LoginRsq)
+	out := new(LoginRsp)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -79,9 +80,9 @@ func (c *userService) Login(ctx context.Context, in *LoginReq, opts ...client.Ca
 	return out, nil
 }
 
-func (c *userService) User(ctx context.Context, in *UserReq, opts ...client.CallOption) (*UserRsq, error) {
+func (c *userService) User(ctx context.Context, in *UserReq, opts ...client.CallOption) (*UserRsp, error) {
 	req := c.c.NewRequest(c.name, "UserService.User", in)
-	out := new(UserRsq)
+	out := new(UserRsp)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -89,9 +90,19 @@ func (c *userService) User(ctx context.Context, in *UserReq, opts ...client.Call
 	return out, nil
 }
 
-func (c *userService) Create(ctx context.Context, in *CreateReq, opts ...client.CallOption) (*UserRsq, error) {
+func (c *userService) Create(ctx context.Context, in *CreateReq, opts ...client.CallOption) (*UserRsp, error) {
 	req := c.c.NewRequest(c.name, "UserService.Create", in)
-	out := new(UserRsq)
+	out := new(UserRsp)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) Bind(ctx context.Context, in *CreateReq, opts ...client.CallOption) (*UserRsp, error) {
+	req := c.c.NewRequest(c.name, "UserService.Bind", in)
+	out := new(UserRsp)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -102,16 +113,18 @@ func (c *userService) Create(ctx context.Context, in *CreateReq, opts ...client.
 // Server API for UserService service
 
 type UserServiceHandler interface {
-	Login(context.Context, *LoginReq, *LoginRsq) error
-	User(context.Context, *UserReq, *UserRsq) error
-	Create(context.Context, *CreateReq, *UserRsq) error
+	Login(context.Context, *LoginReq, *LoginRsp) error
+	User(context.Context, *UserReq, *UserRsp) error
+	Create(context.Context, *CreateReq, *UserRsp) error
+	Bind(context.Context, *CreateReq, *UserRsp) error
 }
 
 func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts ...server.HandlerOption) error {
 	type userService interface {
-		Login(ctx context.Context, in *LoginReq, out *LoginRsq) error
-		User(ctx context.Context, in *UserReq, out *UserRsq) error
-		Create(ctx context.Context, in *CreateReq, out *UserRsq) error
+		Login(ctx context.Context, in *LoginReq, out *LoginRsp) error
+		User(ctx context.Context, in *UserReq, out *UserRsp) error
+		Create(ctx context.Context, in *CreateReq, out *UserRsp) error
+		Bind(ctx context.Context, in *CreateReq, out *UserRsp) error
 	}
 	type UserService struct {
 		userService
@@ -124,14 +137,18 @@ type userServiceHandler struct {
 	UserServiceHandler
 }
 
-func (h *userServiceHandler) Login(ctx context.Context, in *LoginReq, out *LoginRsq) error {
+func (h *userServiceHandler) Login(ctx context.Context, in *LoginReq, out *LoginRsp) error {
 	return h.UserServiceHandler.Login(ctx, in, out)
 }
 
-func (h *userServiceHandler) User(ctx context.Context, in *UserReq, out *UserRsq) error {
+func (h *userServiceHandler) User(ctx context.Context, in *UserReq, out *UserRsp) error {
 	return h.UserServiceHandler.User(ctx, in, out)
 }
 
-func (h *userServiceHandler) Create(ctx context.Context, in *CreateReq, out *UserRsq) error {
+func (h *userServiceHandler) Create(ctx context.Context, in *CreateReq, out *UserRsp) error {
 	return h.UserServiceHandler.Create(ctx, in, out)
+}
+
+func (h *userServiceHandler) Bind(ctx context.Context, in *CreateReq, out *UserRsp) error {
+	return h.UserServiceHandler.Bind(ctx, in, out)
 }
