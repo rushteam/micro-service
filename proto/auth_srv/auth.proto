@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package user_srv;
+
+service UserService {
+    //用户授权
+    rpc Authorize(AuthReq) returns (AuthRsp) {}
+    rpc Token(TokenReq) returns (TokenRsp) {}
+}
+message AuthReq {
+    //http://localhost:8080/web/authorize?client_id=test_client_1&redirect_uri=&response_type=code&state=somestate&scope=read_write
+    string client_id = 1; 
+    string redirect_uri = 2;
+    string response_type = 3;//code
+    string scope = 4;
+    string state = 5;
+}
+message AuthRsp {
+    string code = 1;
+    string state = 2;
+}
+
+message TokenReq{
+    string client_id = 1;
+    string secret = 2;
+    string grant_type = 3; //authorization_code
+    string code = 4; //code
+    string redirect_uri = 5; //code
+}
+message TokenRsp{
+    string openid = 1;
+    string access_token = 2;
+    int32 expires_in = 3;
+    string token_type = 4;
+    string scope = 5;
+    string refresh_token = 6;
+}
