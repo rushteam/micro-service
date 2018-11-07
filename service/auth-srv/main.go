@@ -2,22 +2,32 @@ package main
 
 import (
 	"github.com/micro/cli"
-	"github.com/micro/go-api"
-	"github.com/micro/go-api/handler/rpc"
 	"github.com/micro/go-log"
+	"github.com/micro/go-web"
 	micro "github.com/micro/go-micro"
-	// "github.com/micro/examples/template/web/handler"
+	
+	"github.com/kataras/iris"
+	"github.com/kataras/iris/middleware/recover"
 )
 
 var (
 	//SERVICE_NAME service's name
-	SERVICE_NAME = "go.micro.oauth2_api"
+	SERVICE_NAME = "go.micro.web.auth_srv"
 	//SERVICE_VERSION service's version
 	SERVICE_VERSION = "latest"
 )
 
 func main() {
-	service := micro.NewService(
+	// Creates an application without any middleware by default.
+	r := iris.New()
+	 // Recover middleware recovers from any panics and writes a 500 if there was one.
+	r.Use(recover.New())
+
+	r.HandleFunc("/", indexHandler)
+	r.HandleFunc("/objects/{object}", objectHandler)
+
+	service := web.NewService(
+		web.Handler(r)
 		micro.Name(SERVICE_NAME),
 		micro.Version(SERVICE_VERSION),
 		// micro.Flags(
@@ -41,18 +51,19 @@ func main() {
 			// user_srv.RegisterUserServiceHandler(service.Server(), handler.NewUserServiceHandler(ctx))
 		}),
 	)
-	opt := api.WithEndpoint(&api.Endpoint{
-		// The RPC method
-		Name: "oauth2",
-		// The HTTP paths. This can be a POSIX regex
-		Path: []string{"/oauth2"},
-		// The HTTP Methods for this endpoint
-		Method: []string{"GET", "POST"},
-		// The API handler to use
-		Handler: rpc.Handler,
-	})
-	user_srv.RegisterUserServiceHandler(service.Server(), new(handler.UserService), opt)
+	
+	
+	service.HandleFunc("/foo", fooHandler)
 
+	// app := iris.Default()
+    // app.Get("/ping", func(ctx iris.Context) {
+    //     ctx.JSON(iris.Map{
+    //         "message": "pong",
+    //     })
+    // })
+    // // listen and serve on http://0.0.0.0:8080.
+	// app.Run(iris.Addr(":8080"))
+	
 	if err := service.Run(); err != nil {
 		log.Fatal(err)
 	}
