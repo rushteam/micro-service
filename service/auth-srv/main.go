@@ -1,7 +1,9 @@
 package main
 
 import (
+	"errors"
 	"net/http"
+	"net/url"
 
 	"github.com/micro/cli"
 	"github.com/micro/go-log"
@@ -17,8 +19,52 @@ var (
 	//SERVICE_VERSION service's version
 	SERVICE_VERSION = "latest"
 )
+/**
+client_id	true	int	应用申请时分配的appid.
+response_type	true	string	目前固定为 "code"
+redirect_uri	true	string	授权回调地址，域名需与设置的回调域名中任意一个域名一致,需要做url encode处理
+scope	true	string	申请scope权限所需参数，可一次申请多个scope权限，目前只有 user_info 这个scope
+state	false	string	用于保持请求和回调的状态，在回调时，会在Query Parameter中回传该参数。可以用这个参数验证请求有效性。这个参数可用于防止跨站请求伪造（CSRF）攻击
+*/
 
-func testHandler(c *gin.Context) {
+//AuthorizeHandler ..
+func AuthorizeHandler(c *gin.Context) {
+	redirectURI := c.Query("redirect_uri")
+	clientID := c.Query("client_id")
+	responseType := c.Query("response_type")
+	scope := c.Query("scope")
+	state := c.Query("state")
+	if redirectURI == "" {
+		c.AbortWithError(http.StatusBadRequest, errors.New("缺少参数 redirect_uri"))
+		return
+	}
+	if clientID == "" {
+		c.AbortWithError(http.StatusBadRequest, errors.New("缺少参数 client_id"))
+		return
+	}
+	if responseType == "" {
+		c.AbortWithError(http.StatusBadRequest, errors.New("缺少参数 response_type"))
+		return
+	}
+	if scope == "" {
+		c.AbortWithError(http.StatusBadRequest, errors.New("缺少参数 scope"))
+		return
+	}
+	//http://127.0.0.1:9080/oauth2/authorize?redirect_uri=http://www.baidu.com&client_id=1&response_type=code&scope=token
+	u,_ := url.Parse(redirectURI)
+	params := u.Query()
+	//302到
+	//?code=xxxxx&state=test
+	code := "test"
+	//params := url.Values{}
+	params.Add("code",code)
+	params.Add("state",state)
+	//query := params.Encode()
+	redirectURL := u.Scheme +"://" + u.Host + u.Path + "?" + params.Encode()
+	c.Redirect(http.StatusFound,redirectURL)
+	//c.String(http.StatusOK, `<html><body><h1>Hello World</h1></body></html>`)
+}
+func TokenHandler(c *gin.Context) {
 	c.String(http.StatusOK, `<html><body><h1>Hello World</h1></body></html>`)
 }
 func main() {
@@ -30,7 +76,7 @@ func main() {
 	//  // Recover middleware recovers from any panics and writes a 500 if there was one.
 	// r.Use(recover.New())
 
-	r.GET("/oauth2/authorize", testHandler)
+	r.GET("/oauth2/authorize", AuthorizeHandler)
 	// r.HandleFunc("/objects/{object}", objectHandler)
 
 	service := micro.NewService(
