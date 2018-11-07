@@ -3,11 +3,10 @@ package main
 import (
 	"github.com/micro/cli"
 	"github.com/micro/go-log"
-	"github.com/micro/go-web"
-	micro "github.com/micro/go-micro"
-	
-	"github.com/kataras/iris"
-	"github.com/kataras/iris/middleware/recover"
+	micro "github.com/micro/go-web"
+
+	// micro "github.com/micro/go-micro"
+	"github.com/gin-gonic/gin"
 )
 
 var (
@@ -19,17 +18,21 @@ var (
 
 func main() {
 	// Creates an application without any middleware by default.
-	r := iris.New()
-	 // Recover middleware recovers from any panics and writes a 500 if there was one.
-	r.Use(recover.New())
+	r := gin.New()
+	r.Use(gin.Logger())
+	r.Use(gin.Recovery())
+	// r := iris.New()
+	//  // Recover middleware recovers from any panics and writes a 500 if there was one.
+	// r.Use(recover.New())
 
-	r.HandleFunc("/", indexHandler)
-	r.HandleFunc("/objects/{object}", objectHandler)
+	// r.HandleFunc("/oauth2/", indexHandler)
+	// r.HandleFunc("/objects/{object}", objectHandler)
 
-	service := web.NewService(
-		web.Handler(r)
+	service := micro.NewService(
+		micro.Handler(r),
 		micro.Name(SERVICE_NAME),
 		micro.Version(SERVICE_VERSION),
+		micro.Address(":9080"),
 		// micro.Flags(
 		// 	cli.StringFlag{
 		// 		Name:   "config_path",
@@ -51,19 +54,7 @@ func main() {
 			// user_srv.RegisterUserServiceHandler(service.Server(), handler.NewUserServiceHandler(ctx))
 		}),
 	)
-	
-	
-	service.HandleFunc("/foo", fooHandler)
 
-	// app := iris.Default()
-    // app.Get("/ping", func(ctx iris.Context) {
-    //     ctx.JSON(iris.Map{
-    //         "message": "pong",
-    //     })
-    // })
-    // // listen and serve on http://0.0.0.0:8080.
-	// app.Run(iris.Addr(":8080"))
-	
 	if err := service.Run(); err != nil {
 		log.Fatal(err)
 	}
