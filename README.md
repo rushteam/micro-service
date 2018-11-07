@@ -9,3 +9,6 @@ micro call pay_center PayCenter.CreatePayOrder '{"client_id":"hoo","channel":"20
 micro call go.micro.user_srv UserService.Create '{"login_list":[{"platform":"phone"}],"userinfo":{"nickname":"小花猫"}}'
 
 micro call go.micro.user_srv UserService.Bind '{"login_list":[{"platform":"phone"}],"userinfo":{"uid":1}}'
+
+
+go run ./service/user-srv/main.go

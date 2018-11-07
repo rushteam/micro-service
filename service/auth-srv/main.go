@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"net/http"
 	"net/url"
 
@@ -19,6 +18,7 @@ var (
 	//SERVICE_VERSION service's version
 	SERVICE_VERSION = "latest"
 )
+
 /**
 client_id	true	int	应用申请时分配的appid.
 response_type	true	string	目前固定为 "code"
@@ -35,34 +35,37 @@ func AuthorizeHandler(c *gin.Context) {
 	scope := c.Query("scope")
 	state := c.Query("state")
 	if redirectURI == "" {
-		c.AbortWithError(http.StatusBadRequest, errors.New("缺少参数 redirect_uri"))
+		// c.AbortWithError(http.StatusBadRequest, errors.New("缺少参数 redirect_uri"))
+		c.String(http.StatusOK, "缺少参数 redirect_uri")
 		return
 	}
 	if clientID == "" {
-		c.AbortWithError(http.StatusBadRequest, errors.New("缺少参数 client_id"))
+		// c.AbortWithError(http.StatusBadRequest, errors.New("缺少参数 client_id"))
+		c.String(http.StatusOK, "缺少参数 redirect_uri")
 		return
 	}
 	if responseType == "" {
-		c.AbortWithError(http.StatusBadRequest, errors.New("缺少参数 response_type"))
+		// c.AbortWithError(http.StatusBadRequest, errors.New("缺少参数 response_type"))
+		c.String(http.StatusOK, "缺少参数 response_type")
 		return
 	}
 	if scope == "" {
-		c.AbortWithError(http.StatusBadRequest, errors.New("缺少参数 scope"))
+		// c.AbortWithError(http.StatusBadRequest, errors.New("缺少参数 scope"))
+		c.String(http.StatusOK, "缺少参数 scope")
 		return
 	}
 	//http://127.0.0.1:9080/oauth2/authorize?redirect_uri=http://www.baidu.com&client_id=1&response_type=code&scope=token
-	u,_ := url.Parse(redirectURI)
+	u, _ := url.Parse(redirectURI)
 	params := u.Query()
 	//302到
 	//?code=xxxxx&state=test
 	code := "test"
 	//params := url.Values{}
-	params.Add("code",code)
-	params.Add("state",state)
+	params.Add("code", code)
+	params.Add("state", state)
 	//query := params.Encode()
-	redirectURL := u.Scheme +"://" + u.Host + u.Path + "?" + params.Encode()
-	c.Redirect(http.StatusFound,redirectURL)
-	//c.String(http.StatusOK, `<html><body><h1>Hello World</h1></body></html>`)
+	redirectURL := u.Scheme + "://" + u.Host + u.Path + "?" + params.Encode()
+	c.Redirect(http.StatusFound, redirectURL)
 }
 func TokenHandler(c *gin.Context) {
 	c.String(http.StatusOK, `<html><body><h1>Hello World</h1></body></html>`)
