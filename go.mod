@@ -78,9 +78,12 @@ require (
 	github.com/mattn/go-sqlite3 v1.10.0 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/micro/cli v0.0.0-20180830071301-8b9d33ec2f19
+	github.com/micro/examples v0.0.0-20180925151614-058c4ce6ea27
+	github.com/micro/go-api v0.4.0
 	github.com/micro/go-log v0.0.0-20170512141327-cbfa9447f9b6
 	github.com/micro/go-micro v0.12.0
 	github.com/micro/go-rcache v0.0.0-20180418165751-a581a57b5133 // indirect
+	github.com/micro/go-web v0.4.0
 	github.com/micro/mdns v0.0.0-20160929165650-cdf30746f9f7 // indirect
 	github.com/micro/util v0.0.0-20180417104657-4b7ed83e8520 // indirect
 	github.com/miekg/dns v1.0.14 // indirect

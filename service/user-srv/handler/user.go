@@ -11,6 +11,7 @@ import (
 	"gitee.com/rushteam/micro-service/service/user-srv/model"
 
 	"gitee.com/rushteam/micro-service/common/pb/user_srv"
+
 	"github.com/micro/go-log"
 	// "go.uber.org/zap"
 )
@@ -39,17 +40,14 @@ func (s *UserService) Login(ctx context.Context, req *user_srv.LoginReq, rsp *us
 	Model := model.Db()
 	if utils.SliceIndexOf(req.Platform, localLoginList) >= 0 { //账号登陆
 		if req.Platform == "phone" && !validatePhone(req.Openid) {
-			// return errors.New("手机号格式错误")
 			return errors.BadRequest("UserService.Login", "手机号格式错误")
 		}
 		if len(req.AccessToken) < 6 { //密码不得小于6位
-			// return errors.New("密码错误")
 			return errors.BadRequest("UserService.Login", "密码错误")
 		}
 		login, err := Model.LoginByPassword(req.Platform, req.Openid, req.AccessToken)
 		if err != nil {
 			return errors.BadRequest("UserService.Login", "用户名或密码错误")
-			// return errors.New("用户名或密码错误")
 		}
 		// fmt.Println(login)
 		rsp.Uid = login.UID
@@ -154,5 +152,15 @@ func (s *UserService) Bind(ctx context.Context, req *user_srv.CreateReq, rsp *us
 		return errors.BadRequest("UserService.Bind", "信息不完整")
 	}
 	Model.Commit()
+	return nil
+}
+
+//UnBind ...
+func (s *UserService) UnBind(ctx context.Context, req *user_srv.UserReq, rsp *user_srv.UserRsp) error {
+	return nil
+}
+
+//Update ...
+func (s *UserService) Update(ctx context.Context, req *user_srv.UserReq, rsp *user_srv.UserRsp) error {
 	return nil
 }
