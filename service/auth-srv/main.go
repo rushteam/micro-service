@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/micro/cli"
 	"github.com/micro/go-log"
 	micro "github.com/micro/go-web"
@@ -16,6 +18,9 @@ var (
 	SERVICE_VERSION = "latest"
 )
 
+func testHandler(c *gin.Context) {
+	c.String(http.StatusOK, `<html><body><h1>Hello World</h1></body></html>`)
+}
 func main() {
 	// Creates an application without any middleware by default.
 	r := gin.New()
@@ -25,7 +30,7 @@ func main() {
 	//  // Recover middleware recovers from any panics and writes a 500 if there was one.
 	// r.Use(recover.New())
 
-	// r.HandleFunc("/oauth2/", indexHandler)
+	r.GET("/oauth2/authorize", testHandler)
 	// r.HandleFunc("/objects/{object}", objectHandler)
 
 	service := micro.NewService(
