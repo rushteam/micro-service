@@ -79,7 +79,7 @@ func main() {
 	r := gin.New()
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
-	r.LoadHTMLGlob("templates/*")
+	r.LoadHTMLGlob("service/auth-srv/templates/*")
 
 	var loginPageHandler oauth2.LoginPageHandler
 	loginPageHandler = func(ar *osin.AuthorizeRequest, c *gin.Context) bool {
@@ -91,11 +91,9 @@ func main() {
 			if r.FormValue("login") == "1234" && r.FormValue("password") == "test" {
 				ar.Authorized = true
 				return true
-			} else {
-				//返回状态码
-				c.String(200,"登录失败")
-				return false
 			}
+			//返回状态码
+			c.String(200,"登录失败")
 			ar.Authorized = false
 			return false
 		}
@@ -141,4 +139,3 @@ func main() {
 		log.Fatal(err)
 	}
 }
-
