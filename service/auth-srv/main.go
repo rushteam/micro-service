@@ -10,6 +10,8 @@ import (
 
 	// micro "github.com/micro/go-micro"
 	"github.com/gin-gonic/gin"
+
+	"gitee.com/rushteam/micro-service/auth-srv/oauth2"
 )
 
 var (
@@ -75,12 +77,11 @@ func main() {
 	r := gin.New()
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
-	// r := iris.New()
-	//  // Recover middleware recovers from any panics and writes a 500 if there was one.
-	// r.Use(recover.New())
 
-	r.GET("/oauth2/authorize", AuthorizeHandler)
-	// r.HandleFunc("/objects/{object}", objectHandler)
+	authServer := oauth2.InitOAuthServer(r)
+	_ = authServer
+	//authServer(r)
+	//r.GET("/oauths2/authorize", AuthorizeHandler)
 
 	service := micro.NewService(
 		micro.Handler(r),
@@ -113,3 +114,4 @@ func main() {
 		log.Fatal(err)
 	}
 }
+
