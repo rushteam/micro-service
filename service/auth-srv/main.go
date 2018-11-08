@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/RangelReale/osin"
 	"net/http"
 	"net/url"
 
@@ -11,7 +12,7 @@ import (
 	// micro "github.com/micro/go-micro"
 	"github.com/gin-gonic/gin"
 
-	"gitee.com/rushteam/micro-service/auth-srv/oauth2"
+	"gitee.com/rushteam/micro-service/service/auth-srv/oauth2"
 )
 
 var (
@@ -72,14 +73,40 @@ func AuthorizeHandler(c *gin.Context) {
 func TokenHandler(c *gin.Context) {
 	c.String(http.StatusOK, `<html><body><h1>Hello World</h1></body></html>`)
 }
+
 func main() {
 	// Creates an application without any middleware by default.
 	r := gin.New()
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
+	r.LoadHTMLGlob("templates/*")
 
-	authServer := oauth2.InitOAuthServer(r)
-	_ = authServer
+	var loginPageHandler oauth2.LoginPageHandler
+	loginPageHandler = func(ar *osin.AuthorizeRequest, c *gin.Context) bool {
+		//todo 检测自己是否已经登录，如果登录提示 是否授权
+		//oauth2.HandleDefaultLoginPage(ar,c.Writer,c.Request)
+		r := c.Request
+		r.ParseForm()
+		if r.Method == "POST" {
+			if r.FormValue("login") == "1234" && r.FormValue("password") == "test" {
+				ar.Authorized = true
+				return true
+			} else {
+				//返回状态码
+				c.String(200,"登录失败")
+				return false
+			}
+			ar.Authorized = false
+			return false
+		}
+		c.HTML(http.StatusOK, "login.html", gin.H{
+			"actionUrl": "/oauth2/authorize?" + r.URL.RawQuery,
+		})
+		return false
+	}
+	auth := oauth2.New(oauth2.NewDefaultOsinServer())
+	auth.InitRouter(r)
+	auth.SetLoginPageHandler(loginPageHandler)
 	//authServer(r)
 	//r.GET("/oauths2/authorize", AuthorizeHandler)
 

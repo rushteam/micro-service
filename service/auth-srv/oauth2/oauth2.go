@@ -1,14 +1,12 @@
 package oauth2
 
-import(
-	"github.com/gin-gonic/gin"
+import (
 	"github.com/RangelReale/osin"
-	"github.com/RangelReale/osin/example"
+	"github.com/gin-gonic/gin"
 	"log"
 )
-
-//InitOAuthServer ..
-func InitOAuthServer(r *gin.RouterGroup) *osin.Server {
+//NewDefaultOsinServer
+func NewDefaultOsinServer() *osin.Server {
 	conf := osin.NewServerConfig()
 	conf.AllowedAuthorizeTypes = osin.AllowedAuthorizeType{osin.CODE, osin.TOKEN}
 	conf.AllowedAccessTypes = osin.AllowedAccessType{
@@ -21,28 +19,64 @@ func InitOAuthServer(r *gin.RouterGroup) *osin.Server {
 	conf.AllowGetAccessRequest = true
 	conf.AllowClientSecretInParams = true
 	//todo 这里要实现落地存储 最好是用micro service方式
-	server := osin.NewServer(conf, example.NewTestStorage())
+	server := osin.NewServer(conf, NewTestStorage())
 	return server
 	//return osin.NewServer(serverConfig, repo.NewStorage(dbconn.DB.DB()))
 }
+type LoginPageHandler func(ar *osin.AuthorizeRequest, c *gin.Context) bool
 
-func Routers() {
-	resp := r.server.NewResponse()
+type OAuth2 struct {
+	server *osin.Server
+	//handerLoginPage func(ar *osin.AuthorizeRequest, w http.ResponseWriter, r *http.Request) bool
+	loginPageHandler LoginPageHandler
+}
+//New ..
+func New(s *osin.Server) *OAuth2 {
+	o :=  &OAuth2{server:s}
+	return o
+}
+func (s *OAuth2) SetLoginPageHandler(h LoginPageHandler) {
+	s.loginPageHandler = h
+}
+func (s *OAuth2) InitRouter(r *gin.Engine) *OAuth2{
+	o2 := r.Group("/oauth2")
+	o2.GET("/authorize",s.Authorize)
+	o2.POST("/authorize",s.Authorize)
+	o2.GET("/token",s.Token)
+
+	//r.GET("/authorize",s.rest.authorize)
+	return s
+}
+
+func (s *OAuth2) Authorize(c *gin.Context) {
+	resp := s.server.NewResponse()
 	defer resp.Close()
-	if ar := r.server.HandleAuthorizeRequest(resp, c.Request); ar != nil {
-		userId, ok := handleLoginPage(r, ar, c)
-		if !ok {
+	if ar := s.server.HandleAuthorizeRequest(resp, c.Request); ar != nil {
+		// HANDLE LOGIN PAGE HERE
+		if ! s.loginPageHandler(ar,c){
 			return
 		}
-		ar.UserData = userId
-		ar.Authorized = true
-		r.server.FinishAuthorizeRequest(resp, c.Request, ar)
+		//ar.UserData = userId
+		//ar.Authorized = true
+		s.server.FinishAuthorizeRequest(resp, c.Request, ar)
 	}
 	if resp.IsError && resp.InternalError != nil {
 		log.Printf("ERROR: %s\n", resp.InternalError)
 	}
 	if !resp.IsError {
+		log.Printf("ERROR: %s\n", resp.InternalError)
 		//resp.Output["custom_parameter"] = 42
+	}
+	osin.OutputJSON(resp, c.Writer, c.Request)
+}
+
+func (s *OAuth2) Token(c *gin.Context) {
+	resp := s.server.NewResponse()
+	defer resp.Close()
+
+	if ar := s.server.HandleAccessRequest(resp, c.Request); ar != nil {
+		ar.Authorized = true
+		s.server.FinishAccessRequest(resp, c.Request, ar)
 	}
 	osin.OutputJSON(resp, c.Writer, c.Request)
 }
