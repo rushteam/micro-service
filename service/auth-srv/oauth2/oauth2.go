@@ -1,10 +1,12 @@
 package oauth2
 
 import (
+	"log"
+
 	"github.com/RangelReale/osin"
 	"github.com/gin-gonic/gin"
-	"log"
 )
+
 //NewDefaultOsinServer
 func NewDefaultOsinServer() *osin.Server {
 	conf := osin.NewServerConfig()
@@ -23,6 +25,7 @@ func NewDefaultOsinServer() *osin.Server {
 	return server
 	//return osin.NewServer(serverConfig, repo.NewStorage(dbconn.DB.DB()))
 }
+
 type LoginPageHandler func(ar *osin.AuthorizeRequest, c *gin.Context) bool
 
 type OAuth2 struct {
@@ -30,19 +33,20 @@ type OAuth2 struct {
 	//handerLoginPage func(ar *osin.AuthorizeRequest, w http.ResponseWriter, r *http.Request) bool
 	loginPageHandler LoginPageHandler
 }
+
 //New ..
 func New(s *osin.Server) *OAuth2 {
-	o :=  &OAuth2{server:s}
+	o := &OAuth2{server: s}
 	return o
 }
 func (s *OAuth2) SetLoginPageHandler(h LoginPageHandler) {
 	s.loginPageHandler = h
 }
-func (s *OAuth2) InitRouter(r *gin.Engine) *OAuth2{
+func (s *OAuth2) InitRouter(r *gin.Engine) *OAuth2 {
 	o2 := r.Group("/oauth2")
-	o2.GET("/authorize",s.Authorize)
-	o2.POST("/authorize",s.Authorize)
-	o2.GET("/token",s.Token)
+	o2.GET("/authorize", s.Authorize)
+	o2.POST("/authorize", s.Authorize)
+	o2.GET("/token", s.Token)
 
 	//r.GET("/authorize",s.rest.authorize)
 	return s
@@ -53,7 +57,7 @@ func (s *OAuth2) Authorize(c *gin.Context) {
 	defer resp.Close()
 	if ar := s.server.HandleAuthorizeRequest(resp, c.Request); ar != nil {
 		// HANDLE LOGIN PAGE HERE
-		if ! s.loginPageHandler(ar,c){
+		if !s.loginPageHandler(ar, c) {
 			return
 		}
 		//ar.UserData = userId
