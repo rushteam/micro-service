@@ -83,8 +83,8 @@ func main() {
 
 	var loginPageHandler oauth2.LoginPageHandler
 	loginPageHandler = func(ar *osin.AuthorizeRequest, c *gin.Context) bool {
-		//todo 检测自己是否已经登录，如果登录提示 是否授权
-		//oauth2.HandleDefaultLoginPage(ar,c.Writer,c.Request)
+		//检测是否已经登录，如果登录提示 是否授权
+		//sso,err := c.Cookie("sso")
 		r := c.Request
 		r.ParseForm()
 		if r.Method == "POST" {
@@ -96,10 +96,13 @@ func main() {
 			c.String(200,"登录失败")
 			return false
 		}
+		//todo 根据类型确定是web还是wap
 		c.HTML(http.StatusOK, "login.html", gin.H{
 			"actionUrl": "/oauth2/authorize?" + r.URL.RawQuery,
 		})
-		return false
+		//todo 检测授权 未授权展示授权页
+		//用户进行授权
+		return true
 	}
 	auth := oauth2.New(oauth2.NewDefaultOsinServer())
 	auth.InitRouter(r)
