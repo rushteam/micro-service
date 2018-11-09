@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b7a7e6ec-2a06-4b26-a365-2185e311819a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/service/auth-srv/templates/login.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/service/auth-srv/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/auth-srv/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/service/auth-srv/oauth2/oauth2.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/auth-srv/oauth2/oauth2.go" afterDir="false" />
@@ -25,13 +24,13 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="go" value="2439" />
+          <entry key="go" value="2440" />
           <entry key="html" value="15" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Go" value="2439" />
+          <entry key="Go" value="2440" />
           <entry key="HTML" value="15" />
         </counts>
       </usages-collector>
@@ -62,13 +61,13 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/service/auth-srv/oauth2/oauth2.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="328">
-              <caret line="52" column="22" lean-forward="true" selection-start-line="52" selection-start-column="22" selection-end-line="52" selection-end-column="22" />
+            <state relative-caret-position="284">
+              <caret line="69" column="30" lean-forward="true" selection-start-line="69" selection-start-column="30" selection-end-line="69" selection-end-column="30" />
               <folding>
-                <element signature="e#16#130#0" expanded="true" />
+                <element signature="e#16#93#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -95,11 +94,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/service/auth-srv/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="519">
-              <caret line="98" column="33" lean-forward="true" selection-start-line="98" selection-start-column="33" selection-end-line="98" selection-end-column="33" />
+            <state relative-caret-position="313">
+              <caret line="91" column="35" selection-start-line="91" selection-start-column="35" selection-end-line="91" selection-end-column="35" />
               <folding>
                 <element signature="e#14#267#0" expanded="true" />
               </folding>
@@ -162,9 +161,9 @@
         <option value="$PROJECT_DIR$/service/auth-srv/oauth2/server.go" />
         <option value="$PROJECT_DIR$/service/auth-srv/oauth2/db.go" />
         <option value="$PROJECT_DIR$/service/auth-srv/oauth2/storage.go" />
-        <option value="$PROJECT_DIR$/service/auth-srv/oauth2/oauth2.go" />
         <option value="$PROJECT_DIR$/service/auth-srv/templates/login.html" />
         <option value="$PROJECT_DIR$/service/auth-srv/main.go" />
+        <option value="$PROJECT_DIR$/service/auth-srv/oauth2/oauth2.go" />
       </list>
     </option>
   </component>
@@ -325,16 +324,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/service/auth-srv/oauth2/oauth2.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="328">
-          <caret line="52" column="22" lean-forward="true" selection-start-line="52" selection-start-column="22" selection-end-line="52" selection-end-column="22" />
-          <folding>
-            <element signature="e#16#130#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/service/auth-srv/templates/login.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
@@ -361,10 +350,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/service/auth-srv/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="519">
-          <caret line="98" column="33" lean-forward="true" selection-start-line="98" selection-start-column="33" selection-end-line="98" selection-end-column="33" />
+        <state relative-caret-position="313">
+          <caret line="91" column="35" selection-start-line="91" selection-start-column="35" selection-end-line="91" selection-end-column="35" />
           <folding>
             <element signature="e#14#267#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/service/auth-srv/oauth2/oauth2.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="284">
+          <caret line="69" column="30" lean-forward="true" selection-start-line="69" selection-start-column="30" selection-end-line="69" selection-end-column="30" />
+          <folding>
+            <element signature="e#16#93#0" expanded="true" />
           </folding>
         </state>
       </provider>

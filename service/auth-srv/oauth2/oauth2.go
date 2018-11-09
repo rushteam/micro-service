@@ -68,7 +68,7 @@ func (s *OAuth2) Authorize(c *gin.Context) {
 			return
 		}
 		//ar.UserData = userId
-		//ar.Authorized = true
+		ar.Authorized = true
 		s.server.FinishAuthorizeRequest(resp, c.Request, ar)
 	}
 	if resp.IsError && resp.InternalError != nil {

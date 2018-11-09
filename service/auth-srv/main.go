@@ -89,12 +89,11 @@ func main() {
 		r.ParseForm()
 		if r.Method == "POST" {
 			if r.FormValue("login") == "1234" && r.FormValue("password") == "test" {
-				ar.Authorized = true
+				//ar.Authorized = true
 				return true
 			}
 			//返回状态码
 			c.String(200,"登录失败")
-			ar.Authorized = false
 			return false
 		}
 		c.HTML(http.StatusOK, "login.html", gin.H{
