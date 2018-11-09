@@ -26,8 +26,10 @@ func NewDefaultOsinServer() *osin.Server {
 	//return osin.NewServer(serverConfig, repo.NewStorage(dbconn.DB.DB()))
 }
 
+//LoginPageHandler login page handle
 type LoginPageHandler func(ar *osin.AuthorizeRequest, c *gin.Context) bool
 
+//OAuth2 oauth engine
 type OAuth2 struct {
 	server *osin.Server
 	//handerLoginPage func(ar *osin.AuthorizeRequest, w http.ResponseWriter, r *http.Request) bool
@@ -39,9 +41,13 @@ func New(s *osin.Server) *OAuth2 {
 	o := &OAuth2{server: s}
 	return o
 }
+
+//SetLoginPageHandler set login page handle
 func (s *OAuth2) SetLoginPageHandler(h LoginPageHandler) {
 	s.loginPageHandler = h
 }
+
+//InitRouter init oauth2 routes
 func (s *OAuth2) InitRouter(r *gin.Engine) *OAuth2 {
 	o2 := r.Group("/oauth2")
 	o2.GET("/authorize", s.Authorize)
@@ -52,6 +58,7 @@ func (s *OAuth2) InitRouter(r *gin.Engine) *OAuth2 {
 	return s
 }
 
+//Authorize authorize process
 func (s *OAuth2) Authorize(c *gin.Context) {
 	resp := s.server.NewResponse()
 	defer resp.Close()
@@ -74,6 +81,7 @@ func (s *OAuth2) Authorize(c *gin.Context) {
 	osin.OutputJSON(resp, c.Writer, c.Request)
 }
 
+//Token token process
 func (s *OAuth2) Token(c *gin.Context) {
 	resp := s.server.NewResponse()
 	defer resp.Close()
