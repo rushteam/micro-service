@@ -1,6 +1,9 @@
 package main
 
 import (
+	"context"
+	"github.com/micro/go-micro/client"
+	"gitee.com/rushteam/micro-service/common/pb/user_srv"
 	"github.com/RangelReale/osin"
 	"net/http"
 	"net/url"
@@ -86,21 +89,39 @@ func main() {
 		//todo 检测自己是否已经登录，如果登录提示 是否授权
 		//oauth2.HandleDefaultLoginPage(ar,c.Writer,c.Request)
 		r := c.Request
-		r.ParseForm()
-		if r.Method == "POST" {
-			if r.FormValue("login") == "1234" && r.FormValue("password") == "test" {
-				ar.Authorized = true
-				return true
-			}
-			//返回状态码
-			c.String(200,"登录失败")
-			ar.Authorized = false
+		if r.Method == "GET" {
+			c.HTML(http.StatusOK, "login.html", gin.H{
+				"actionUrl": "/oauth2/authorize?" + r.URL.RawQuery,
+			})
 			return false
 		}
-		c.HTML(http.StatusOK, "login.html", gin.H{
-			"actionUrl": "/oauth2/authorize?" + r.URL.RawQuery,
-		})
-		return false
+		r.ParseForm()
+		if login,ok := c.GetPostForm("login"); !ok {
+
+		}
+		if pwd,ok := c.GetPostForm("password"); !ok {
+
+		}
+		ctx := context.TODO()
+		loginRsp,err := user_srv.NewUserService("go.micro.user_srv",client.NewClient()).Login(ctx, &user_srv.LoginReq{})
+		// req := client.NewRequest("go.micro.user_srv", "UserService.Login", &user_srv.LoginReq{
+		// 	Login: login,
+		// 	Password: pwd,
+		// })
+		// rsp := &user_srv.LoginRsp{}
+		// // Call service
+		// if err := client.Call(ctx, req, rsp); err != nil {
+		// 	fmt.Println("call err: ", err, rsp)
+		// 	return
+		// }
+		if !userLogin(login,pwd) {
+			//返回状态码
+			c.String(200,"登录失败")
+			// ar.Authorized = false
+			return false
+		}
+		ar.Authorized = true
+		return true
 	}
 	auth := oauth2.New(oauth2.NewDefaultOsinServer())
 	auth.InitRouter(r)
