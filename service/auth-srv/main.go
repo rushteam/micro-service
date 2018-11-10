@@ -5,12 +5,13 @@ import (
 	"github.com/micro/go-micro/client"
 	"gitee.com/rushteam/micro-service/common/pb/user_srv"
 	"github.com/RangelReale/osin"
+	"github.com/micro/go-micro"
 	"net/http"
 	"net/url"
 
 	"github.com/micro/cli"
 	"github.com/micro/go-log"
-	micro "github.com/micro/go-web"
+	web "github.com/micro/go-web"
 
 	// micro "github.com/micro/go-micro"
 	"github.com/gin-gonic/gin"
@@ -77,6 +78,43 @@ func TokenHandler(c *gin.Context) {
 	c.String(http.StatusOK, `<html><body><h1>Hello World</h1></body></html>`)
 }
 
+var loginPageHandler func(ar *osin.AuthorizeRequest, c *gin.Context) bool {
+	client := micro.NewService(micro.Name("go.micor.user_srv.client"))
+	client.Init()
+
+	// Create new greeter client
+	greeter := proto.NewGreeterService("greeter", service.Client())
+
+	// Call the greeter
+	rsp, err := greeter.Hello(context.TODO(), &proto.HelloRequest{Name: "John"})
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	//检测是否已经登录，如果登录提示 是否授权
+	//sso,err := c.Cookie("sso")
+	r := c.Request
+	//r.ParseForm()
+	if r.Method == "POST" {
+		login := c.PostForm("login")
+		pwd := c.PostForm("password")
+		fmt.Println(login,pwd)
+		//if r.FormValue("login") == "1234" && r.FormValue("password") == "test" {
+		//	//ar.Authorized = true
+		//	return true
+		//}
+		//返回状态码
+		c.String(200,"登录失败")
+		return false
+	}
+	//todo 根据类型确定是web还是wap
+	c.HTML(http.StatusOK, "login.html", gin.H{
+		"actionUrl": "/oauth2/authorize?" + r.URL.RawQuery,
+	})
+	//todo 检测授权 未授权展示授权页
+	//用户进行授权
+	return true
+}
 func main() {
 	// Creates an application without any middleware by default.
 	r := gin.New()
@@ -129,11 +167,11 @@ func main() {
 	//authServer(r)
 	//r.GET("/oauths2/authorize", AuthorizeHandler)
 
-	service := micro.NewService(
-		micro.Handler(r),
-		micro.Name(SERVICE_NAME),
-		micro.Version(SERVICE_VERSION),
-		micro.Address(":9080"),
+	service := web.NewService(
+		web.Handler(r),
+		web.Name(SERVICE_NAME),
+		web.Version(SERVICE_VERSION),
+		web.Address(":9080"),
 		// micro.Flags(
 		// 	cli.StringFlag{
 		// 		Name:   "config_path",
@@ -144,7 +182,7 @@ func main() {
 	)
 	// var ctx = context.TODO()
 	service.Init(
-		micro.Action(func(c *cli.Context) {
+		web.Action(func(c *cli.Context) {
 			// var configFile = "./config.yaml"
 			// if len(c.String("config_path")) > 0 {
 			// 	configFile = c.String("config_path")

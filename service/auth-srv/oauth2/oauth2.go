@@ -2,6 +2,7 @@ package oauth2
 
 import (
 	"log"
+	"os"
 
 	"github.com/RangelReale/osin"
 	"github.com/gin-gonic/gin"
@@ -22,6 +23,7 @@ func NewDefaultOsinServer() *osin.Server {
 	conf.AllowClientSecretInParams = true
 	//todo 这里要实现落地存储 最好是用micro service方式
 	server := osin.NewServer(conf, NewTestStorage())
+	server.Logger = log.New(os.Stderr, "[OAUTH2] ", log.LstdFlags)
 	return server
 	//return osin.NewServer(serverConfig, repo.NewStorage(dbconn.DB.DB()))
 }
@@ -53,6 +55,7 @@ func (s *OAuth2) InitRouter(r *gin.Engine) *OAuth2 {
 	o2.GET("/authorize", s.Authorize)
 	o2.POST("/authorize", s.Authorize)
 	o2.GET("/token", s.Token)
+	o2.GET("/info", s.Info)
 
 	//r.GET("/authorize",s.rest.authorize)
 	return s
@@ -68,7 +71,7 @@ func (s *OAuth2) Authorize(c *gin.Context) {
 			return
 		}
 		//ar.UserData = userId
-		//ar.Authorized = true
+		ar.Authorized = true
 		s.server.FinishAuthorizeRequest(resp, c.Request, ar)
 	}
 	if resp.IsError && resp.InternalError != nil {
@@ -92,3 +95,14 @@ func (s *OAuth2) Token(c *gin.Context) {
 	}
 	osin.OutputJSON(resp, c.Writer, c.Request)
 }
+//Info info process
+func (s *OAuth2) Info(c *gin.Context) {
+	resp := s.server.NewResponse()
+	defer resp.Close()
+
+	if ir := s.server.HandleInfoRequest(resp, c.Request); ir != nil {
+		s.server.FinishInfoRequest(resp, c.Request, ir)
+	}
+	osin.OutputJSON(resp, c.Writer, c.Request)
+}
+
