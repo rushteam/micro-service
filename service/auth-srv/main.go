@@ -33,7 +33,7 @@ redirect_uri	true	string	授权回调地址，域名需与设置的回调域名�
 scope	true	string	申请scope权限所需参数，可一次申请多个scope权限，目前只有 user_info 这个scope
 state	false	string	用于保持请求和回调的状态，在回调时，会在Query Parameter中回传该参数。可以用这个参数验证请求有效性。这个参数可用于防止跨站请求伪造（CSRF）攻击
 */
-
+/*
 //AuthorizeHandler ..
 func AuthorizeHandler(c *gin.Context) {
 	redirectURI := c.Query("redirect_uri")
@@ -74,47 +74,11 @@ func AuthorizeHandler(c *gin.Context) {
 	redirectURL := u.Scheme + "://" + u.Host + u.Path + "?" + params.Encode()
 	c.Redirect(http.StatusFound, redirectURL)
 }
+
 func TokenHandler(c *gin.Context) {
 	c.String(http.StatusOK, `<html><body><h1>Hello World</h1></body></html>`)
 }
-
-var loginPageHandler func(ar *osin.AuthorizeRequest, c *gin.Context) bool {
-	client := micro.NewService(micro.Name("go.micor.user_srv.client"))
-	client.Init()
-
-	// Create new greeter client
-	greeter := proto.NewGreeterService("greeter", service.Client())
-
-	// Call the greeter
-	rsp, err := greeter.Hello(context.TODO(), &proto.HelloRequest{Name: "John"})
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	//检测是否已经登录，如果登录提示 是否授权
-	//sso,err := c.Cookie("sso")
-	r := c.Request
-	//r.ParseForm()
-	if r.Method == "POST" {
-		login := c.PostForm("login")
-		pwd := c.PostForm("password")
-		fmt.Println(login,pwd)
-		//if r.FormValue("login") == "1234" && r.FormValue("password") == "test" {
-		//	//ar.Authorized = true
-		//	return true
-		//}
-		//返回状态码
-		c.String(200,"登录失败")
-		return false
-	}
-	//todo 根据类型确定是web还是wap
-	c.HTML(http.StatusOK, "login.html", gin.H{
-		"actionUrl": "/oauth2/authorize?" + r.URL.RawQuery,
-	})
-	//todo 检测授权 未授权展示授权页
-	//用户进行授权
-	return true
-}
+*/
 func main() {
 	// Creates an application without any middleware by default.
 	r := gin.New()
