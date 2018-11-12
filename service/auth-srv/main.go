@@ -1,16 +1,15 @@
 package main
 
 import (
-	"context"
-	"github.com/micro/go-micro/client"
 	"gitee.com/rushteam/micro-service/common/pb/user_srv"
 	"github.com/RangelReale/osin"
+	"github.com/micro/go-micro/client"
 	// "github.com/micro/go-micro"
 	"net/http"
 
 	"github.com/micro/cli"
 	"github.com/micro/go-log"
-	web "github.com/micro/go-web"
+	"github.com/micro/go-web"
 
 	// micro "github.com/micro/go-micro"
 	"github.com/gin-gonic/gin"
@@ -105,18 +104,17 @@ func main() {
 		if !ok {
 
 		}
-		ctx := context.TODO()
+		//ctx := context.TODO()
 		client := client.NewClient()
-		loginRsp,err := user_srv.NewUserService("go.micro.user_srv",client).Login(ctx, &user_srv.LoginReq{
+		loginRsp,err := user_srv.NewUserService("go.micro.user_srv",client).Login(c, &user_srv.LoginReq{
 			Login: login,
 			Password: pwd,
 		})
-		log.Log(err)
-		log.Log(loginRsp)
 		if err !=nil {
 			c.String(200,"登录失败")
 			return false
 		}
+		ar.UserData = loginRsp
 		ar.Authorized = true
 		return true
 	}

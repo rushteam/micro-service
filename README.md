@@ -13,6 +13,7 @@ micro call go.micro.user_srv UserService.Bind '{"login_list":[{"platform":"phone
 
 go run ./service/user-srv/main.go
 
+http://127.0.0.1:9080/oauth2/authorize?response_type=code&client_id=1234&redirect_uri=http%3a%2f%2fwww.1thx.com
 
 http://127.0.0.1:9080/oauth2/authorize?client_id=1234&response_type=code
 
