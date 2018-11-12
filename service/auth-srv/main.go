@@ -1,13 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"context"
 	"github.com/micro/go-micro/client"
 	"gitee.com/rushteam/micro-service/common/pb/user_srv"
 	"github.com/RangelReale/osin"
-	"github.com/micro/go-micro"
+	// "github.com/micro/go-micro"
 	"net/http"
-	"net/url"
 
 	"github.com/micro/cli"
 	"github.com/micro/go-log"
@@ -112,6 +112,7 @@ func main() {
 			Login: login,
 			Password: pwd,
 		})
+		fmt.Println(loginRsp)
 		if err !=nil {
 			c.String(200,"登录失败")
 			return false
