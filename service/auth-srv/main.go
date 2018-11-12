@@ -97,17 +97,20 @@ func main() {
 			})
 			return false
 		}
-		r.ParseForm()
-		if login,ok := c.GetPostForm("login"); !ok {
+		// r.ParseForm()
+		login,ok := c.GetPostForm("login")
+		if ok {
 
 		}
-		if pwd,ok := c.GetPostForm("password"); !ok {
+		pwd,ok := c.GetPostForm("password")
+		if !ok {
 
 		}
 		ctx := context.TODO()
 		client := client.NewClient()
 		loginRsp,err := user_srv.NewUserService("go.micro.user_srv",client).Login(ctx, &user_srv.LoginReq{
-			
+			Login: login,
+			Password: pwd,
 		})
 		if err !=nil {
 			c.String(200,"登录失败")
