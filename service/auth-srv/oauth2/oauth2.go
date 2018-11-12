@@ -95,6 +95,7 @@ func (s *OAuth2) Token(c *gin.Context) {
 	}
 	osin.OutputJSON(resp, c.Writer, c.Request)
 }
+
 //Info info process
 func (s *OAuth2) Info(c *gin.Context) {
 	resp := s.server.NewResponse()
@@ -105,4 +106,3 @@ func (s *OAuth2) Info(c *gin.Context) {
 	}
 	osin.OutputJSON(resp, c.Writer, c.Request)
 }
-

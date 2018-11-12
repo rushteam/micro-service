@@ -37,6 +37,9 @@ var localLoginList = []string{"phone", "email", "username"}
 func (s *UserService) Login(ctx context.Context, req *user_srv.LoginReq, rsp *user_srv.LoginRsp) error {
 	log.Log("[access] UserService.Login")
 	//phone or email or username
+	if req.Platform == "" {
+		return errors.BadRequest("UserService.Login", "Platform参数不能为空")
+	}
 	Model := model.Db()
 	if utils.SliceIndexOf(req.Platform, localLoginList) >= 0 { //账号登陆
 		if req.Platform == "phone" && !validatePhone(req.Login) {
@@ -52,7 +55,7 @@ func (s *UserService) Login(ctx context.Context, req *user_srv.LoginReq, rsp *us
 		// fmt.Println(login)
 		rsp.Uid = login.UID
 	} else { //三方登陆
-
+		return errors.BadRequest("UserService.Login", "暂不支持第三方登陆")
 	}
 	return nil
 }
@@ -103,8 +106,8 @@ func (s *UserService) Create(ctx context.Context, req *user_srv.CreateReq, rsp *
 		_, err = Model.LoginAdd(
 			req.Userinfo.Uid,
 			login.Platform,
-			login.Openid,
-			login.AccessToken)
+			login.Login,
+			login.Password)
 		if err != nil {
 			Model.Callback()
 			return errors.BadRequest("UserService.Create", "注册失败,账号已经存在")
@@ -139,8 +142,8 @@ func (s *UserService) Bind(ctx context.Context, req *user_srv.CreateReq, rsp *us
 		_, err = Model.LoginAdd(
 			req.Userinfo.Uid,
 			login.Platform,
-			login.Openid,
-			login.AccessToken)
+			login.Login,
+			login.Password)
 		if err != nil {
 			Model.Callback()
 			return errors.BadRequest("UserService.Bind", "该账号已绑定其他用户")

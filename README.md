@@ -14,5 +14,6 @@ micro call go.micro.user_srv UserService.Bind '{"login_list":[{"platform":"phone
 go run ./service/user-srv/main.go
 
 
+http://127.0.0.1:9080/oauth2/authorize?client_id=1234&response_type=code
 
 http://127.0.0.1:9080/oauth2/token?client_id=1234&client_secret=test&grant_type=client_credentials&scope=token
