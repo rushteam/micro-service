@@ -18,8 +18,8 @@ service UserService {
 }
 message LoginReq {
     string platform = 1; //password(email phone username) qq wx weibo 
-    string openid = 2;
-    string access_token = 3;
+    string login = 2;
+    string password = 3;
 }
 message LoginRsp {
     int64 uid = 1;

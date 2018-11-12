@@ -39,13 +39,13 @@ func (s *UserService) Login(ctx context.Context, req *user_srv.LoginReq, rsp *us
 	//phone or email or username
 	Model := model.Db()
 	if utils.SliceIndexOf(req.Platform, localLoginList) >= 0 { //账号登陆
-		if req.Platform == "phone" && !validatePhone(req.Openid) {
+		if req.Platform == "phone" && !validatePhone(req.Login) {
 			return errors.BadRequest("UserService.Login", "手机号格式错误")
 		}
-		if len(req.AccessToken) < 6 { //密码不得小于6位
+		if len(req.Password) < 6 { //密码不得小于6位
 			return errors.BadRequest("UserService.Login", "密码错误")
 		}
-		login, err := Model.LoginByPassword(req.Platform, req.Openid, req.AccessToken)
+		login, err := Model.LoginByPassword(req.Platform, req.Login, req.Password)
 		if err != nil {
 			return errors.BadRequest("UserService.Login", "用户名或密码错误")
 		}

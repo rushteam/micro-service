@@ -155,7 +155,7 @@ type UserServiceHandler interface {
 	Update(context.Context, *UserReq, *UserRsp) error
 }
 
-func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts ...server.HandlerOption) error {
+func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts ...server.HandlerOption) {
 	type userService interface {
 		Login(ctx context.Context, in *LoginReq, out *LoginRsp) error
 		Create(ctx context.Context, in *CreateReq, out *UserRsp) error
@@ -168,7 +168,7 @@ func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts .
 		userService
 	}
 	h := &userServiceHandler{hdlr}
-	return s.Handle(s.NewHandler(&UserService{h}, opts...))
+	s.Handle(s.NewHandler(&UserService{h}, opts...))
 }
 
 type userServiceHandler struct {

@@ -105,21 +105,12 @@ func main() {
 
 		}
 		ctx := context.TODO()
-		loginRsp,err := user_srv.NewUserService("go.micro.user_srv",client.NewClient()).Login(ctx, &user_srv.LoginReq{})
-		// req := client.NewRequest("go.micro.user_srv", "UserService.Login", &user_srv.LoginReq{
-		// 	Login: login,
-		// 	Password: pwd,
-		// })
-		// rsp := &user_srv.LoginRsp{}
-		// // Call service
-		// if err := client.Call(ctx, req, rsp); err != nil {
-		// 	fmt.Println("call err: ", err, rsp)
-		// 	return
-		// }
-		if !userLogin(login,pwd) {
-			//返回状态码
+		client := client.NewClient()
+		loginRsp,err := user_srv.NewUserService("go.micro.user_srv",client).Login(ctx, &user_srv.LoginReq{
+			
+		})
+		if err !=nil {
 			c.String(200,"登录失败")
-			// ar.Authorized = false
 			return false
 		}
 		ar.Authorized = true
