@@ -108,6 +108,7 @@ func main() {
 		ctx := context.TODO()
 		client := client.NewClient()
 		loginRsp,err := user_srv.NewUserService("go.micro.user_srv",client).Login(ctx, &user_srv.LoginReq{
+			Platform: "phone",
 			Login: login,
 			Password: pwd,
 		})

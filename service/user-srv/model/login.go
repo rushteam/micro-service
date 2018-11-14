@@ -2,6 +2,7 @@ package model
 
 import (
 	"errors"
+	"log"
 	"time"
 )
 
@@ -30,6 +31,7 @@ func (sess *Session) LoginByPassword(typ, openid, pwd string) (*LoginModel, erro
 	if result.Error != nil {
 		return nil, errors.New("用户不存在")
 	}
+	log.Println(login.AccessToken, pwd)
 	if login.AccessToken != pwd {
 		return nil, errors.New("密码错误")
 	}

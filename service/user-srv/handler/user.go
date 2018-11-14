@@ -42,18 +42,23 @@ func (s *UserService) Login(ctx context.Context, req *user_srv.LoginReq, rsp *us
 	}
 	Model := model.Db()
 	if utils.SliceIndexOf(req.Platform, localLoginList) >= 0 { //账号登陆
-		if req.Platform == "phone" && !validatePhone(req.Login) {
-			return errors.BadRequest("UserService.Login", "手机号格式错误")
+		if req.Platform == "phone" {
+			if !validatePhone(req.Login) {
+				return errors.BadRequest("UserService.Login", "手机号格式错误")
+			}
+			//密码位数不在登陆时候验证，而是在设置时候验证
+			// if len(req.Password) < 6 { //密码不得小于6位
+			// 	return errors.BadRequest("UserService.Login", "密码不得小于6位")
+			// }
+			login, err := Model.LoginByPassword(req.Platform, req.Login, req.Password)
+			if err != nil {
+				return errors.BadRequest("UserService.Login", "用户名或密码错误")
+			}
+			// fmt.Println(login)
+			rsp.Uid = login.UID
+		} else {
+			return errors.BadRequest("UserService.Login", "未知登陆方式")
 		}
-		if len(req.Password) < 6 { //密码不得小于6位
-			return errors.BadRequest("UserService.Login", "密码错误")
-		}
-		login, err := Model.LoginByPassword(req.Platform, req.Login, req.Password)
-		if err != nil {
-			return errors.BadRequest("UserService.Login", "用户名或密码错误")
-		}
-		// fmt.Println(login)
-		rsp.Uid = login.UID
 	} else { //三方登陆
 		return errors.BadRequest("UserService.Login", "暂不支持第三方登陆")
 	}
