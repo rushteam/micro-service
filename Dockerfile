@@ -1,6 +1,5 @@
-FROM golang:1.10-alpine as builder
+FROM golang:1.11-alpine as builder
 
-MAINTAINER foxzhong@tencent.com
 WORKDIR /go/src/micro-service
 
 COPY ./ /go/src/micro-service
@@ -10,7 +9,6 @@ COPY ./ /go/src/micro-service
 #     -gcflags '-N -l' \
 #     ./*.go
 RUN set -ex && \
-    go get && \
     go build -v -o /go/bin/micro-service \
     -gcflags '-N -l' \
-    ./service/user-srv/*.go
+    ./service/user-srv/main.go
