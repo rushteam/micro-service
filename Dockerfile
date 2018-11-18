@@ -9,7 +9,7 @@ COPY ./ /go/src/micro-service
 #     -gcflags '-N -l' \
 #     ./*.go
 RUN set -ex && \
-    go get && \
+    go get -d -v && \
     go build -v -o /go/bin/micro-service \
     -gcflags '-N -l' \
     ./service/user-srv/main.go
