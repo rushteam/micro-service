@@ -1,12 +1,8 @@
 FROM golang:1.11-alpine as builder
 
-# WORKDIR /go/src/micro-service
+WORKDIR /go/src/micro-service
 
-# COPY ./ /go/src/micro-service
-
-WORKDIR /data/micro-service
-
-COPY ./ /data/micro-service
+COPY ./ /go/src/micro-service
 
 # RUN set -ex && \
 #     go build -v -o /go/bin/micro-service \
