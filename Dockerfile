@@ -10,6 +10,6 @@ COPY ./ /go/src/micro-service
 #     ./*.go
 RUN set -ex && \
     # go get -d -v && \
-    go build -v -o -getmode=vendor /go/bin/micro-service \
+    go build -v -o -mod=vendor /go/bin/micro-service \
     -gcflags '-N -l' \
     ./service/user-srv/main.go
