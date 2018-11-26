@@ -4,6 +4,8 @@ FROM golang:1.11.2-alpine as builder
 
  #COPY ./ /go/src/micro-service
 
+RUN apk add --no-cache gcc
+
 WORKDIR /app/src/micro-service
 
 COPY ./ /app/src/micro-service
