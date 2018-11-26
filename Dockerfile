@@ -14,6 +14,7 @@ FROM golang:1.11-alpine as builder
 #     ./*.go
 RUN set -ex && \
     # go get -d -v && \
-    go build -v -o -mod=vendor /go/bin/micro-service \
+    go build -v -o /go/bin/micro-service \
+    -mod=vendor \
     -gcflags '-N -l' \
     ./service/user-srv/main.go
