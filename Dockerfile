@@ -1,4 +1,4 @@
-FROM golang:1.11.2-alpine-git as builder
+FROM golang:1.11.2-alpine as builder
 
  #WORKDIR /go/src/micro-service
 
