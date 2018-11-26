@@ -3,6 +3,8 @@ FROM golang:1.11.2-alpine as builder
  #WORKDIR /go/src/micro-service
 
  #COPY ./ /go/src/micro-service
+ 
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
 
 RUN apk add --no-cache gcc musl-dev 
 
