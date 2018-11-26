@@ -14,12 +14,10 @@ COPY ./ /app/src/micro-service
 
 RUN set -ex && \
     # go get -d -v && \
-    go build -v -o /go/bin/micro-service \
+    go build -v -o /go/bin/ms-user-srv \
     -mod=vendor \
     -gcflags '-N -l' \
     ./service/user-srv/main.go
-
-RUN ls /go/bin/
 
 FROM golang:1.11-alpine
 
