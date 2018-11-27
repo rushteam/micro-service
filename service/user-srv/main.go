@@ -25,20 +25,18 @@ func main() {
 		micro.Version(SERVICE_VERSION),
 		micro.Flags(
 			cli.StringFlag{
-				Name:   "config_path",
-				EnvVar: "CONFIG_PATH",
-				Usage:  "The config PATH e.g ./config.yaml",
+				Name:   "db",
+				EnvVar: "CONFIG_DB",
+				Usage:  "db配置",
+				Value: "root:dream@tcp(127.0.0.1:3306)/rushteam",
 			},
 		),
 	)
 	// var ctx = context.TODO()
 	service.Init(
 		micro.Action(func(c *cli.Context) {
-			// var configFile = "./config.yaml"
-			// if len(c.String("config_path")) > 0 {
-			// 	configFile = c.String("config_path")
-			// }
-			dbSource := "root:dream@tcp(127.0.0.1:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"
+			dbConf := c.String("db")
+			dbSource := dbConf + "?" + "parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"
 			pool := db.InitDb("mysql",dbSource,true)
 			model.Init(pool)
 			user_srv.RegisterUserServiceHandler(service.Server(), new(handler.UserService))
