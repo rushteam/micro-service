@@ -15,7 +15,12 @@ services:
       MYSQL_ROOT_PASSWORD: dream
     volumes:
       - ./mysql/data:/var/lib/mysql
-      - ./mysql/config/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ./mysql/config/:/etc/mysql/conf.d/
       - ./mysql/init:/docker-entrypoint-initdb.d/
     ports:
       - '3306:3306'
+  micro-service:
+      image: 'micro-service:dev'
+      restart: always
+      environment:
+        MS_USER_SRV_DB: 'root:dream@tcp(mysql:3306)/rushteam'

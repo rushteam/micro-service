@@ -26,7 +26,7 @@ func main() {
 		micro.Flags(
 			cli.StringFlag{
 				Name:   "db",
-				EnvVar: "CONFIG_DB",
+				EnvVar: "MS_USER_SRV_DB",
 				Usage:  "db配置",
 				Value: "root:dream@tcp(127.0.0.1:3306)/rushteam",
 			},
