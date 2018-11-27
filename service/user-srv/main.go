@@ -25,9 +25,9 @@ func main() {
 		micro.Version(SERVICE_VERSION),
 		micro.Flags(
 			cli.StringFlag{
-				Name:   "db",
+				Name:   "app_db",
 				EnvVar: "MS_USER_SRV_DB",
-				Usage:  "db配置",
+				Usage:  "Db config for mysql",
 				Value: "root:dream@tcp(127.0.0.1:3306)/rushteam",
 			},
 		),
@@ -35,7 +35,7 @@ func main() {
 	// var ctx = context.TODO()
 	service.Init(
 		micro.Action(func(c *cli.Context) {
-			dbConf := c.String("db")
+			dbConf := c.String("app_db")
 			dbSource := dbConf + "?" + "parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"
 			pool := db.InitDb("mysql",dbSource,true)
 			model.Init(pool)
