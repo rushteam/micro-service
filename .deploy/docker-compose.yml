@@ -24,3 +24,4 @@ services:
       restart: always
       environment:
         MS_USER_SRV_DB: 'root:dream@tcp(mysql:3306)/rushteam'
+        MICRO_REGISTRY_ADDRESS: 'consul'
