@@ -33,7 +33,7 @@ message LoginReq {
 }
 message LoginRsp {
     int64 uid = 1;
-    string access_token = 2;
+    string jwt = 2;
 }
 message CreateReq {
     Userinfo userinfo =1;

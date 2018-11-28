@@ -73,3 +73,8 @@ func RandomStr(length int) string {
 	}
 	return string(result)
 }
+
+//FormatDate 格式化时间
+func FormatDate(t time.Time) string {
+	return t.Format("2006-01-02 15:04:05")
+}

@@ -58,6 +58,10 @@ func (s *UserService) Login(ctx context.Context, req *user_srv.LoginReq, rsp *us
 			}
 			// fmt.Println(login)
 			rsp.Uid = login.UID
+			//gen token
+			subject := strconv.FormatInt(login.UID,64)
+			token := session.New("user-srv",subject,"")
+			rsp.Jwt = session.Encode("",token)
 		} else {
 			return errors.BadRequest("UserService.Login", "未知登陆方式")
 		}
@@ -88,8 +92,9 @@ func (s *UserService) User(ctx context.Context, req *user_srv.UserReq, rsp *user
 	rsp.Userinfo.Nickname = user.Nickname
 	rsp.Userinfo.Gender = user.Gender
 	rsp.Userinfo.Avatar = user.Avatar
-	rsp.Userinfo.CreatedAt = user.CreatedAt.Format("2006-01-02 15:04:05")
-	rsp.Userinfo.UpdatedAt = user.UpdatedAt.Format("2006-01-02 15:04:05")
+
+	rsp.Userinfo.CreatedAt = utils.FormatDate(user.CreatedAt)
+	rsp.Userinfo.UpdatedAt = utils.FormatDate(user.UpdatedAt)
 	return nil
 }
 
@@ -108,7 +113,7 @@ func (s *UserService) Create(ctx context.Context, req *user_srv.CreateReq, rsp *
 	Model := model.Begin()
 	// req.Userinfo
 	var u = &model.UserModel{}
-	u.Nickname = req.GetUserinfo().Nickname
+	u.Nickname = req.GetUserinfo().GetNickname()
 	u.Avatar = req.Userinfo.Avatar
 	u.Gender = req.Userinfo.Gender
 	err := Model.UserAdd(u)
