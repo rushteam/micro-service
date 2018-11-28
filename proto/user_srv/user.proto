@@ -26,10 +26,6 @@ message Userinfo {
     string updated_at = 7;
     string created_at = 8;
 }
-
-message Session {
-    string jwt = 1;
-}
 message LoginReq {
     string platform = 1; //password(email phone username) qq wx weibo 
     string login = 2;
@@ -47,9 +43,9 @@ message UserRsp {
     Userinfo userinfo =1;
 }
 message UserReq {
-    Session session = 1;
+    string jwt = 1;
 }
 message UpdateReq {
-    Session session = 1;
+    string jwt = 1;
     Userinfo userinfo = 2;
 }

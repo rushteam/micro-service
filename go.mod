@@ -26,6 +26,7 @@ require (
 	github.com/containerd/continuity v0.0.0-20181027224239-bea7585dbfac // indirect
 	github.com/coredns/coredns v1.2.6 // indirect
 	github.com/denisenkom/go-mssqldb v0.0.0-20181014144952-4e0d7dc8888f // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-units v0.3.3 // indirect
 	github.com/duosecurity/duo_api_golang v0.0.0-20181024123116-92fea9203dbc // indirect
@@ -33,6 +34,7 @@ require (
 	github.com/envoyproxy/go-control-plane v0.6.2 // indirect
 	github.com/erikstmartin/go-testdb v0.0.0-20160219214506-8d10e4a1bae5 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
+	github.com/gbrlsnchs/jwt/v2 v2.0.0
 	github.com/gin-contrib/sse v0.0.0-20170109093832-22d885f9ecc7 // indirect
 	github.com/gin-gonic/gin v1.3.0
 	github.com/go-ldap/ldap v2.5.1+incompatible // indirect
@@ -114,6 +116,7 @@ require (
 	github.com/stretchr/objx v0.1.1 // indirect
 	github.com/tv42/httpunix v0.0.0-20150427012821-b75d8614f926 // indirect
 	github.com/ugorji/go/codec v0.0.0-20181022190402-e5e69e061d4f // indirect
+	github.com/vmware/vic v1.4.1
 	golang.org/x/crypto v0.0.0-20181106171534-e4dc69e5b2fd // indirect
 	golang.org/x/net v0.0.0-20181023162649-9b4f9f5ad519 // indirect
 	google.golang.org/appengine v1.3.0 // indirect
