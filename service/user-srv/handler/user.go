@@ -61,7 +61,11 @@ func (s *UserService) Login(ctx context.Context, req *user_srv.LoginReq, rsp *us
 			//gen token
 			subject := strconv.FormatInt(login.UID,64)
 			token := session.New("user-srv",subject,"")
-			rsp.Jwt = session.Encode("",token)
+			jwt,err := session.Encode("", token)
+			if err != nil {
+				return errors.BadRequest("UserService.Login", "登录异常,请请联系客服")
+			}
+			rsp.Jwt = jwt
 		} else {
 			return errors.BadRequest("UserService.Login", "未知登陆方式")
 		}
