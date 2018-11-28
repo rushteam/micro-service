@@ -16,7 +16,7 @@ service UserService {
     //更新用户
     rpc Update(UpdateReq) returns (UserRsp) {}
 }
-message Userinfo {
+message User {
     int64 uid = 1;
     string nickname = 2;
     string firstname = 3;
@@ -36,16 +36,16 @@ message LoginRsp {
     string jwt = 2;
 }
 message CreateReq {
-    Userinfo userinfo =1;
+    User user =1;
     repeated LoginReq login_list = 2;
 }
 message UserRsp {
-    Userinfo userinfo =1;
+    User user =1;
 }
 message UserReq {
     string jwt = 1;
 }
 message UpdateReq {
     string jwt = 1;
-    Userinfo userinfo = 2;
+    User user = 2;
 }

@@ -83,22 +83,26 @@ func (s *UserService) User(ctx context.Context, req *user_srv.UserReq, rsp *user
 	if err != nil {
 		return errors.BadRequest("UserService.Login", "登录超时或TOKEN非法")
 	}
+	if token.Subject == "" || token.Subject == "0" {
+		return errors.BadRequest("UserService.Login", "当前TOKEN未绑定用户")
+	}
 	uid, err := strconv.ParseInt(token.Subject, 10, 64)
 	if err != nil {
-		return errors.BadRequest("UserService.Login", "TOKEN非法")
+		return errors.BadRequest("UserService.Login", "当前TOKEN无法解析用户")
 	}
 	user, err := Model.UserByUID(uid)
 	if err != nil {
-		return errors.BadRequest("UserService.Login", "用户名不存在")
+		return errors.BadRequest("UserService.Login", "未找到用户")
 		// return errors.New("用户名不存在")
 	}
-	rsp.Userinfo.Uid = user.UID
-	rsp.Userinfo.Nickname = user.Nickname
-	rsp.Userinfo.Gender = user.Gender
-	rsp.Userinfo.Avatar = user.Avatar
+	rsp.User = &user_srv.User{}
+	rsp.User.Uid = user.UID
+	rsp.User.Nickname = user.Nickname
+	rsp.User.Gender = user.Gender
+	rsp.User.Avatar = user.Avatar
 
-	rsp.Userinfo.CreatedAt = utils.FormatDate(user.CreatedAt)
-	rsp.Userinfo.UpdatedAt = utils.FormatDate(user.UpdatedAt)
+	rsp.User.CreatedAt = utils.FormatDate(user.CreatedAt)
+	rsp.User.UpdatedAt = utils.FormatDate(user.UpdatedAt)
 	return nil
 }
 
@@ -108,18 +112,18 @@ func (s *UserService) Create(ctx context.Context, req *user_srv.CreateReq, rsp *
 	if len(req.LoginList) < 1 {
 		return errors.BadRequest("UserService.Create", "注册失败,账号信息不全")
 	}
-	if req.GetUserinfo() == nil {
+	if req.GetUser() == nil {
 		return errors.BadRequest("UserService.Create", "注册失败,用户信息不全")
 	}
-	if req.Userinfo.GetNickname() == "" {
+	if req.User.GetNickname() == "" {
 		return errors.BadRequest("UserService.Create", "注册失败,昵称不能为空")
 	}
 	Model := model.Begin()
-	// req.Userinfo
+	// req.User
 	var u = &model.UserModel{}
-	u.Nickname = req.GetUserinfo().GetNickname()
-	u.Avatar = req.Userinfo.Avatar
-	u.Gender = req.Userinfo.Gender
+	u.Nickname = req.User.GetNickname()
+	u.Avatar = req.User.Avatar
+	u.Gender = req.User.Gender
 	err := Model.UserAdd(u)
 	if err != nil {
 		Model.Callback()
@@ -128,7 +132,7 @@ func (s *UserService) Create(ctx context.Context, req *user_srv.CreateReq, rsp *
 	var loginN = 0
 	for _, login := range req.LoginList {
 		_, err = Model.LoginAdd(
-			req.Userinfo.Uid,
+			req.User.Uid,
 			login.Platform,
 			login.Login,
 			login.Password)
@@ -152,11 +156,11 @@ func (s *UserService) Bind(ctx context.Context, req *user_srv.CreateReq, rsp *us
 	if len(req.LoginList) < 1 {
 		return errors.BadRequest("UserService.Bind", "账号信息不全")
 	}
-	if req.GetUserinfo() == nil {
+	if req.GetUser() == nil {
 		return errors.BadRequest("UserService.Bind", "用户信息不全")
 	}
 	//todo 这里用token？还是uid
-	if req.Userinfo.GetUid() == 0 {
+	if req.User.GetUid() == 0 {
 		return errors.BadRequest("UserService.Bind", "UID不能为空")
 	}
 	Model := model.Begin()
@@ -164,7 +168,7 @@ func (s *UserService) Bind(ctx context.Context, req *user_srv.CreateReq, rsp *us
 	var loginN = 0
 	for _, login := range req.LoginList {
 		_, err = Model.LoginAdd(
-			req.Userinfo.Uid,
+			req.User.Uid,
 			login.Platform,
 			login.Login,
 			login.Password)

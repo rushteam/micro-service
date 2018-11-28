@@ -22,6 +22,7 @@ http://127.0.0.1:9080/oauth2/token?client_id=1234&client_secret=test&grant_type=
 用户服务 user-srv
     用户登陆
         手机号登陆
+            micro call go.micro.user_srv UserService.Login '{"platform":"phone","login":"18310497688","password":"098f6bcd4621d373cade4e832627b4f6"}'
         第三方登陆
     用户注册
         手机号注册
