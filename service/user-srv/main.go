@@ -28,7 +28,8 @@ func main() {
 				Name:   "app_db",
 				EnvVar: "MS_USER_SRV_DB",
 				Usage:  "Db config for mysql",
-				Value: "root:dream@tcp(127.0.0.1:3306)/rushteam",
+				// Value: "root:dream@tcp(127.0.0.1:3306)/rushteam",
+				Value: "root:dream@tcp(mysql:3306)/rushteam",
 			},
 		),
 	)
