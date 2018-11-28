@@ -52,19 +52,19 @@ func (s *UserService) Login(ctx context.Context, req *user_srv.LoginReq, rsp *us
 			if err != nil {
 				return errors.BadRequest("UserService.Login", "用户名或密码错误")
 			}
+			// fmt.Println(login)
+			rsp.Uid = login.UID
+			//gen token
+			subject := strconv.FormatInt(login.UID,64)
+			token := session.New("user-srv",subject,"")
+			jwt,err := session.Encode("", token)
+			if err != nil {
+				return errors.BadRequest("UserService.Login", "登录异常,请请联系客服")
+			}
+			rsp.Jwt = jwt
 		} else {
 			return errors.BadRequest("UserService.Login", "未知登陆方式")
 		}
-		// fmt.Println(login)
-		rsp.Uid = login.UID
-		//gen token
-		subject := strconv.FormatInt(login.UID,64)
-		token := session.New("user-srv",subject,"")
-		jwt,err := session.Encode("", token)
-		if err != nil {
-			return errors.BadRequest("UserService.Login", "登录异常,请请联系客服")
-		}
-		rsp.Jwt = jwt
 	} else { //三方登陆
 		return errors.BadRequest("UserService.Login", "暂不支持第三方登陆")
 	}
