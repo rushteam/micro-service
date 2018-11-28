@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"strconv"
 	"gitee.com/rushteam/micro-service/service/user-srv/session"
 	"context"
 	"regexp"
@@ -74,7 +75,10 @@ func (s *UserService) User(ctx context.Context, req *user_srv.UserReq, rsp *user
 	if err != nil {
 		return errors.BadRequest("UserService.Login", "登录超时或TOKEN非法")
 	}
-	uid := token.Subject
+	uid, err := strconv.ParseInt(token.Subject, 10, 64) 
+	if err != nil {
+		return errors.BadRequest("UserService.Login", "TOKEN非法")
+	}
 	user, err := Model.UserByUID(uid)
 	if err != nil {
 		return errors.BadRequest("UserService.Login", "用户名不存在")
@@ -175,6 +179,6 @@ func (s *UserService) UnBind(ctx context.Context, req *user_srv.UserReq, rsp *us
 }
 
 //Update ...
-func (s *UserService) Update(ctx context.Context, req *user_srv.UserReq, rsp *user_srv.UserRsp) error {
+func (s *UserService) Update(ctx context.Context, req *user_srv.UpdateReq, rsp *user_srv.UserRsp) error {
 	return nil
 }
