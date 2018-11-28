@@ -18,3 +18,27 @@ http://127.0.0.1:9080/oauth2/authorize?response_type=code&client_id=1234&redirec
 http://127.0.0.1:9080/oauth2/authorize?client_id=1234&response_type=code
 
 http://127.0.0.1:9080/oauth2/token?client_id=1234&client_secret=test&grant_type=client_credentials&scope=token
+
+
+用户服务 user-srv
+    用户登陆
+        手机号登陆
+        第三方登陆
+    用户注册
+        手机号注册
+        第三方注册
+    用户修改资料
+    用户修改密码
+
+权限服务 auth-srv
+    oauth2鉴权
+        app鉴权
+        用户统一登陆
+
+订单服务 order-srv
+    创建订单
+    订单列表
+    订单详情
+
+支付服务 pay-srv
+    创建支付单
