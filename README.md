@@ -34,7 +34,9 @@ http://127.0.0.1:9080/oauth2/token?client_id=1234&client_secret=test&grant_type=
     oauth2鉴权
         app鉴权
         用户统一登陆
-
+雪花算法序号生成 snowflake-srv
+    生成号码
+        parma 类别
 订单服务 order-srv
     创建订单
     订单列表
@@ -42,3 +44,8 @@ http://127.0.0.1:9080/oauth2/token?client_id=1234&client_secret=test&grant_type=
 
 支付服务 pay-srv
     创建支付单
+    支付回调（暴露web post api）
+        支付宝
+        微信
+    回调具体服务
+    
