@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"encoding/hex"
+	"crypto/md5"
 	"strconv"
 	"gitee.com/rushteam/micro-service/service/user-srv/session"
 	"context"
@@ -48,14 +50,16 @@ func (s *UserService) Login(ctx context.Context, req *user_srv.LoginReq, rsp *us
 			// if len(req.Password) < 6 { //密码不得小于6位
 			// 	return errors.BadRequest("UserService.Login", "密码不得小于6位")
 			// }
-			login, err := Model.LoginByPassword(req.Platform, req.Login, req.Password)
+			//test --md5--> 098f6bcd4621d373cade4e832627b4f6
+			pwdHash := md5.New()
+			pwdHash.Write([]byte(req.Password))
+			login, err := Model.LoginByPassword(req.Platform, req.Login, hex.EncodeToString(pwdHash.Sum(nil)))
 			if err != nil {
 				return errors.BadRequest("UserService.Login", "用户名或密码错误")
 			}
-			// fmt.Println(login)
 			rsp.Uid = login.UID
 			//gen token
-			subject := strconv.FormatInt(login.UID,64)
+			subject := strconv.FormatInt(login.UID,10)
 			token := session.New("user-srv",subject,"")
 			jwt,err := session.Encode("", token)
 			if err != nil {
@@ -79,7 +83,7 @@ func (s *UserService) User(ctx context.Context, req *user_srv.UserReq, rsp *user
 	if err != nil {
 		return errors.BadRequest("UserService.Login", "登录超时或TOKEN非法")
 	}
-	uid, err := strconv.ParseInt(token.Subject, 10, 64) 
+	uid, err := strconv.ParseInt(token.Subject, 10, 64)
 	if err != nil {
 		return errors.BadRequest("UserService.Login", "TOKEN非法")
 	}
