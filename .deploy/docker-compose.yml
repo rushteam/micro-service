@@ -19,9 +19,9 @@ services:
       - ./mysql/init:/docker-entrypoint-initdb.d/
     ports:
       - '3306:3306'
-  micro-service:
-      image: 'micro-service:dev'
-      restart: always
-      environment:
-        MS_USER_SRV_DB: 'root:dream@tcp(mysql:3306)/rushteam'
-        MICRO_REGISTRY_ADDRESS: 'consul'
+  # micro-service:
+  #     image: 'micro-service:dev'
+  #     restart: always
+  #     environment:
+  #       MS_USER_SRV_DB: 'root:dream@tcp(mysql:3306)/rushteam'
+  #       MICRO_REGISTRY_ADDRESS: 'consul'
