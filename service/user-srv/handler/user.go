@@ -70,13 +70,11 @@ func (s *UserService) Login(ctx context.Context, req *user_srv.LoginReq, rsp *us
 func (s *UserService) User(ctx context.Context, req *user_srv.UserReq, rsp *user_srv.UserRsp) error {
 	log.Log("[access] UserService.User")
 	Model := model.Db()
-	token,err := session.Decode(req.jwt)
+	token,err := session.Decode("", req.GetJwt())
 	if err != nil {
-		return errors.BadRequest("UserService.Login", "登录超时")
+		return errors.BadRequest("UserService.Login", "登录超时或TOKEN非法")
 	}
 	uid := token.Subject
-
-	// session.New("user-srv",uid)
 	user, err := Model.UserByUID(uid)
 	if err != nil {
 		return errors.BadRequest("UserService.Login", "用户名不存在")

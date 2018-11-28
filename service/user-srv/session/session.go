@@ -8,6 +8,8 @@ import (
 	"github.com/gbrlsnchs/jwt/v2"
 )
 
+var _secret = "861b1508cb81764b65fa90e460dbf1c1"
+
 //Token ..
 type Token struct {
 	jwt.JWT
@@ -15,6 +17,9 @@ type Token struct {
 
 //Encode ..
 func Encode(secret string, claims *Token) (string, error) {
+	if secret == "" {
+		secret = _secret
+	}
 	hs256 := jwt.NewHS256(secret)
 	claims.SetAlgorithm(hs256)
 	rand.Seed(time.Now().UnixNano())
@@ -32,6 +37,9 @@ func Encode(secret string, claims *Token) (string, error) {
 
 //Decode ..
 func Decode(secret string, token string) (Token, error) {
+	if secret == "" {
+		secret = _secret
+	}
 	var claims Token
 	hs256 := jwt.NewHS256(secret)
 	payload, sig, err := jwt.Parse(token)
