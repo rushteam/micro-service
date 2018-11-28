@@ -27,6 +27,8 @@ http://127.0.0.1:9080/oauth2/token?client_id=1234&client_secret=test&grant_type=
     用户注册
         手机号注册
         第三方注册
+    用户资料
+        micro call go.micro.user_srv UserService.User '{"jwt":"eyJhbGciOiJIUzI1NiIsImtpZCI6IjcyNDUiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJ1c2VyLXNydiIsInN1YiI6IjEiLCJleHAiOjE1NDQwMjYyNDUsIm5iZiI6MTU0MzQyMzI0NSwiaWF0IjoxNTQzNDIxNDQ1fQ.uVIPNw-JsTgU1yCbkHjQmRsPdkdP7kUG7jLkq5TYXe4"}'
     用户修改资料
     用户修改密码
 
