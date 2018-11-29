@@ -49,7 +49,6 @@ func validateCreateReq(req *order_srv.CreateReq) error {
 
 //创建订单计算
 func calOrder(req *order_srv.CreateReq) error {
-
 	order := req.Order
 	var skuIds []int64
 	for _, sku := range order.Items {
@@ -60,10 +59,10 @@ func calOrder(req *order_srv.CreateReq) error {
 	Model := model.Db()
 	skuList, err := Model.GetSkuListBySkuIds(skuIds)
 	if err != nil || len(skuList) < 1 {
-		log.Log("[error] OrderService.Create ",err.Error())
+		log.Log("[error] OrderService.Create ", err.Error())
 		return errs.New("选择的商品已失效")
 	}
-	var skuMaps map[int64]*model.SkuModel
+	var skuMaps = make(map[int64]*model.SkuModel, len(skuList))
 	for i := range skuList {
 		skuMaps[skuList[i].SkuID] = &skuList[i]
 	}
@@ -103,6 +102,8 @@ func calOrder(req *order_srv.CreateReq) error {
 		}
 		//赋值运费
 		orderFreight += freight
+		//赋值总价
+		orderTotal += total
 	}
 	orderPayment += orderTotal
 	orderPayment += orderFreight

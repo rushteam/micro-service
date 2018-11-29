@@ -1,9 +1,5 @@
 package model
 
-import (
-	"errors"
-)
-
 //SkuModel ..
 type SkuModel struct {
 	// gorm.Model
@@ -20,9 +16,15 @@ func (SkuModel) TableName() string {
 //GetSkuListBySkuIds ...
 func (sess *Session) GetSkuListBySkuIds(skuIds []int64) ([]SkuModel, error) {
 	var skuList []SkuModel
-	result := sess.Where("sku_id in (?)", skuIds).Scan(&skuList)
-	if result.Error != nil {
-		return nil, errors.New("没找到商品数据")
-	}
+	sku := SkuModel{}
+	sku.Price = 100 * 30
+	sku.SkuID = 1
+	sku.Weight = 10
+	skuList = append(skuList, sku)
 	return skuList, nil
+	// result := sess.Where("sku_id in (?)", skuIds).Scan(&skuList)
+	// if result.Error != nil {
+	// 	return nil, errors.New("没找到商品数据")
+	// }
+	// return skuList, nil
 }

@@ -41,6 +41,7 @@ http://127.0.0.1:9080/oauth2/token?client_id=1234&client_secret=test&grant_type=
         parma 类别
 订单服务 order-srv
     创建订单
+        micro call go.micro.api.order_srv OrderService.Create '{"order":{"items":[{"qty":2,"sku_id":1,"price":3000},{"qty":2,"sku_id":1,"price":3000}]}}'
     订单列表
     订单详情
 
