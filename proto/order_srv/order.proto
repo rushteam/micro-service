@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package order_srv;
+
+service OrderService {
+    //预算订单
+    rpc Budget(CreateReq) returns (OrderRsp) {}
+    //创建订单
+    rpc Create(CreateReq) returns (OrderRsp) {}
+    //订单详情
+    rpc Order(QueryReq) returns (OrderRsp) {}
+}
+message Address {
+    string name=1;
+    string phone=2;
+    string country=3;
+    string province=4;;
+    string city=5;
+    string address=6;
+}
+message Items {
+    //商品类别 默认为product
+    string type=1;
+    //商品编号
+    int64 sku_id=2;
+    //商品标题
+    string title=3;
+    //商品规格
+    string spec=4;
+    //重量
+    int64 weight=5;
+    //商品单价
+    int64 price=6;
+    //商品数量 quantity
+    int64 qty=7;
+    //商品单位
+    string unit=8;
+    //实际需支付金额
+    int64 payment=9;
+}
+message Order {
+    //订单号
+    string order_no =1;
+    //详细项目
+    repeated Items items=2;
+    //订单总额
+    int64 total=3;
+    //订单优惠金额
+    int64 discount=4;
+    //订单实际需支付
+    int64 payment=5;
+    //支付状态
+    int64 pay_state=6;
+    //支付时间
+    string pay_at =7;
+    //订单状态
+    int64 order_state=8;
+    //地址
+    Address address=9;
+    //更新时间
+    string updated_at = 10;
+    //创建时间
+    string created_at = 11;
+}
+//创建订单
+message CreateReq {
+    string jwt=1;
+    //根据access_token区分商户
+    // string access_token=1;
+    Order order=2;
+}
+//订单
+message OrderRsp{
+    Order order=1;
+}
+//订单查询
+message QueryReq{
+    string order_no=1;
+}
