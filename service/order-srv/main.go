@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"gitee.com/rushteam/micro-service/common/db"
@@ -10,6 +11,7 @@ import (
 	"gitee.com/rushteam/micro-service/service/order-srv/handler"
 	"github.com/micro/cli"
 	micro "github.com/micro/go-micro"
+	// "github.com/micro/go-micro/registry"
 )
 
 var (
@@ -41,9 +43,9 @@ func main() {
 			pool := db.InitDb("mysql",dbSource,true)
 			model.Init(pool)
 			order_srv.RegisterOrderServiceHandler(service.Server(), new(handler.OrderService))
+			fmt.Printf("%s",c.String("server_id"))
 		}),
 	)
-
 	if err := service.Run(); err != nil {
 		log.Fatal(err)
 	}

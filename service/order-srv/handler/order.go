@@ -3,6 +3,9 @@ package handler
 import (
 	"context"
 	errs "errors"
+	"strconv"
+
+	"gitee.com/rushteam/micro-service/common/utils/snowflake"
 
 	"github.com/micro/go-micro/errors"
 	// "gitee.com/rushteam/micro-service/common/utils"
@@ -114,6 +117,18 @@ func calOrder(req *order_srv.CreateReq) error {
 
 	return nil
 }
+func genOrderNo() (string, error) {
+	s, err := snowflake.NewSnowFlake(1)
+	if err != nil {
+		return "", err
+	}
+	id, err := s.Next()
+	if err != nil {
+		return "", err
+	}
+	no := strconv.FormatUint(id, 10)
+	return no, nil
+}
 
 //Create ...
 func (s *OrderService) Create(ctx context.Context, req *order_srv.CreateReq, rsp *order_srv.OrderRsp) error {
@@ -129,6 +144,11 @@ func (s *OrderService) Create(ctx context.Context, req *order_srv.CreateReq, rsp
 		return errors.BadRequest("OrderService.Create", err.Error())
 	}
 	//生成订单号
+	orderNo, err := genOrderNo()
+	if err != nil {
+		return errors.BadRequest("OrderService.Create", err.Error())
+	}
+	req.Order.OrderNo = orderNo
 
 	//保存订单
 	// Model := model.Db()
