@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	errs "errors"
-	"fmt"
 
 	"github.com/micro/go-micro/errors"
 	// "gitee.com/rushteam/micro-service/common/utils"
@@ -108,7 +107,11 @@ func calOrder(req *order_srv.CreateReq) error {
 	orderPayment += orderTotal
 	orderPayment += orderFreight
 	orderPayment -= orderDiscount
-	fmt.Println(orderPayment)
+
+	order.Total = orderTotal
+	order.Discount = orderDiscount
+	order.Payment = orderPayment
+
 	return nil
 }
 
@@ -124,11 +127,23 @@ func (s *OrderService) Create(ctx context.Context, req *order_srv.CreateReq, rsp
 	if err != nil {
 		return errors.BadRequest("OrderService.Create", err.Error())
 	}
+	rsp.Order = req.Order
 	return nil
 }
 
 //Budget ..
 func (s *OrderService) Budget(ctx context.Context, req *order_srv.CreateReq, rsp *order_srv.OrderRsp) error {
+	log.Log("[access] OrderService.Budget")
+	var err error
+	err = validateCreateReq(req)
+	if err != nil {
+		return errors.BadRequest("OrderService.Budget", err.Error())
+	}
+	err = calOrder(req)
+	if err != nil {
+		return errors.BadRequest("OrderService.Budget", err.Error())
+	}
+	rsp.Order = req.Order
 	return nil
 }
 
