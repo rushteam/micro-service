@@ -123,10 +123,17 @@ func (s *OrderService) Create(ctx context.Context, req *order_srv.CreateReq, rsp
 	if err != nil {
 		return errors.BadRequest("OrderService.Create", err.Error())
 	}
+	//计算金额
 	err = calOrder(req)
 	if err != nil {
 		return errors.BadRequest("OrderService.Create", err.Error())
 	}
+	//生成订单号
+
+	//保存订单
+	// Model := model.Db()
+	// err := Model.CreateOrder()
+
 	rsp.Order = req.Order
 	return nil
 }
