@@ -44,8 +44,9 @@ http://127.0.0.1:9080/oauth2/token?client_id=1234&client_secret=test&grant_type=
         micro call go.micro.api.order_srv OrderService.Budget '{"order":{"items":[{"qty":2,"sku_id":1,"price":3000},{"qty":2,"sku_id":1,"price":3000}]}}'
     创建订单（确认按钮）
         micro call go.micro.api.order_srv OrderService.Create '{"order":{"items":[{"qty":2,"sku_id":1,"price":3000},{"qty":2,"sku_id":1,"price":3000}]}}'
-    订单列表
     订单详情
+        micro call go.micro.api.order_srv OrderService.Order ''
+    订单列表
 
 支付服务 pay-srv
     创建支付单
