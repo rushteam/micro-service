@@ -38,11 +38,16 @@ func main() {
 	// var ctx = context.TODO()
 	service.Init(
 		micro.Action(func(c *cli.Context) {
+			//service.Server().Options().Id
+			//service.Server().Options().Name
+			// fmt.Println(service.Server().Options().Id)
+			// fmt.Println(srvs)
+			// fmt.Println(srvs[0].Nodes[0].Id)
 			dbConf := c.String("app_db")
 			dbSource := dbConf + "?" + "parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"
 			pool := db.InitDb("mysql",dbSource,true)
 			model.Init(pool)
-			order_srv.RegisterOrderServiceHandler(service.Server(), new(handler.OrderService))
+			order_srv.RegisterOrderServiceHandler(service.Server(), &handler.OrderService{Service:service})
 			fmt.Printf("%s",c.String("server_id"))
 		}),
 	)

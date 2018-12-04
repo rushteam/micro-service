@@ -12,11 +12,13 @@ import (
 	"gitee.com/rushteam/micro-service/common/pb/order_srv"
 	"gitee.com/rushteam/micro-service/service/order-srv/model"
 	"github.com/micro/go-log"
+	micro "github.com/micro/go-micro"
 	// "go.uber.org/zap"
 )
 
 //OrderService ...
 type OrderService struct {
+	Service micro.Service
 	// logger *zap.Logger
 }
 
@@ -117,6 +119,9 @@ func calOrder(req *order_srv.CreateReq) error {
 
 	return nil
 }
+// func getServiceNo(ctx context.Context) {
+// 	srvs,_ := service.Server().Options().Registry.GetService(service.Server().Options().Name)
+// }
 func genOrderNo() (string, error) {
 	s, err := snowflake.NewSnowFlake(1)
 	if err != nil {
