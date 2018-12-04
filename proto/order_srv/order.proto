@@ -75,5 +75,10 @@ message OrderRsp{
 }
 //订单查询
 message QueryReq{
-    string order_no=1;
+    string jwt=1;
+    string order_no=2;
+}
+message QueryListReq{
+    int32 pn=1;
+    int32 ps=2;
 }
