@@ -119,11 +119,9 @@ func calOrder(req *order_srv.CreateReq) error {
 
 	return nil
 }
-// func getServiceNo(ctx context.Context) {
-// 	srvs,_ := service.Server().Options().Registry.GetService(service.Server().Options().Name)
-// }
-func genOrderNo() (string, error) {
-	s, err := snowflake.NewSnowFlake(1)
+
+func genOrderNo(workerID uint32) (string, error) {
+	s, err := snowflake.NewSnowFlake(workerID)
 	if err != nil {
 		return "", err
 	}
@@ -149,7 +147,7 @@ func (s *OrderService) Create(ctx context.Context, req *order_srv.CreateReq, rsp
 		return errors.BadRequest("OrderService.Create", err.Error())
 	}
 	//生成订单号
-	orderNo, err := genOrderNo()
+	orderNo, err := genOrderNo(1)
 	if err != nil {
 		return errors.BadRequest("OrderService.Create", err.Error())
 	}
