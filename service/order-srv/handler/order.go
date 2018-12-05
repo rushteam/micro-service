@@ -180,6 +180,15 @@ func (s *OrderService) Budget(ctx context.Context, req *order_srv.CreateReq, rsp
 //Order ..
 func (s *OrderService) Order(ctx context.Context, req *order_srv.QueryReq, rsp *order_srv.OrderRsp) error {
 	log.Log("[access] OrderService.Order")
-	req.OrderNo = ""
+	orderNo := req.GetOrderNo()
+	// orderNo
+	Model := model.Db()
+	order, err := Model.GetOrderByOrderNo(orderNo)
+	if err != nil {
+		return errors.BadRequest("OrderService.Order", err.Error())
+	}
+	rsp.Order = &order_srv.Order{
+		OrderNo: order.OrderNo,
+	}
 	return nil
 }
