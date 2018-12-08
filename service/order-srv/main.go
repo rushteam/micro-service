@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"gitee.com/rushteam/micro-service/common/db"
+	"gitee.com/rushteam/micro-service/common/micro/wrap"
 	"gitee.com/rushteam/micro-service/service/order-srv/model"
 
 	"gitee.com/rushteam/micro-service/common/pb/order_srv"
@@ -34,6 +35,7 @@ func main() {
 				// Value: "root:dream@tcp(mysql:3306)/rushteam",
 			},
 		),
+		micro.WrapHandler(wrap.Access),
 	)
 	// var ctx = context.TODO()
 	service.Init(
