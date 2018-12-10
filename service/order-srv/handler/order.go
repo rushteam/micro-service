@@ -147,7 +147,7 @@ func (s *OrderService) Create(ctx context.Context, req *order_srv.CreateReq, rsp
 		return errors.BadRequest("OrderService.Create", err.Error())
 	}
 	//生成订单号
-	orderNo, err := genOrderNo(1)
+	orderNo, err := genOrderNo(1)//机器序号
 	if err != nil {
 		return errors.BadRequest("OrderService.Create", err.Error())
 	}
@@ -180,6 +180,16 @@ func (s *OrderService) Budget(ctx context.Context, req *order_srv.CreateReq, rsp
 //Order ..
 func (s *OrderService) Order(ctx context.Context, req *order_srv.QueryReq, rsp *order_srv.OrderRsp) error {
 	log.Log("[access] OrderService.Order")
-	req.OrderNo = ""
+	if req.OrderNo == "" {
+		return errors.BadRequest("OrderService.Create", "参数不全")
+	}
+	Model := model.Db()
+	_, _ = Model.GetOrderByNo(req.OrderNo)
+	//是否已支付
+	return nil
+}
+//OrderList ..
+func (s *OrderService) OrderList(ctx context.Context, req *order_srv.QueryReq, rsp *order_srv.OrderRsp) error {
+	log.Log("[access] OrderService.OrderList")
 	return nil
 }
