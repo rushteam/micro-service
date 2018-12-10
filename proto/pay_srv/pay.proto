@@ -36,6 +36,6 @@ message NotifyReq{
     int64 pay_type = 6;//支付方式 (支付宝 微信)
     string out_trade_no=3;//交易号、订单号
 }
-message QueryReq{
-    
+message QueryReq {
+    string out_trade_no=3;//交易号、订单号
 }
