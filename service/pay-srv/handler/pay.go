@@ -2,8 +2,6 @@ package handler
 
 import (
 	"context"
-	"crypto/md5"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"gitee.com/rushteam/micro-service/common/sdk/wxsdk/mch"
@@ -73,9 +71,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	}
 	//生成 订单信息
 	tradeModel := model.TradeModel{}
-	tradeNo := md5.New()
-	tradeNo.Write([]byte(req.GetOutTradeNo()))
-	tradeModel.TradeNo = hex.EncodeToString(tradeNo.Sum(nil))
+	tradeModel.Id = ""
 	tradeModel.OutTradeNo = req.GetOutTradeNo()
 	tradeModel.TotalFee = req.GetTotalFee()
 	tradeModel.Subject = req.GetSubject()
@@ -85,13 +81,14 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	tradeModel.ProviderAppid = app.AppID
 	tradeModel.FromIp = req.GetFromIp()
 	tradeModel.ClientId = req.ClientId
-	//微信
-	if app.Channel == "wxpay" {
+	if app.Channel == "" {
+
+	} else if app.Channel == "wxpay" { //微信
 		order := &mch.UnifiedOrderReq{}
 		order.AppID = tradeModel.ProviderAppid
 		order.MchID = tradeModel.ProviderMchId
 
-		order.OutTradeNo = tradeModel.TradeNo //商户订单号
+		order.OutTradeNo = tradeModel.OutTradeNo //商户订单号
 		order.TotalFee = tradeModel.TotalFee     //订单总金额，单位为分
 		order.FeeType = "RMB"                  //标价币种 目前写死
 		order.Body = tradeModel.Subject          //商品描述 128
@@ -109,11 +106,13 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 		if err = orderRsp.Error(); err != nil {
 			return errors.BadRequest("PayService.Create", "pay channel resp err: " + err.Error())
 		}
-		//orderRsp.PrepayID
-		rsp.ClientId = tradeModel.ClientId
+		tradeModel.TradeNo = orderRsp.PrepayID
+		//rsp.ClientId = tradeModel.ClientId
 		rsp.OutTradeNo = tradeModel.OutTradeNo
 		rsp.Channel = tradeModel.Channel
 		rsp.TradeNo = tradeModel.TradeNo
+		rsp.TotalFee = tradeModel.TotalFee
+		rsp.ProviderName = tradeModel.ProviderName
 		if app.TradeType == "JSAPI" {
 			payConfig := &mch.PayConfigJs{
 				AppID:     order.AppID,
@@ -129,14 +128,13 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 			}
 			rsp.PayField = string(payField)
 		}
-
+	}else if app.Channel == "alipay" {
+		return errors.BadRequest("PayService.Create", "当前支付渠道未开通")
+	} else {
+		return errors.BadRequest("PayService.Create", "当前支付渠道未开通")
 	}
-	//创建订单
+	//保存订单到数据库
 
-	//赋值订单
-	rsp.OutTradeNo = req.GetOutTradeNo()
-	rsp.Channel = req.GetChannel()
-	rsp.TotalFee = req.GetTotalFee()
 	return nil
 }
 

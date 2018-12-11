@@ -50,8 +50,10 @@ http://127.0.0.1:9080/oauth2/token?client_id=1234&client_secret=test&grant_type=
 
 支付服务 pay-srv
     创建支付单
+        micro call go.micro.api.pay_srv PayService.Create '{"out_trade_no":"test_001","client_id":"hoo","access_token":"hoo","channel":"201","total_fee":100,"subject":"测试支付","open_id":"o8UFh1m1fS3QiuSZ5Ik3rYgt3vjQ","trade_type":"NATIVE"}
     支付回调（暴露web post api）
         支付宝
         微信
     回调具体服务
+    支付单查询
     

@@ -3,6 +3,7 @@ package model
 //TradeModel ..
 type TradeModel struct {
 	// gorm.Model
+	Id string `gorm:"PRIMARY_KEY;"`
 	//交易单号
 	TradeNo    string `gorm:"PRIMARY_KEY;"`
 	//商户号
