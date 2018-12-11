@@ -6,7 +6,6 @@ import (
 	"crypto/md5"
 	"crypto/sha1"
 	"encoding/hex"
-	"fmt"
 	"hash"
 	"io"
 	"reflect"
@@ -73,7 +72,7 @@ func Sign(params map[string]string, first, laster string, h hash.Hash) string {
 		}
 	}
 	s += laster
-	fmt.Println(s)
+	//fmt.Println(s)
 	bufw.WriteString(laster)
 	bufw.Flush()
 	signature := make([]byte, hex.EncodedLen(h.Size()))

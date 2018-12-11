@@ -14,6 +14,7 @@ It has these top-level messages:
 	CreateReq
 	OrderRsp
 	QueryReq
+	QueryListReq
 */
 package order_srv
 

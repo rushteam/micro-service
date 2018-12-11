@@ -16,25 +16,31 @@ message CreateReq {
     string out_trade_no=3;//交易号、订单号
     string channel = 4;//交易渠道 (微信支\付宝)
     int64 total_fee = 5;//支付金额
-    int64 trade_type = 6;//交易方式 (JSAPI\NATIVE)
+    string trade_type = 6;//交易方式 (JSAPI\NATIVE)
     string subject = 7; //交易标题
     string from_ip = 8; //交易来源ip
     int64 create_at =9;//支付单创建时间
+    string open_id = 10;//微信专用的用户openid
 }
 message PayRsp {
-    string out_trade_no=3;//交易号、订单号
+    string client_id = 1; //商户
+    string out_trade_no=3;//外部交易号、订单号
     string channel = 4;//交易渠道 (微信支\付宝)
     int64 total_fee = 5;//支付金额
     int64 trade_type = 6;//交易方式 (JSAPI\NATIVE)
     string subject = 7; //交易标题
     string from_ip = 8; //交易来源ip
     int64 create_at =9;//支付单创建时间
-    int64 pay_state =11; //支付状态
-    int64 pay_at = 10; //支付时间
+    int64 pay_state =10; //支付状态
+    int64 pay_at = 11; //支付时间
+    string trade_no =12;//交易流水号
+    string pay_field = 13;//支付信息
 }
 message NotifyReq{
-    int64 pay_type = 6;//支付方式 (支付宝 微信)
+    int64 pay_type = 1;//支付方式 (支付宝 微信)
+    int64 total_fee = 2;//支付金额
     string out_trade_no=3;//交易号、订单号
+    string raw =4; //支付原始数据
 }
 message QueryReq {
     string out_trade_no=3;//交易号、订单号

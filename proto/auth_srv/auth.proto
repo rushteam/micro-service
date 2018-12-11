@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package user_srv;
+package auth_srv;
 
 service UserService {
     //用户授权

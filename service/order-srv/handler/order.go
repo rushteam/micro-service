@@ -177,10 +177,10 @@ func (s *OrderService) Budget(ctx context.Context, req *order_srv.CreateReq, rsp
 
 //Order ..
 func (s *OrderService) Order(ctx context.Context, req *order_srv.QueryReq, rsp *order_srv.OrderRsp) error {
-	if req.OrderNo == "" {
+	orderNo := req.GetOrderNo()
+	if orderNo == "" {
 		return errors.BadRequest("OrderService.Create", "参数不全")
 	}
-	orderNo := req.GetOrderNo()
 	// orderNo
 	Model := model.Db()
 	order, err := Model.GetOrderByOrderNo(orderNo)
