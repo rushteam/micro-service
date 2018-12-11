@@ -135,7 +135,6 @@ func genOrderNo(workerID uint32) (string, error) {
 
 //Create ...
 func (s *OrderService) Create(ctx context.Context, req *order_srv.CreateReq, rsp *order_srv.OrderRsp) error {
-	log.Log("[access] OrderService.Create")
 	var err error
 	err = validateCreateReq(req)
 	if err != nil {
@@ -163,7 +162,6 @@ func (s *OrderService) Create(ctx context.Context, req *order_srv.CreateReq, rsp
 
 //Budget ..
 func (s *OrderService) Budget(ctx context.Context, req *order_srv.CreateReq, rsp *order_srv.OrderRsp) error {
-	log.Log("[access] OrderService.Budget")
 	var err error
 	err = validateCreateReq(req)
 	if err != nil {
@@ -179,7 +177,6 @@ func (s *OrderService) Budget(ctx context.Context, req *order_srv.CreateReq, rsp
 
 //Order ..
 func (s *OrderService) Order(ctx context.Context, req *order_srv.QueryReq, rsp *order_srv.OrderRsp) error {
-	log.Log("[access] OrderService.Order")
 	orderNo := req.GetOrderNo()
 	// orderNo
 	Model := model.Db()
