@@ -23,8 +23,8 @@ type TradeModel struct {
 	PayState int64
 	//支付时间
 	PayAt int64
-	//第三方通知地址
-	NotifyURL string
+	//提供商名字
+	ProviderName string
 	// 商户id
 	ProviderMchId string
 	//提供商公众号
@@ -33,7 +33,7 @@ type TradeModel struct {
 }
 
 //TableName ..
-func (PayModel) TableName() string {
+func (TradeModel) TableName() string {
 	return "pay_trade"
 }
 

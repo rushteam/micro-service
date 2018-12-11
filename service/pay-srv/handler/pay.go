@@ -2,6 +2,8 @@ package handler
 
 import (
 	"context"
+	"crypto/md5"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"gitee.com/rushteam/micro-service/common/sdk/wxsdk/mch"
@@ -41,6 +43,9 @@ func validateCreateReq(req *pay_srv.CreateReq) error {
 	if req.GetTotalFee() <=0 {
 		return errors.BadRequest("PayService.Create", "支付金额不能小于零")
 	}
+	if req.GetSubject() == "" {
+		return errors.BadRequest("PayService.Create", "参数不全,缺少subject")
+	}
 	return nil
 }
 //Create ..
@@ -68,27 +73,33 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	}
 	//生成 订单信息
 	tradeModel := model.TradeModel{}
+	tradeNo := md5.New()
+	tradeNo.Write([]byte(req.GetOutTradeNo()))
+	tradeModel.TradeNo = hex.EncodeToString(tradeNo.Sum(nil))
 	tradeModel.OutTradeNo = req.GetOutTradeNo()
 	tradeModel.TotalFee = req.GetTotalFee()
 	tradeModel.Subject = req.GetSubject()
-	tradeModel.Channel = app.Channel
-	tradeModel.Provider = app.MchID
+	tradeModel.Channel = req.GetChannel()
+	tradeModel.ProviderName = app.Channel
+	tradeModel.ProviderMchId = app.MchID
+	tradeModel.ProviderAppid = app.AppID
 	tradeModel.FromIp = req.GetFromIp()
+	tradeModel.ClientId = req.ClientId
 	//微信
 	if app.Channel == "wxpay" {
 		order := &mch.UnifiedOrderReq{}
-		order.AppID = app.AppID
-		order.MchID = app.MchID
+		order.AppID = tradeModel.ProviderAppid
+		order.MchID = tradeModel.ProviderMchId
 
-		order.OutTradeNo = req.GetOutTradeNo() //商户订单号
-		order.TotalFee = req.GetTotalFee()     //订单总金额，单位为分
+		order.OutTradeNo = tradeModel.TradeNo //商户订单号
+		order.TotalFee = tradeModel.TotalFee     //订单总金额，单位为分
 		order.FeeType = "RMB"                  //标价币种 目前写死
-		order.Body = req.GetSubject()          //商品描述 128
+		order.Body = tradeModel.Subject          //商品描述 128
 		order.NotifyURL = "https://test.com"   //异步通知地址
 		order.TradeType = app.TradeType        //TradeType
 		order.OpenID = req.GetOpenId() //仅在 TradeType=JSAPI 时必须
 		// order.OpenID = "o8UFh1m1fS3QiuSZ5Ik3rYgt3vjQ"
-		order.SpbillCreateIP = req.GetFromIp()
+		order.SpbillCreateIP = tradeModel.FromIp
 		order.NonceStr = utils.RandomStr(32) //随机字符串
 		order.MakeSign(app.ApiKey)
 		orderRsp, err := order.Call()
@@ -98,10 +109,11 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 		if err = orderRsp.Error(); err != nil {
 			return errors.BadRequest("PayService.Create", "pay channel resp err: " + err.Error())
 		}
-		rsp.ClientId = req.ClientId
-		rsp.OutTradeNo = req.OutTradeNo
-		rsp.Channel = req.Channel
-		rsp.TradeNo = orderRsp.PrepayID
+		//orderRsp.PrepayID
+		rsp.ClientId = tradeModel.ClientId
+		rsp.OutTradeNo = tradeModel.OutTradeNo
+		rsp.Channel = tradeModel.Channel
+		rsp.TradeNo = tradeModel.TradeNo
 		if app.TradeType == "JSAPI" {
 			payConfig := &mch.PayConfigJs{
 				AppID:     order.AppID,

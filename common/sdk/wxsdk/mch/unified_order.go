@@ -58,6 +58,7 @@ func (o *UnifiedOrderReq) Call() (UnifiedOrderRsp, error) {
 	}
 	//fmt.Println(string(params))
 	body, err := wxsdk.PostURL(url, params)
+	//fmt.Println(string(body))
 	err = xml.Unmarshal(body, &unifiedOrderRsp)
 	return unifiedOrderRsp, err
 }
