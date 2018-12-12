@@ -113,6 +113,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 		rsp.TradeNo = tradeModel.TradeNo
 		rsp.TotalFee = tradeModel.TotalFee
 		rsp.ProviderName = tradeModel.ProviderName
+		rsp.TradeType = app.TradeType
 		if app.TradeType == "JSAPI" {
 			payConfig := &mch.PayConfigJs{
 				AppID:     order.AppID,

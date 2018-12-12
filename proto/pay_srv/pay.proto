@@ -46,8 +46,8 @@ message PayRsp {
 //    string pay_field = 14;//支付信息
 
 }
-message NotifyReq{
-    int64 pay_type = 1;//支付方式 (支付宝 微信)
+message NotifyReq {
+    int64 channel = 1;//支付方式 (支付宝 微信)
     int64 total_fee = 2;//支付金额
     string out_trade_no=3;//交易号、订单号
     string raw =4; //支付原始数据
