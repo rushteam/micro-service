@@ -8,4 +8,4 @@ apps:
         app_id: wx5e596d33cb663cd1
         api_key: 6eeee65a188ac4f5935f3f0a0f5d6528
         mch_id: 1512978741
-        trade_type: JSAPI
+#        trade_type: JSAPI

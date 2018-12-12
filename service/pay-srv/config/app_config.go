@@ -15,7 +15,7 @@ type AppConfig struct {
 			AppID     string `yaml:"app_id"`
 			ApiKey    string `yaml:"api_key"`
 			MchID     string `yaml:"mch_id"`
-			TradeType string `yaml:"trade_type"`
+			//TradeType string `yaml:"trade_type"`
 		} `yaml:"channels"`
 	} `yaml:"apps"` /* app_id:secret*/
 }

@@ -9,6 +9,7 @@ It is generated from these files:
 
 It has these top-level messages:
 	CreateReq
+	PayField
 	PayRsp
 	NotifyReq
 	QueryReq

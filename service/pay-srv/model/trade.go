@@ -3,7 +3,6 @@ package model
 //TradeModel ..
 type TradeModel struct {
 	// gorm.Model
-	Id string `gorm:"PRIMARY_KEY;"`
 	//交易单号
 	TradeNo    string `gorm:"PRIMARY_KEY;"`
 	//商户号
@@ -26,10 +25,14 @@ type TradeModel struct {
 	PayAt int64
 	//提供商名字
 	ProviderName string
-	// 商户id
-	ProviderMchId string
+	// Provider商户id
+	PvdMchId string
 	//提供商公众号
-	ProviderAppid string
+	PvdAppid string
+	//订单号
+	PvdOutTradeNo string
+	//交易单号
+	PvdTradeNo string
 	//pay_field
 }
 

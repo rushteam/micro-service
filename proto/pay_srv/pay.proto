@@ -20,31 +20,20 @@ message CreateReq {
     string subject = 7; //交易标题
     string from_ip = 8; //交易来源ip
     int64 create_at =9;//支付单创建时间
-    string open_id = 10;//微信专用的用户openid
+    string extra=10; //额外信息 json字符串 trade_type=WX_JSAPI 时候 需要传递 {"openid":""}
 }
-
+message PayField {
+    string app_id = 1;       //app_id
+    string out_trade_no=2;   //外部交易号、订单号
+    string trade_no =3;      //交易流水号
+    int64 total_fee = 4;     //支付金额
+    string trade_type = 5;   //交易方式 (JSAPI\NATIVE)
+    string json_str = 6;     //支付信息json
+}
 message PayRsp {
     string provider_name =1; //支付渠道名
-    string out_trade_no=2;//外部交易号、订单号
-    string trade_no =3;//交易流水号
-    int64 total_fee = 4;//支付金额
-    string trade_type = 5;//交易方式 (JSAPI\NATIVE)
-    string pay_field = 6;//支付信息
-    string channel = 7;//交易渠道
-//    string client_id = 1; //商户
-//    string out_trade_no=3;//外部交易号、订单号
-//    string channel = 4;//交易渠道 (微信支\付宝)
-//    int64 total_fee = 5;//支付金额
-//
-//    string subject = 7; //交易标题
-//    string from_ip = 8; //交易来源ip
-//    int64 create_at =9;//支付单创建时间
-//    int64 pay_state =10; //支付状态
-//    int64 pay_at = 11; //支付时间
-//    string trade_no =12;//交易流水号
-//    string provider_name =13; //支付渠道名
-//    string pay_field = 14;//支付信息
-
+    string channel = 2;//交易渠道
+    PayField pay_field =3; //交易字段
 }
 message NotifyReq {
     int64 channel = 1;//支付方式 (支付宝 微信)

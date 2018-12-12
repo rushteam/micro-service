@@ -27,22 +27,25 @@ type PayService struct {
 //validateCreateReq
 func validateCreateReq(req *pay_srv.CreateReq) error {
 	if req.GetOutTradeNo() == "" {
-		return errors.BadRequest("PayService.Create", "参数不全,缺少out_trade_no")
+		return errors.BadRequest("PayService.Create", "params err, out_trade_no is undefined")
 	}
 	if req.GetClientId() == "" {
-		return errors.BadRequest("PayService.Create", "参数不全,缺少client_id")
+		return errors.BadRequest("PayService.Create", "params err, client_id is undefined")
 	}
-	if req.GetAccessToken()== "" /** || token检测*/{
-		return errors.BadRequest("PayService.Create", "权限不足")
+	if req.GetAccessToken()== ""{
+		return errors.BadRequest("PayService.Create", "params err, client_id is undefined")
 	}
+	//todo check token
+	//permission denied
+
 	if req.GetChannel() == "" {
-		return errors.BadRequest("PayService.Create", "参数不全,缺少channel")
+		return errors.BadRequest("PayService.Create", "params err, channel is undefined")
 	}
 	if req.GetTotalFee() <=0 {
-		return errors.BadRequest("PayService.Create", "支付金额不能小于零")
+		return errors.BadRequest("PayService.Create", "params err, total_fee must not be less then 0")
 	}
 	if req.GetSubject() == "" {
-		return errors.BadRequest("PayService.Create", "参数不全,缺少subject")
+		return errors.BadRequest("PayService.Create", "params err, subject is undefined")
 	}
 	return nil
 }
@@ -64,57 +67,71 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	if !ok {
 		return errors.BadRequest("PayService.Create", "not found channel for pay: " + req.GetChannel())
 	}
-	//用来覆盖默认设置
-	if req.GetTradeType() != "" {
-		//支付方式
-		app.TradeType = req.GetTradeType()
-	}
+
 	//生成 订单信息
 	tradeModel := model.TradeModel{}
-	tradeModel.Id = ""
+	tradeModel.ClientId = clientID
+	tradeModel.PvdMchId = app.MchID
+	tradeModel.PvdAppid = app.AppID
+	tradeModel.Channel = req.GetChannel()
 	tradeModel.OutTradeNo = req.GetOutTradeNo()
 	tradeModel.TotalFee = req.GetTotalFee()
 	tradeModel.Subject = req.GetSubject()
-	tradeModel.Channel = req.GetChannel()
-	tradeModel.ProviderName = app.Channel
-	tradeModel.ProviderMchId = app.MchID
-	tradeModel.ProviderAppid = app.AppID
 	tradeModel.FromIp = req.GetFromIp()
-	tradeModel.ClientId = req.ClientId
-	if app.Channel == "" {
+	tradeModel.TradeType = req.GetTradeType()
+	tradeModel.PvdOutTradeNo = tradeModel.OutTradeNo //暂时透传 应用方的第三方单号
+	tradeModel.PvdTradeNo = "" //调用第三方支付成功后赋值
 
-	} else if app.Channel == "wxpay" { //微信
+	tradeModel.ProviderName = app.Channel
+
+	if app.Channel == "wxpay" { //微信
 		order := &mch.UnifiedOrderReq{}
-		order.AppID = tradeModel.ProviderAppid
-		order.MchID = tradeModel.ProviderMchId
+		order.AppID = tradeModel.PvdAppid
+		order.MchID = tradeModel.PvdMchId
 
 		order.OutTradeNo = tradeModel.OutTradeNo //商户订单号
 		order.TotalFee = tradeModel.TotalFee     //订单总金额，单位为分
 		order.FeeType = "RMB"                  //标价币种 目前写死
 		order.Body = tradeModel.Subject          //商品描述 128
 		order.NotifyURL = "https://test.com"   //异步通知地址
-		order.TradeType = app.TradeType        //TradeType
-		order.OpenID = req.GetOpenId() //仅在 TradeType=JSAPI 时必须
+		order.TradeType = tradeModel.TradeType       //TradeType  (JSAPI|NATIVE)
+
+		if tradeModel.TradeType == "JSAPI" {
+			//仅在 TradeType=JSAPI 时必须
+			extra := make(map[string]string)
+			rawExtra := []byte(req.GetExtra())
+			json.Unmarshal(rawExtra,&extra)
+			if _,ok := extra["openid"];!ok {
+				return errors.BadRequest("PayService.Create", "params err, openid is undefined")
+			}
+			order.OpenID = extra["openid"]
+		}
+
 		// order.OpenID = "o8UFh1m1fS3QiuSZ5Ik3rYgt3vjQ"
 		order.SpbillCreateIP = tradeModel.FromIp
 		order.NonceStr = utils.RandomStr(32) //随机字符串
 		order.MakeSign(app.ApiKey)
 		orderRsp, err := order.Call()
 		if err != nil {
-			return errors.BadRequest("PayService.Create", "pay channel call err: " + err.Error())
+			return errors.BadRequest("PayService.Create", "pay channel call err, " + err.Error())
 		}
 		if err = orderRsp.Error(); err != nil {
-			return errors.BadRequest("PayService.Create", "pay channel resp err: " + err.Error())
+			return errors.BadRequest("PayService.Create", "pay channel resp err, " + err.Error())
 		}
-		tradeModel.TradeNo = orderRsp.PrepayID
+		//赋值第三方交易号
+		tradeModel.PvdTradeNo = orderRsp.PrepayID
 		//rsp.ClientId = tradeModel.ClientId
-		rsp.OutTradeNo = tradeModel.OutTradeNo
+		payField := &pay_srv.PayField{
+			AppId:	tradeModel.ProviderAppid,
+			OutTradeNo: tradeModel.OutTradeNo,
+			TradeNo: tradeModel.TradeNo,
+			TotalFee: tradeModel.TotalFee,
+			TradeType: tradeModel.TradeType,
+			JsonStr: "",
+		}
 		rsp.Channel = tradeModel.Channel
-		rsp.TradeNo = tradeModel.TradeNo
-		rsp.TotalFee = tradeModel.TotalFee
 		rsp.ProviderName = tradeModel.ProviderName
-		rsp.TradeType = app.TradeType
-		if app.TradeType == "JSAPI" {
+		if tradeModel.TradeType == "JSAPI" {
 			payConfig := &mch.PayConfigJs{
 				AppID:     order.AppID,
 				TimeStamp: time.Now().Unix(),
@@ -123,16 +140,17 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 				SignType:  signType,
 			}
 			payConfig.MakeSign(app.ApiKey)
-			payField, err := json.Marshal(payConfig)
+			jsonBytes, err := json.Marshal(payConfig)
 			if err != nil {
-				return errors.BadRequest("PayService.Create", "pay channel jsapi err: " + err.Error())
+				return errors.BadRequest("PayService.Create", "pay channel jsapi err, " + err.Error())
 			}
-			rsp.PayField = string(payField)
+			payField.JsonStr = string(jsonBytes)
 		}
+		rsp.PayField = payField
 	}else if app.Channel == "alipay" {
-		return errors.BadRequest("PayService.Create", "当前支付渠道未开通")
+		return errors.BadRequest("PayService.Create", "alipay channel is undefined")
 	} else {
-		return errors.BadRequest("PayService.Create", "当前支付渠道未开通")
+		return errors.BadRequest("PayService.Create", "pay channel is undefined")
 	}
 	//保存订单到数据库
 
