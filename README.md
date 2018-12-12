@@ -52,7 +52,7 @@ http://127.0.0.1:9080/oauth2/token?client_id=1234&client_secret=test&grant_type=
 支付服务 pay-srv
     文档设计参考 http://www.xxpay.org/dev/api.html#api-tab=tab-api
 
-    创建支付单 PayService.Create
+    统一下单 PayService.Create
        trade_type=JSAPI {"openId":"o2RvowBf7sOVJf8kJksUEMceaDqo"}
        trade_type=NATIVE {"productId":"120989823"}
 
@@ -72,7 +72,7 @@ http://127.0.0.1:9080/oauth2/token?client_id=1234&client_secret=test&grant_type=
             调用 pay-srv PayService.Notify
 
 
-    
+//统一下单返回数据
 {
 	"provider_name": "wxpay",
 	"channel": "201",
