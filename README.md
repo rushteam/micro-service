@@ -72,13 +72,6 @@ http://127.0.0.1:9080/oauth2/token?client_id=1234&client_secret=test&grant_type=
             调用 pay-srv PayService.Notify
 
 
-
-
-
-
-
-
-
     
 {
 	"provider_name": "wxpay",
