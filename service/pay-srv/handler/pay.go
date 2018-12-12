@@ -18,7 +18,7 @@ import (
 	// "go.uber.org/zap"
 )
 const(
-	TradeTypeWxJsApi = "WX_JSAPI"
+	TradeTypeWxJsApi = "JSAPI"
 )
 //PayService ...
 type PayService struct {
