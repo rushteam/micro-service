@@ -17,7 +17,9 @@ import (
 	"github.com/micro/go-micro"
 	// "go.uber.org/zap"
 )
-
+const(
+	TradeTypeWxJsApi = "WX_JSAPI"
+)
 //PayService ...
 type PayService struct {
 	Service micro.Service
@@ -122,12 +124,11 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 		tradeModel.PvdTradeNo = orderRsp.PrepayID
 		//rsp.ClientId = tradeModel.ClientId
 		payField := &pay_srv.PayField{
-			AppId:	tradeModel.ProviderAppid,
+			AppId:	tradeModel.PvdAppid,
 			OutTradeNo: tradeModel.OutTradeNo,
 			TradeNo: tradeModel.TradeNo,
 			TotalFee: tradeModel.TotalFee,
-			TradeType: tradeModel.TradeType,
-			JsonStr: "",
+			FieldStr: "",
 		}
 		rsp.Channel = tradeModel.Channel
 		rsp.ProviderName = tradeModel.ProviderName
@@ -144,7 +145,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 			if err != nil {
 				return errors.BadRequest("PayService.Create", "pay channel jsapi err, " + err.Error())
 			}
-			payField.JsonStr = string(jsonBytes)
+			payField.FieldStr = string(jsonBytes)
 		}
 		rsp.PayField = payField
 	}else if app.Channel == "alipay" {
@@ -153,7 +154,6 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 		return errors.BadRequest("PayService.Create", "pay channel is undefined")
 	}
 	//保存订单到数据库
-
 	return nil
 }
 

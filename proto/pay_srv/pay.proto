@@ -27,8 +27,9 @@ message PayField {
     string out_trade_no=2;   //外部交易号、订单号
     string trade_no =3;      //交易流水号
     int64 total_fee = 4;     //支付金额
-    string trade_type = 5;   //交易方式 (JSAPI\NATIVE)
-    string json_str = 6;     //支付信息json
+//    string trade_type = 5;   //交易方式 (JSAPI\NATIVE)
+    string code_url = 5;   //交易二维码
+    string field_str = 6;     //支付信息json
 }
 message PayRsp {
     string provider_name =1; //支付渠道名

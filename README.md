@@ -50,8 +50,14 @@ http://127.0.0.1:9080/oauth2/token?client_id=1234&client_secret=test&grant_type=
         micro call go.micro.api.order_srv OrderService.OrderList ''
 
 支付服务 pay-srv
+    文档设计参考 http://www.xxpay.org/dev/api.html#api-tab=tab-api
+
     创建支付单
-        micro call go.micro.api.pay_srv PayService.Create '{"out_trade_no":"test_001","client_id":"hoo","access_token":"hoo","channel":"201","total_fee":100,"subject":"测试支付","open_id":"o8UFh1m1fS3QiuSZ5Ik3rYgt3vjQ","trade_type":"NATIVE"}
+       trade_type=JSAPI {"openId":"o2RvowBf7sOVJf8kJksUEMceaDqo"}
+       trade_type=NATIVE {"productId":"120989823"}
+
+       micro call go.micro.api.pay_srv PayService.Create '{"out_trade_no":"test_001","client_id":"hoo","access_token":"hoo","channel":"201","total_fee":100,"subject":"测试支付","trade_type":"JSAPI","extra":"{\"openid\":\"o8UFh1m1fS3QiuSZ5Ik3rYgt3vjQ\"}"}'
+
     支付回调（暴露web post api）
         支付宝
         微信
