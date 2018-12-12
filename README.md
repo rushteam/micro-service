@@ -52,15 +52,41 @@ http://127.0.0.1:9080/oauth2/token?client_id=1234&client_secret=test&grant_type=
 支付服务 pay-srv
     文档设计参考 http://www.xxpay.org/dev/api.html#api-tab=tab-api
 
-    创建支付单
+    创建支付单 PayService.Create
        trade_type=JSAPI {"openId":"o2RvowBf7sOVJf8kJksUEMceaDqo"}
        trade_type=NATIVE {"productId":"120989823"}
 
        micro call go.micro.api.pay_srv PayService.Create '{"out_trade_no":"test_001","client_id":"hoo","access_token":"hoo","channel":"201","total_fee":100,"subject":"测试支付","trade_type":"JSAPI","extra":"{\"openid\":\"o8UFh1m1fS3QiuSZ5Ik3rYgt3vjQ\"}"}'
 
-    支付回调（暴露web post api）
-        支付宝
-        微信
-    回调具体服务
-    支付单查询
+    支付回调 PayService.Notify
+
+        回调具体服务
+
+    支付单查询 PayService.Query
+
+支付网关 pay-gateway
+    域名 pay.xixihi.com
+    路由
+        支付宝 支付回调 /pay/notify/alipay
+        微信 支付回调 /pay/notify/wx
+            调用 pay-srv PayService.Notify
+
+
+
+
+
+
+
+
+
     
+{
+	"provider_name": "wxpay",
+	"channel": "201",
+	"pay_field": {
+		"app_id": "wx5e596d33cb663cd1",
+		"out_trade_no": "test_002",
+		"total_fee": 100,
+		"field_str": "{\"appId\":\"wx5e596d33cb663cd1\",\"timeStamp\":1544616541,\"nonceStr\":\"HRQWW8qGrVcg6Gz2Ca0YhaqvLk23jE10\",\"package\":\"prepay_id=wx1220090191776662328695910547854915\",\"signType\":\"MD5\",\"paySign\":\"488763BC707E72EBFDB7A8246A67AD36\"}"
+	}
+}
