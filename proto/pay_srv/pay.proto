@@ -37,9 +37,7 @@ message PayRsp {
     PayField pay_field =3; //交易字段
 }
 message NotifyReq {
-    int64 channel = 1;//支付方式 (支付宝 微信)
-    int64 total_fee = 2;//支付金额
-    string out_trade_no=3;//交易号、订单号
+    int64 pvd_name = 1;//支付渠道名 (支付宝 微信)
     string raw =4; //支付原始数据
 }
 message QueryReq {

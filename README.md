@@ -60,6 +60,8 @@ http://127.0.0.1:9080/oauth2/token?client_id=1234&client_secret=test&grant_type=
 
     支付单查询 PayService.Query
 
+    支付退款 PayService.Refund
+
 支付网关 pay-gateway
     域名 pay.xixihi.com
     路由

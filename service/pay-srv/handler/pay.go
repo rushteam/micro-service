@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"gitee.com/rushteam/micro-service/common/sdk/wxsdk"
 	"gitee.com/rushteam/micro-service/common/sdk/wxsdk/mch"
 	"gitee.com/rushteam/micro-service/common/utils"
 	"gitee.com/rushteam/micro-service/service/pay-srv/config"
@@ -160,6 +161,24 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 //Notify ..
 func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pay_srv.PayRsp) error {
 	log.Log("[access] PayService.Notify")
+	if req.GetPvdName() == "" {
+		return errors.BadRequest("PayService.Notify", "params err, pvd_name is undefined")
+	}
+	if req.GetPvdName() == "wxpay" { //微信支付
+		if req.GetRaw() == "" {
+			return errors.BadRequest("PayService.Notify", "params err, raw is undefined")
+		}
+		raw := req.GetRaw()
+		notify,err := mch.UnmarshalNotify(raw)
+		if err != nil {
+			return errors.BadRequest("PayService.Notify", "params err, raw is invalid")
+		}
+		fmt.Println(notify.OutTradeNo)
+	} else if req.GetPvdName() == "alipay" { //阿里支付
+
+	} else {
+		return errors.BadRequest("PayService.Create", "pay channel is undefined")
+	}
 	return nil
 }
 
