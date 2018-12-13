@@ -82,8 +82,13 @@ func Sign(params map[string]string, first, laster string, h hash.Hash) string {
 
 //Struct2Map ...
 func Struct2Map(obj interface{}, tagName string) map[string]string {
-	t := reflect.TypeOf(obj)
+	//t := reflect.TypeOf(obj)
 	v := reflect.ValueOf(obj)
+	//if t.Kind() == reflect.Ptr {
+		//t = t.Elem()
+		v = reflect.Indirect(v)
+	//}
+	t := v.Type()
 	var data = make(map[string]string)
 	for i := 0; i < t.NumField(); i++ {
 		var k string
