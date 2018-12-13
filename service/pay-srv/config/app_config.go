@@ -11,7 +11,7 @@ type AppConfig struct {
 	Apps map[string]struct {
 		Secret   string `yaml:"secret"`
 		Channels map[string]struct {
-			Channel   string `yaml:"channel"`
+			PvdName   string `yaml:"pvd_name"`
 			AppID     string `yaml:"app_id"`
 			ApiKey    string `yaml:"api_key"`
 			MchID     string `yaml:"mch_id"`

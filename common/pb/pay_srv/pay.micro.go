@@ -12,6 +12,7 @@ It has these top-level messages:
 	PayField
 	PayRsp
 	NotifyReq
+	NotifyRsp
 	QueryReq
 */
 package pay_srv
@@ -48,7 +49,7 @@ type PayService interface {
 	// 创建支付单
 	Create(ctx context.Context, in *CreateReq, opts ...client.CallOption) (*PayRsp, error)
 	// 完成支付
-	Notify(ctx context.Context, in *NotifyReq, opts ...client.CallOption) (*PayRsp, error)
+	Notify(ctx context.Context, in *NotifyReq, opts ...client.CallOption) (*NotifyRsp, error)
 	// 支付详情
 	Query(ctx context.Context, in *QueryReq, opts ...client.CallOption) (*PayRsp, error)
 }
@@ -81,9 +82,9 @@ func (c *payService) Create(ctx context.Context, in *CreateReq, opts ...client.C
 	return out, nil
 }
 
-func (c *payService) Notify(ctx context.Context, in *NotifyReq, opts ...client.CallOption) (*PayRsp, error) {
+func (c *payService) Notify(ctx context.Context, in *NotifyReq, opts ...client.CallOption) (*NotifyRsp, error) {
 	req := c.c.NewRequest(c.name, "PayService.Notify", in)
-	out := new(PayRsp)
+	out := new(NotifyRsp)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -107,7 +108,7 @@ type PayServiceHandler interface {
 	// 创建支付单
 	Create(context.Context, *CreateReq, *PayRsp) error
 	// 完成支付
-	Notify(context.Context, *NotifyReq, *PayRsp) error
+	Notify(context.Context, *NotifyReq, *NotifyRsp) error
 	// 支付详情
 	Query(context.Context, *QueryReq, *PayRsp) error
 }
@@ -115,7 +116,7 @@ type PayServiceHandler interface {
 func RegisterPayServiceHandler(s server.Server, hdlr PayServiceHandler, opts ...server.HandlerOption) error {
 	type payService interface {
 		Create(ctx context.Context, in *CreateReq, out *PayRsp) error
-		Notify(ctx context.Context, in *NotifyReq, out *PayRsp) error
+		Notify(ctx context.Context, in *NotifyReq, out *NotifyRsp) error
 		Query(ctx context.Context, in *QueryReq, out *PayRsp) error
 	}
 	type PayService struct {
@@ -133,7 +134,7 @@ func (h *payServiceHandler) Create(ctx context.Context, in *CreateReq, out *PayR
 	return h.PayServiceHandler.Create(ctx, in, out)
 }
 
-func (h *payServiceHandler) Notify(ctx context.Context, in *NotifyReq, out *PayRsp) error {
+func (h *payServiceHandler) Notify(ctx context.Context, in *NotifyReq, out *NotifyRsp) error {
 	return h.PayServiceHandler.Notify(ctx, in, out)
 }
 

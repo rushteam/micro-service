@@ -1,4 +1,4 @@
-package mch
+package wxpay
 
 import (
 	"crypto/md5"
@@ -124,5 +124,6 @@ func (o *PayConfigJs) MakeSign(APIKey string) string {
 	var params map[string]string
 	params = utils.Struct2Map(*o, "json")
 	o.PaySign = utils.Sign(params, "", fmt.Sprintf("&key=%s", APIKey), md5.New())
+	o.SignType = "MD5"
 	return o.PaySign
 }

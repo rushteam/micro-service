@@ -1,6 +1,9 @@
-package mch
+package wxpay
 
-import "encoding/xml"
+import (
+	"encoding/xml"
+	"fmt"
+)
 
 //Notify ..
 type Notify struct {
@@ -41,10 +44,33 @@ type Notify struct {
 	Attach	string `xml:"attach"`	//商家数据包 (128)
 	TimeEnd	string `xml:"time_end"`	//支付完成时间 格式为yyyyMMddHHmmss
 }
+//IsSuccess ...
+func (r *Notify) IsSuccess() bool {
+	if r.ReturnCode == SUCCESS && r.ResultCode == SUCCESS {
+		return true
+	}
+	return false
+}
+
 //UnmarshalNotify ..
 func UnmarshalNotify(raw string) (*Notify,error){
 	rawBytes := []byte(raw)
 	notify := &Notify{}
 	err := xml.Unmarshal(rawBytes,notify)
 	return notify,err
+}
+
+//NotifyReplySuccess ..
+func NotifyReplySuccess() string{
+	return `<xml>
+	<return_code><![CDATA[SUCCESS]]></return_code>
+	<return_msg><![CDATA[OK]]></return_msg>
+	</xml>`
+}
+//NotifyReplyFail
+func NotifyReplyFail(msg string) string{
+	return fmt.Sprintf(`<xml>
+	<return_code><![CDATA[FAIL]]></return_code>
+	<return_msg><![CDATA[%s]]></return_msg>
+	</xml>`,msg)
 }

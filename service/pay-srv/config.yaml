@@ -4,7 +4,7 @@ apps:
     channels:
       "201":
         name: "微信支付"
-        channel: wxpay
+        pvd_name: wxpay
         app_id: wx5e596d33cb663cd1
         api_key: 6eeee65a188ac4f5935f3f0a0f5d6528
         mch_id: 1512978741

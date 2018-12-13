@@ -4,8 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"gitee.com/rushteam/micro-service/common/sdk/wxsdk"
-	"gitee.com/rushteam/micro-service/common/sdk/wxsdk/mch"
+	"gitee.com/rushteam/micro-service/common/sdk/wxsdk/wxpay"
 	"gitee.com/rushteam/micro-service/common/utils"
 	"gitee.com/rushteam/micro-service/service/pay-srv/config"
 	"gitee.com/rushteam/micro-service/service/pay-srv/model"
@@ -59,7 +58,6 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 		return err
 	}
 	//创建订单
-	var signType = "MD5"
 	clientID := req.GetClientId()
 	clientInfo, ok := config.App.Apps[clientID]
 	if !ok {
@@ -85,10 +83,10 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	tradeModel.PvdOutTradeNo = tradeModel.OutTradeNo //暂时透传 应用方的第三方单号
 	tradeModel.PvdTradeNo = "" //调用第三方支付成功后赋值
 
-	tradeModel.ProviderName = app.Channel
+	tradeModel.ProviderName = app.PvdName
 
-	if app.Channel == "wxpay" { //微信
-		order := &mch.UnifiedOrderReq{}
+	if app.PvdName == "wxpay" { //微信
+		order := &wxpay.UnifiedOrderReq{}
 		order.AppID = tradeModel.PvdAppid
 		order.MchID = tradeModel.PvdMchId
 
@@ -134,12 +132,11 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 		rsp.Channel = tradeModel.Channel
 		rsp.ProviderName = tradeModel.ProviderName
 		if tradeModel.TradeType == TradeTypeWxJsApi {
-			payConfig := &mch.PayConfigJs{
+			payConfig := &wxpay.PayConfigJs{
 				AppID:     order.AppID,
 				TimeStamp: time.Now().Unix(),
 				NonceStr:  utils.RandomStr(32),
 				Package:   fmt.Sprintf("prepay_id=%s", orderRsp.PrepayID),
-				SignType:  signType,
 			}
 			payConfig.MakeSign(app.ApiKey)
 			jsonBytes, err := json.Marshal(payConfig)
@@ -149,7 +146,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 			payField.FieldStr = string(jsonBytes)
 		}
 		rsp.PayField = payField
-	}else if app.Channel == "alipay" {
+	}else if app.PvdName == "alipay" {
 		return errors.BadRequest("PayService.Create", "alipay channel is undefined")
 	} else {
 		return errors.BadRequest("PayService.Create", "pay channel is undefined")
@@ -159,22 +156,48 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 }
 
 //Notify ..
-func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pay_srv.PayRsp) error {
+func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pay_srv.NotifyRsp) error {
 	log.Log("[access] PayService.Notify")
-	if req.GetPvdName() == "" {
-		return errors.BadRequest("PayService.Notify", "params err, pvd_name is undefined")
+
+	if req.GetClientId() == "" {
+		return errors.BadRequest("PayService.Notify", "params err, client_id is undefined")
 	}
-	if req.GetPvdName() == "wxpay" { //微信支付
-		if req.GetRaw() == "" {
-			return errors.BadRequest("PayService.Notify", "params err, raw is undefined")
-		}
-		raw := req.GetRaw()
-		notify,err := mch.UnmarshalNotify(raw)
+	if req.GetChannel() == "" {
+		return errors.BadRequest("PayService.Notify", "params err, channel is undefined")
+	}
+	if req.GetRaw() == "" {
+		return errors.BadRequest("PayService.Notify", "params err, raw is undefined")
+	}
+
+	//创建订单
+	clientID := req.GetClientId()
+	clientInfo, ok := config.App.Apps[clientID]
+	if !ok {
+		return errors.BadRequest("PayService.Create", "not found client_id: " + clientID)
+	}
+	payChannel := req.GetChannel()
+	app, ok := clientInfo.Channels[payChannel]
+	if !ok {
+		return errors.BadRequest("PayService.Create", "not found channel for pay: " + req.GetChannel())
+	}
+	raw := req.GetRaw()
+	if app.PvdName == "wxpay" { //微信支付
+		notify,err := wxpay.UnmarshalNotify(raw)
 		if err != nil {
 			return errors.BadRequest("PayService.Notify", "params err, raw is invalid")
 		}
-		fmt.Println(notify.OutTradeNo)
-	} else if req.GetPvdName() == "alipay" { //阿里支付
+		if notify.IsSuccess() == false{
+			rsp.Result = wxpay.NotifyReplyFail("服务商返回失败")
+			return nil
+		}
+		if wxpay.CheckSign(app.ApiKey,notify) == false {
+			rsp.Result = wxpay.NotifyReplyFail("签名校验失败")
+			return nil
+		}
+		rsp.Result = wxpay.NotifyReplySuccess()
+		rsp.OutTradeNo = notify.OutTradeNo
+		//支付成功后
+	} else if app.PvdName == "alipay" { //阿里支付
 
 	} else {
 		return errors.BadRequest("PayService.Create", "pay channel is undefined")
