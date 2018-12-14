@@ -57,7 +57,7 @@ http://127.0.0.1:9080/oauth2/token?client_id=1234&client_secret=test&grant_type=
     支付回调 PayService.Notify
 
         回调具体服务
-        micro call go.micro.api.pay_srv PayService.Notify ''
+        micro call go.micro.api.pay_srv PayService.Notify '{}'
 
 
     支付单查询 PayService.Query
