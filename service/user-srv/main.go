@@ -28,7 +28,7 @@ func main() {
 				Name:   "app_db",
 				EnvVar: "MS_USER_SRV_DB",
 				Usage:  "Db config for mysql",
-				Value: "root:dream@tcp(127.0.0.1:3306)/rushteam",
+				Value:  "root:dream@tcp(127.0.0.1:3306)/rushteam",
 				// Value: "root:dream@tcp(mysql:3306)/rushteam",
 			},
 		),
@@ -38,7 +38,7 @@ func main() {
 		micro.Action(func(c *cli.Context) {
 			dbConf := c.String("app_db")
 			dbSource := dbConf + "?" + "parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"
-			pool := db.InitDb("mysql",dbSource,true)
+			pool := db.InitDb("mysql", dbSource, true)
 			model.Init(pool)
 			user_srv.RegisterUserServiceHandler(service.Server(), new(handler.UserService))
 			// user_srv.RegisterUserServiceHandler(service.Server(), handler.NewUserServiceHandler(ctx))
