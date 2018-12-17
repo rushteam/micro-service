@@ -9,16 +9,17 @@ import (
 //AppConfig ..
 type AppConfig struct {
 	Apps map[string]struct {
-		Secret   string `yaml:"secret"`
-		Channels map[string]struct {
-			Name    string `yaml:"name"`
-			PvdName string `yaml:"pvd_name"`
-			AppID   string `yaml:"app_id"`
-			ApiKey  string `yaml:"api_key"`
-			MchID   string `yaml:"mch_id"`
-			//TradeType string `yaml:"trade_type"`
-		} `yaml:"channels"`
-	} `yaml:"apps"` /* app_id:secret*/
+		Secret      string   `yaml:"secret"`
+		PayChannels []string `yaml:"channels"`
+	} `yaml:"apps"`
+	PayChannels map[string]struct {
+		Name      string `yaml:"name"`
+		Provider  string `yaml:"provider"`
+		AppID     string `yaml:"app_id"`
+		ApiKey    string `yaml:"api_key"`
+		MchID     string `yaml:"mch_id"`
+		NotifyURL string `yaml:"notify_url"`
+	} `yaml:"pay_channels"`
 }
 
 //App ..

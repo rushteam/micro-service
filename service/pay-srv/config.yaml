@@ -1,11 +1,13 @@
 apps:
-  #client_id
   hoo:
-    channels:
-      "201":
-        name: 微信支付
-        pvd_name: wxpay
-        app_id: wx5e596d33cb663cd1
-        api_key: 6eeee65a188ac4f5935f3f0a0f5d6528
-        mch_id: 1512978741
-#        trade_type: JSAPI
+    secret: "test"
+    pay_channels:
+      - "201"
+pay_channels:
+  "201":
+    name: 微信支付
+    provider: wxpay
+    app_id: wx5e596d33cb663cd1
+    api_key: 6eeee65a188ac4f5935f3f0a0f5d6528
+    mch_id: 1512978741
+    notify_url: "http://www.xixihi.com/pay-gateway/notify/wxpay"

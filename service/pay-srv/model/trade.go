@@ -4,7 +4,7 @@ package model
 type TradeModel struct {
 	// gorm.Model
 	//交易单号
-	TradeNo    string `gorm:"PRIMARY_KEY;"`
+	TradeNo string `gorm:"PRIMARY_KEY;"`
 	//商户号
 	ClientId string
 	//外部交易号、订单号
@@ -24,7 +24,7 @@ type TradeModel struct {
 	//支付时间
 	PayAt int64
 	//提供商名字
-	ProviderName string
+	Provider string
 	// Provider商户id
 	PvdMchId string
 	//提供商公众号

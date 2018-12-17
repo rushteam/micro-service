@@ -60,22 +60,36 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	}
 	//创建订单
 	clientID := req.GetClientId()
-	clientInfo, ok := config.App.Apps[clientID]
+	clientConf, ok := config.App.Apps[clientID]
 	if !ok {
 		return errors.BadRequest("PayService.Create", "not found client_id: " + clientID)
 	}
-	payChannel := req.GetChannel()
-	app, ok := clientInfo.Channels[payChannel]
+	//todo 检测商户秘钥是否正确
+
+	payChannelID := req.GetChannel()
+	var isAblePayChannel = false
+	for _,v := range clientConf.PayChannels {
+		if payChannelID == v {
+			isAblePayChannel = true
+			break
+		}
+	}
+	if isAblePayChannel == false {
+		return errors.BadRequest("PayService.Create", "not found channel for pay in this client: " + payChannelID)
+	}
+
+	payConf, ok := config.App.PayChannels[payChannelID]
 	if !ok {
-		return errors.BadRequest("PayService.Create", "not found channel for pay: " + req.GetChannel())
+		return errors.BadRequest("PayService.Create", "not found channel for pay: " + payChannelID)
 	}
 
 	//生成 订单信息
 	tradeModel := model.TradeModel{}
 	tradeModel.ClientId = clientID
-	tradeModel.PvdMchId = app.MchID
-	tradeModel.PvdAppid = app.AppID
-	tradeModel.Channel = req.GetChannel()
+	tradeModel.PvdMchId = payConf.MchID
+	tradeModel.PvdAppid = payConf.AppID
+	tradeModel.Channel = payChannelID
+
 	tradeModel.OutTradeNo = req.GetOutTradeNo()
 	tradeModel.TotalFee = req.GetTotalFee()
 	tradeModel.Subject = req.GetSubject()
@@ -83,19 +97,18 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	tradeModel.TradeType = req.GetTradeType()
 	tradeModel.PvdOutTradeNo = tradeModel.OutTradeNo //暂时透传 应用方的第三方单号
 	tradeModel.PvdTradeNo = "" //调用第三方支付成功后赋值
+	tradeModel.Provider = payConf.Provider
 
-	tradeModel.ProviderName = app.PvdName
-
-	if app.PvdName == "wxpay" { //微信
+	if tradeModel.Provider == "wxpay" { //微信
 		order := &wxpay.UnifiedOrderReq{}
 		order.AppID = tradeModel.PvdAppid
 		order.MchID = tradeModel.PvdMchId
 
 		order.OutTradeNo = tradeModel.OutTradeNo //商户订单号
 		order.TotalFee = tradeModel.TotalFee     //订单总金额，单位为分
-		order.FeeType = "RMB"                  //标价币种 目前写死
+		order.FeeType = "RMB"                    //标价币种 目前写死
 		order.Body = tradeModel.Subject          //商品描述 128
-		order.NotifyURL = "https://test.com"   //异步通知地址
+		order.NotifyURL = payConf.NotifyURL   	 //异步通知地址
 		order.TradeType = tradeModel.TradeType       //TradeType  (JSAPI|NATIVE)
 
 		if tradeModel.TradeType == TradeTypeWxJsAPI {
@@ -112,7 +125,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 		// order.OpenID = "o8UFh1m1fS3QiuSZ5Ik3rYgt3vjQ"
 		order.SpbillCreateIP = tradeModel.FromIp
 		order.NonceStr = utils.RandomStr(32) //随机字符串
-		order.MakeSign(app.ApiKey)
+		order.MakeSign(payConf.ApiKey)
 		orderRsp, err := order.Call()
 		if err != nil {
 			return errors.BadRequest("PayService.Create", "pay channel call err, " + err.Error())
@@ -131,7 +144,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 			FieldStr: "",
 		}
 		rsp.Channel = tradeModel.Channel
-		rsp.ProviderName = tradeModel.ProviderName
+		rsp.Provider = tradeModel.Provider
 		if tradeModel.TradeType == TradeTypeWxJsAPI {
 			payConfig := &wxpay.PayConfigJs{
 				AppID:     order.AppID,
@@ -139,7 +152,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 				NonceStr:  utils.RandomStr(32),
 				Package:   fmt.Sprintf("prepay_id=%s", orderRsp.PrepayID),
 			}
-			payConfig.MakeSign(app.ApiKey)
+			payConfig.MakeSign(payConf.ApiKey)
 			jsonBytes, err := json.Marshal(payConfig)
 			if err != nil {
 				return errors.BadRequest("PayService.Create", "pay channel jsapi err, " + err.Error())
@@ -147,7 +160,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 			payField.FieldStr = string(jsonBytes)
 		}
 		rsp.PayField = payField
-	}else if app.PvdName == "alipay" {
+	}else if tradeModel.Provider == "alipay" {
 		return errors.BadRequest("PayService.Create", "alipay channel is undefined")
 	} else {
 		return errors.BadRequest("PayService.Create", "pay channel is undefined")
@@ -160,29 +173,19 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pay_srv.NotifyRsp) error {
 	log.Log("[access] PayService.Notify")
 
-	if req.GetClientId() == "" {
-		return errors.BadRequest("PayService.Notify", "params err, client_id is undefined")
-	}
 	if req.GetChannel() == "" {
 		return errors.BadRequest("PayService.Notify", "params err, channel is undefined")
 	}
 	if req.GetRaw() == "" {
 		return errors.BadRequest("PayService.Notify", "params err, raw is undefined")
 	}
-
-	//创建订单
-	clientID := req.GetClientId()
-	clientInfo, ok := config.App.Apps[clientID]
+	payChannelID := req.GetChannel()
+	payConf, ok := config.App.PayChannels[payChannelID]
 	if !ok {
-		return errors.BadRequest("PayService.Create", "not found client_id: " + clientID)
-	}
-	payChannel := req.GetChannel()
-	app, ok := clientInfo.Channels[payChannel]
-	if !ok {
-		return errors.BadRequest("PayService.Create", "not found channel for pay: " + req.GetChannel())
+		return errors.BadRequest("PayService.Notify", "not found channel for pay: " + payChannelID)
 	}
 	raw := req.GetRaw()
-	if app.PvdName == "wxpay" { //微信支付
+	if payConf.Provider == "wxpay" { //微信支付
 		notify,err := wxpay.UnmarshalNotify(raw)
 		if err != nil {
 			return errors.BadRequest("PayService.Notify", "params err, raw is invalid")
@@ -191,14 +194,17 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 			rsp.Result = wxpay.NotifyReplyFail("服务商返回失败")
 			return nil
 		}
-		if wxpay.CheckSign(app.ApiKey,notify) == false {
+		if wxpay.CheckSign(payConf.ApiKey,notify) == false {
 			rsp.Result = wxpay.NotifyReplyFail("签名校验失败")
 			return nil
 		}
+		//todo 
+		//修改状态
+		//进行真实回调任务
 		rsp.Result = wxpay.NotifyReplySuccess()
 		rsp.OutTradeNo = notify.OutTradeNo
 		//支付成功后
-	} else if app.PvdName == "alipay" { //阿里支付
+	} else if payConf.Provider == "alipay" { //阿里支付
 
 	} else {
 		return errors.BadRequest("PayService.Create", "pay channel is undefined")
