@@ -33,7 +33,7 @@ message PayField {
     string field_str = 6;     //支付信息json
 }
 message PayRsp {
-    string provider_name =1; //支付渠道名
+    string provider =1; //支付渠道名
     string channel = 2;//交易渠道
     PayField pay_field =3; //交易字段
 }
