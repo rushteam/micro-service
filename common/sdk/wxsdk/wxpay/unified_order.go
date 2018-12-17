@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 
-	"gitee.com/rushteam/micro-service/common/sdk/wxsdk"
 	"gitee.com/rushteam/micro-service/common/utils"
 )
 
@@ -57,7 +56,7 @@ func (o *UnifiedOrderReq) Call() (UnifiedOrderRsp, error) {
 		return unifiedOrderRsp, err
 	}
 	//fmt.Println(string(params))
-	body, err := wxsdk.PostURL(url, params)
+	body, err := PostURL(url, params)
 	//fmt.Println(string(body))
 	err = xml.Unmarshal(body, &unifiedOrderRsp)
 	return unifiedOrderRsp, err

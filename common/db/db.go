@@ -9,58 +9,85 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-//Default 默认分组
-const Default = "default"
+//DefaultGroup 默认分组
+const DefaultGroup = "default"
 
-//Master 主库
-const Master = "master"
+//MasterType 主库
+const MasterType = "master"
 
-//Salve 从库
-const Salve = "salve"
+//SalveType 从库
+const SalveType = "salve"
 
-//Db ..
-type Db struct {
-	Db        *gorm.DB
-	SourceDSN string `yaml:",flow"`
+var defaultPoolGroup PoolGroup
+
+//Configs ..
+type Configs map[string]map[string]struct {
+	DbType string `yaml:"db_type"`
+	DSN    string `yaml:"DSN"`
 }
 
-//PoolItem ..
-type PoolItem struct {
-	DbType string          `yaml:"db_type"`
-	Items  map[string][]Db `yaml:",flow"`
+//Engine ..
+type Engine struct {
+	DB *gorm.DB
 }
 
-//Pool ..
-type Pool struct {
-	// Db map[string]map[string][]*gorm.DB
-	// groups map[string]PoolItem
-	Db map[string]PoolItem `yaml:"db_config"`
+//Pool 数据库池
+type Pool map[string][]*Engine
+
+//GetEngine 获取一个数据池
+func (p Pool) GetEngine(name string) (*Engine, error) {
+	if name == "" {
+		name = MasterType
+	}
+	var engine *Engine
+	engineList, ok := p[name]
+	if !ok || len(engineList) < 1 {
+		return engine, errors.New("not found engine")
+	}
+	if name == MasterType {
+		engine = engineList[0]
+	} else {
+		//todo 随机算法取一个,目前仅取第一个
+		engine = engineList[0]
+	}
+	return engine, nil
 }
 
-//GetDb ..
-func (p Pool) GetDb(groupName string, poolName string) (*gorm.DB, error) {
-	if _, ok := p.Db[Default]; !ok {
-		return nil, errors.New("db group is null")
+//PoolGroup 数据池组
+type PoolGroup map[string]Pool
+
+//GetPool 获取一个数据池
+func (g PoolGroup) GetPool(groupName string) (*Pool, error) {
+	if groupName == "" {
+		groupName = DefaultGroup
 	}
-	if _, ok := p.Db[Default].Items[Master]; !ok {
-		return nil, errors.New("db master config is null")
+	p, ok := g[groupName]
+	if !ok {
+		return &p, errors.New("not found pool in group")
 	}
-	if len(p.Db[Default].Items[Master]) < 1 {
-		return nil, errors.New("db master config is null")
+	return &p, nil
+}
+
+//Load ..
+func (g PoolGroup) Load(conf Configs) error {
+	for groupName, pg := range conf {
+		if _, ok := g[groupName]; !ok {
+			pool := make(Pool, 0)
+			g[groupName] = pool
+		}
+		for poolName, p := range pg {
+			if _, ok := g[groupName][poolName]; !ok {
+				e := Connect(p.DbType, p.DSN)
+				g[groupName][poolName] = append(g[groupName][poolName], &Engine{e})
+			}
+		}
 	}
-	if poolName == Master {
-		return p.Db[Default].Items[poolName][0].Db, nil
-	}
-	if _, ok := p.Db[Default].Items[poolName]; !ok {
-		return p.Db[Default].Items[poolName][0].Db, nil
-	}
-	//现在只能有一个从库，后期需要随机一个，这里先不扩展了
-	return p.Db[Default].Items[groupName][0].Db, nil
+	return nil
 }
 
 /*
 db_config.yml
-	db_config:
+	db_configs:
 		default:
 			db_type:"mysql"
 			master:
@@ -73,16 +100,16 @@ dbInstance map[string]map[string][]*gorm.DB
 GetDb(group string,pool string)
 */
 
-//CreateDb 初始化db数据
-func CreateDb(dbType, sourceDSN string) *gorm.DB {
+//Connect 初始化db数据
+func Connect(dbType, DSN string) *gorm.DB {
 	if dbType == "" {
 		dbType = "mysql"
 	}
 	var err error
-	db, err := gorm.Open(dbType, sourceDSN)
+	db, err := gorm.Open(dbType, DSN)
 	// defer db.Close()
 	if err != nil {
-		log.Printf("[db] connect failed (%s) %s\r\n", sourceDSN, err)
+		log.Printf("[db] connect failed (%s) %s\r\n", DSN, err)
 	}
 	// SetMaxIdleConns sets the maximum number of connections in the idle connection pool.
 	db.DB().SetMaxIdleConns(10)
@@ -93,42 +120,28 @@ func CreateDb(dbType, sourceDSN string) *gorm.DB {
 	return db
 }
 
-//InitDefaultDb ..
-func (p *Pool) InitDefaultDb(dbType, sourceDSN string, logMode bool) *gorm.DB {
-	groupName := Default
-	poolName := Master
-	if _, ok := p.Db[groupName]; !ok {
-		p.Db = make(map[string]PoolItem)
-		pooItem := PoolItem{}
-		pooItem.Items = make(map[string][]Db)
-		p.Db[groupName] = pooItem
-	}
-	if _, ok := p.Db[groupName].Items[poolName]; !ok {
-		p.Db[groupName].Items[poolName] = make([]Db, 0)
-	}
-	db := Db{SourceDSN: sourceDSN}
-	db.Db = CreateDb(dbType, sourceDSN)
-	db.Db.LogMode(logMode)
-	p.Db[groupName].Items[poolName] = append(p.Db[groupName].Items[poolName], db)
-	return db.Db
+//Init ..
+func Init(conf Configs) {
+	defaultPoolGroup = PoolGroup{}
+	defaultPoolGroup.Load(conf)
 }
 
-//InitDb ..
-func InitDb(dbType, sourceDSN string, logMode bool) *Pool {
-	var pool = &Pool{}
-	pool.InitDefaultDb(dbType, sourceDSN, logMode)
-	return pool
+//Get ..
+func Get(groupName, poolName string) (*Engine, error) {
+	var engine *Engine
+	pool, err := defaultPoolGroup.GetPool(groupName)
+	if err != nil {
+		return nil, err
+	}
+	engine, err = pool.GetEngine(poolName)
+	return engine, err
 }
 
-//InitDbConfig ..
-func InitDbConfig(configFile string) *Pool {
-	var pool = &Pool{}
-	for _, poolItem := range pool.Db {
-		for _, dbs := range poolItem.Items {
-			for _, db := range dbs {
-				db.Db = CreateDb(poolItem.DbType, db.SourceDSN)
-			}
-		}
-	}
-	return pool
+//Default ..
+func Default() (*Pool, error) {
+	pool, err := defaultPoolGroup.GetPool(DefaultGroup)
+	return pool, err
+}
+
+type Model struct {
 }

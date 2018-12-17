@@ -11,3 +11,12 @@ pay_channels:
     api_key: 6eeee65a188ac4f5935f3f0a0f5d6528
     mch_id: 1512978741
     notify_url: "http://www.xixihi.com/pay-gateway/notify/wxpay"
+
+db_configs:
+  default:
+      db_type: "mysql"
+			master:
+				- ""
+			slave:
+				- ""
+				- ""

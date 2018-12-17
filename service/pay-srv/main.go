@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gitee.com/rushteam/micro-service/service/user-srv/queue"
 	"gitee.com/rushteam/micro-service/common/pb/pay_srv"
 	"gitee.com/rushteam/micro-service/service/pay-srv/config"
 	"log"
@@ -47,16 +48,20 @@ func main() {
 	// var ctx = context.TODO()
 	service.Init(
 		micro.Action(func(c *cli.Context) {
-			dbConf := c.String("app_db")
-			dbSource := dbConf + "?" + "parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"
-			pool := db.InitDb("mysql",dbSource,true)
-			model.Init(pool)
+			// dbConf := c.String("app_db")
+			// dbSource := dbConf + "?" + "parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"
+			// pool := db.InitDb("mysql",dbSource,true)
+			// model.Init(pool)
 
 			configFile := c.String("config_path")
 			err := config.App.Load(configFile)
 			if err != nil {
 				log.Fatal(err)
 			}
+			//初始化db
+			db.Init(config.App.DbConfig)
+
+			queue.InitPayNotify(service.Client())
 			pay_srv.RegisterPayServiceHandler(service.Server(), &handler.PayService{Service:service})
 			//fmt.Printf("%s",c.String("server_id"))
 		}),

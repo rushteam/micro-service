@@ -1,5 +1,9 @@
 package model
 
+import (
+	"gitee.com/rushteam/micro-service/common/db"
+)
+
 //TradeModel ..
 type TradeModel struct {
 	// gorm.Model
@@ -41,8 +45,12 @@ func (TradeModel) TableName() string {
 	return "pay_trade"
 }
 
-//GetOrderByOrderNo ...
-func (sess *Session) GetTradeByOrderNo(no string) (TradeModel, error) {
-	trade := TradeModel{}
-	return trade, nil
+//GetTradeByOrderNo ...
+func (m *TradeModel) GetTradeByOrderNo(no string) (*TradeModel, error) {
+	return m, nil
+}
+
+//Save ..
+func (m TradeModel) Save() db.Model {
+	return db.Model
 }
