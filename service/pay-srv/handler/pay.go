@@ -18,7 +18,8 @@ import (
 	// "go.uber.org/zap"
 )
 const(
-	TradeTypeWxJsApi = "JSAPI"
+	//TradeTypeWxJsAPI ...
+	TradeTypeWxJsAPI = "JSAPI"
 )
 //PayService ...
 type PayService struct {
@@ -97,7 +98,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 		order.NotifyURL = "https://test.com"   //异步通知地址
 		order.TradeType = tradeModel.TradeType       //TradeType  (JSAPI|NATIVE)
 
-		if tradeModel.TradeType == TradeTypeWxJsApi {
+		if tradeModel.TradeType == TradeTypeWxJsAPI {
 			//仅在 TradeType=JSAPI 时必须
 			extra := make(map[string]string)
 			rawExtra := []byte(req.GetExtra())
@@ -131,7 +132,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 		}
 		rsp.Channel = tradeModel.Channel
 		rsp.ProviderName = tradeModel.ProviderName
-		if tradeModel.TradeType == TradeTypeWxJsApi {
+		if tradeModel.TradeType == TradeTypeWxJsAPI {
 			payConfig := &wxpay.PayConfigJs{
 				AppID:     order.AppID,
 				TimeStamp: time.Now().Unix(),
