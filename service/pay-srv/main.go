@@ -51,10 +51,7 @@ func main() {
 			dbSource := dbConf + "?" + "parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"
 			pool := db.InitDb("mysql",dbSource,true)
 			model.Init(pool)
-			//pay_srv.RegisterPayServiceHandler(service.Server(), &handler.PayService{Service:service})
-			//fmt.Printf("%s",c.String("server_id"))
-		}),
-		micro.Action(func(c *cli.Context) {
+
 			configFile := c.String("config_path")
 			err := config.App.Load(configFile)
 			if err != nil {

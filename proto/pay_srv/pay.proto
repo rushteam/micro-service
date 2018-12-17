@@ -11,16 +11,17 @@ service PayService {
     rpc Query(QueryReq) returns (PayRsp) {}
 }
 message CreateReq {
-    string client_id = 1; //商户
-    string access_token=2; // 包括内容（商户,用户,鉴权）
-    string out_trade_no=3;//交易号、订单号
-    string channel = 4;//交易渠道 (微信\支付宝)
-    int64 total_fee = 5;//支付金额
-    string trade_type = 6;//交易方式 (JSAPI\NATIVE)
-    string subject = 7; //交易标题
-    string from_ip = 8; //交易来源ip
-    int64 create_at =9;//支付单创建时间
-    string extra=10; //额外信息 json字符串 trade_type=WX_JSAPI 时候 需要传递 {"openid":""}
+    string client_id = 1;   //商户
+    string access_token=2;  // 包括内容（商户,用户,鉴权）
+    string out_trade_no=3;  //交易号、订单号
+    string channel = 4;     //交易渠道 (微信\支付宝)
+    int64 total_fee = 5;    //支付金额
+    string trade_type = 6;  //交易方式 (JSAPI\NATIVE)
+    string subject = 7;     //交易标题
+    string from_ip = 8;     //交易来源ip
+    int64 create_at =9;     //支付单创建时间
+    string extra=10;        //额外信息 json字符串 trade_type=WX_JSAPI 时候 需要传递 {"openid":""}
+    string notify_url=11;   //通知回调
 }
 message PayField {
     string app_id = 1;       //app_id
