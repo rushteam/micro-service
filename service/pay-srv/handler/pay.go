@@ -60,7 +60,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	}
 	//创建订单
 	clientID := req.GetClientId()
-	clientInfo, ok := config.App.Apps[clientID]
+	clientConf, ok := config.App.Apps[clientID]
 	if !ok {
 		return errors.BadRequest("PayService.Create", "not found client_id: " + clientID)
 	}
@@ -68,7 +68,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 
 	payChannelID := req.GetChannel()
 	var isAblePayChannel = false
-	for _,v := range clientInfo.PayChannels {
+	for _,v := range clientConf.PayChannels {
 		if payChannelID == v {
 			isAblePayChannel = true
 			break
@@ -106,9 +106,9 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 
 		order.OutTradeNo = tradeModel.OutTradeNo //商户订单号
 		order.TotalFee = tradeModel.TotalFee     //订单总金额，单位为分
-		order.FeeType = "RMB"                  //标价币种 目前写死
+		order.FeeType = "RMB"                    //标价币种 目前写死
 		order.Body = tradeModel.Subject          //商品描述 128
-		order.NotifyURL = payConf.NotifyURL   //异步通知地址
+		order.NotifyURL = payConf.NotifyURL   	 //异步通知地址
 		order.TradeType = tradeModel.TradeType       //TradeType  (JSAPI|NATIVE)
 
 		if tradeModel.TradeType == TradeTypeWxJsAPI {
@@ -173,29 +173,19 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pay_srv.NotifyRsp) error {
 	log.Log("[access] PayService.Notify")
 
-	if req.GetClientId() == "" {
-		return errors.BadRequest("PayService.Notify", "params err, client_id is undefined")
-	}
 	if req.GetChannel() == "" {
 		return errors.BadRequest("PayService.Notify", "params err, channel is undefined")
 	}
 	if req.GetRaw() == "" {
 		return errors.BadRequest("PayService.Notify", "params err, raw is undefined")
 	}
-
-	//创建订单
-	clientID := req.GetClientId()
-	clientInfo, ok := config.App.Apps[clientID]
+	payChannelID := req.GetChannel()
+	payConf, ok := config.App.PayChannels[payChannelID]
 	if !ok {
-		return errors.BadRequest("PayService.Create", "not found client_id: " + clientID)
-	}
-	payChannel := req.GetChannel()
-	app, ok := clientInfo.Channels[payChannel]
-	if !ok {
-		return errors.BadRequest("PayService.Create", "not found channel for pay: " + req.GetChannel())
+		return errors.BadRequest("PayService.Notify", "not found channel for pay: " + payChannelID)
 	}
 	raw := req.GetRaw()
-	if app.PvdName == "wxpay" { //微信支付
+	if payConf.Provider == "wxpay" { //微信支付
 		notify,err := wxpay.UnmarshalNotify(raw)
 		if err != nil {
 			return errors.BadRequest("PayService.Notify", "params err, raw is invalid")
@@ -204,14 +194,17 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 			rsp.Result = wxpay.NotifyReplyFail("服务商返回失败")
 			return nil
 		}
-		if wxpay.CheckSign(app.ApiKey,notify) == false {
+		if wxpay.CheckSign(payConf.ApiKey,notify) == false {
 			rsp.Result = wxpay.NotifyReplyFail("签名校验失败")
 			return nil
 		}
+		//todo 
+		//修改状态
+		//进行真实回调任务
 		rsp.Result = wxpay.NotifyReplySuccess()
 		rsp.OutTradeNo = notify.OutTradeNo
 		//支付成功后
-	} else if app.PvdName == "alipay" { //阿里支付
+	} else if payConf.Provider == "alipay" { //阿里支付
 
 	} else {
 		return errors.BadRequest("PayService.Create", "pay channel is undefined")
