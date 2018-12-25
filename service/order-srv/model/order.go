@@ -24,8 +24,8 @@ func (OrderModel) TableName() string {
 }
 
 //GetOrderByOrderNo ...
-func (sess *Session) GetOrderByOrderNo(no string) (OrderModel, error) {
-	order := OrderModel{}
-	order.OrderNo = no
-	return order, nil
-}
+// func (sess *Session) GetOrderByOrderNo(no string) (OrderModel, error) {
+// 	order := OrderModel{}
+// 	order.OrderNo = no
+// 	return order, nil
+// }

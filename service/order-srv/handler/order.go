@@ -60,6 +60,11 @@ func calOrder(req *order_srv.CreateReq) error {
 	}
 	// var orderList []*order_srv.Order
 	//拉取sku todo 这里应该改为 product_srv服务调用
+	// skuModel := &model.SkuModel{}
+	// skuList := []model.SkuModel{}
+	skuList := &model.SkuModelList{}
+	orm.Model(skuList).Where(skuIds).Find()
+
 	Model := model.Db()
 	skuList, err := Model.GetSkuListBySkuIds(skuIds)
 	if err != nil || len(skuList) < 1 {
