@@ -43,6 +43,7 @@ require (
 	github.com/go-ldap/ldap v2.5.1+incompatible // indirect
 	github.com/go-log/log v0.1.0
 	github.com/go-ole/go-ole v1.2.1 // indirect
+	github.com/go-sql-driver/mysql v1.4.1
 	github.com/go-test/deep v1.0.1 // indirect
 	github.com/gocql/gocql v0.0.0-20181106112037-68ae1e384be4 // indirect
 	github.com/gogo/googleapis v1.1.0 // indirect
