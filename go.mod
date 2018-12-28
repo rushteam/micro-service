@@ -43,7 +43,6 @@ require (
 	github.com/go-ldap/ldap v2.5.1+incompatible // indirect
 	github.com/go-log/log v0.1.0
 	github.com/go-ole/go-ole v1.2.1 // indirect
-	github.com/go-sql-driver/mysql v1.4.0 // indirect
 	github.com/go-test/deep v1.0.1 // indirect
 	github.com/gocql/gocql v0.0.0-20181106112037-68ae1e384be4 // indirect
 	github.com/gogo/googleapis v1.1.0 // indirect
@@ -102,6 +101,7 @@ require (
 	github.com/mitchellh/go-testing-interface v1.0.0 // indirect
 	github.com/mitchellh/hashstructure v1.0.0 // indirect
 	github.com/mitchellh/mapstructure v1.1.2 // indirect
+	github.com/mlboy/godb v0.0.0-20181228090412-4280bba24686
 	github.com/opencontainers/go-digest v1.0.0-rc1 // indirect
 	github.com/opencontainers/image-spec v1.0.1 // indirect
 	github.com/opencontainers/runc v0.1.1 // indirect

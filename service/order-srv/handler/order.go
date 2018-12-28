@@ -60,13 +60,13 @@ func calOrder(req *order_srv.CreateReq) error {
 	}
 	// var orderList []*order_srv.Order
 	//拉取sku todo 这里应该改为 product_srv服务调用
-	// skuModel := &model.SkuModel{}
-	// skuList := []model.SkuModel{}
-	skuList := &model.SkuModelList{}
-	orm.Model(skuList).Where(skuIds).Find()
+	// skuList := &model.SkuModelList{}
+	// orm.Model(skuList).Where(skuIds).Find()
+	skuModel := model.SkuModel{}
+	skuList,err := skuModel.GetSkuListBySkuIds(skuIds)
 
-	Model := model.Db()
-	skuList, err := Model.GetSkuListBySkuIds(skuIds)
+	// Model := model.Db()
+	// skuList, err := Model.GetSkuListBySkuIds(skuIds)
 	if err != nil || len(skuList) < 1 {
 		log.Log("[error] OrderService.Create ", err.Error())
 		return errs.New("选择的商品已失效")
@@ -187,8 +187,10 @@ func (s *OrderService) Order(ctx context.Context, req *order_srv.QueryReq, rsp *
 		return errors.BadRequest("OrderService.Create", "参数不全")
 	}
 	// orderNo
-	Model := model.Db()
-	order, err := Model.GetOrderByOrderNo(orderNo)
+	order := model.OrderModel{}
+	err :=order.GetOrderByOrderNo(orderNo)
+	// Model := model.Db()
+	// order, err := Model.GetOrderByOrderNo(orderNo)
 	if err != nil {
 		return errors.BadRequest("OrderService.Order", err.Error())
 	}

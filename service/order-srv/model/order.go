@@ -1,11 +1,15 @@
 package model
 
+import (
+	"github.com/mlboy/godb/orm"
+)
+
 //OrderModel ..
 type OrderModel struct {
 	// gorm.Model
-	OrderNo    string `gorm:"PRIMARY_KEY;"`
-	Total      int64
-	Discount   int64
+	OrderNo    string `db:"order_no,pk"`
+	Total      int64  `db:"order_no,pk"`
+	Discount   int64  `db:"order_no,pk"`
 	Payment    int64
 	PayState   int64
 	OrderState int64
@@ -21,6 +25,14 @@ type OrderModel struct {
 //TableName ..
 func (OrderModel) TableName() string {
 	return "order_order"
+}
+
+//GetOrderByOrderNo ..
+func (m *OrderModel) GetOrderByOrderNo(no string) error {
+	order := OrderModel{}
+	order.OrderNo = no
+	orm.Model(m).Fetch()
+	return nil
 }
 
 //GetOrderByOrderNo ...

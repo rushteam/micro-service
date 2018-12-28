@@ -1,5 +1,7 @@
 package model
 
+import "github.com/mlboy/godb/orm"
+
 //SkuModel ..
 type SkuModel struct {
 	// gorm.Model
@@ -11,6 +13,13 @@ type SkuModel struct {
 //TableName ..
 func (SkuModel) TableName() string {
 	return "product_sku"
+}
+
+//GetSkuListBySkuIds ..
+func (m *SkuModel) GetSkuListBySkuIds(skuIds []int64) ([]SkuModel, error) {
+	var skuList []SkuModel
+	orm.Model(m).Where("").FindAll()
+	return skuList, nil
 }
 
 //SkuModelList ..
