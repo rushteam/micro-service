@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"gitee.com/rushteam/micro-service/common/db"
 	"time"
 	"gitee.com/rushteam/micro-service/service/pay-srv/queue"
 	"context"
@@ -12,7 +11,6 @@ import (
 	"gitee.com/rushteam/micro-service/service/pay-srv/config"
 	"gitee.com/rushteam/micro-service/service/pay-srv/model"
 	"github.com/micro/go-micro/errors"
-	"time"
 
 	// "gitee.com/rushteam/micro-service/common/utils"
 	"gitee.com/rushteam/micro-service/common/pb/pay_srv"
@@ -207,13 +205,15 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 		}
 		//todo
 		//修改状态
-		db.Default().Master()
-		dao.Save(
-			model.TradeModel{
-				PayState = 1,
-				PayAt = utils.FormatDate(time.Now())
-			}
-		)
+		// db.Default().Master()
+		// dao.Save(
+		// 	model.TradeModel{
+		// 		PayState = 1,
+		// 		PayAt = utils.FormatDate(time.Now())
+		// 	}
+		// )
+		tm := model.TradeModel{}
+		tm.Save()
 		//进行真实回调任务
 		queue.PayNotify.Publish(&pay_srv.NotifyApp{})
 		rsp.Result = wxpay.NotifyReplySuccess()

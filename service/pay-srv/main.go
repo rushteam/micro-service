@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gitee.com/rushteam/micro-service/service/user-srv/queue"
+	"gitee.com/rushteam/micro-service/service/pay-srv/queue"
 	"gitee.com/rushteam/micro-service/common/pb/pay_srv"
 	"gitee.com/rushteam/micro-service/service/pay-srv/config"
 	"log"
