@@ -294,6 +294,8 @@ github.com/mitchellh/reflectwalk v1.0.0 h1:9D+8oIskB4VJBN5SFlmc27fSlIBZaov1Wpk/I
 github.com/mitchellh/reflectwalk v1.0.0/go.mod h1:mSTlrgnPZtwu0c4WaC2kGObEpuNDbx0jmZXqmk4esnw=
 github.com/mlboy/godb v0.0.0-20181228090412-4280bba24686 h1:pFl4pcvs8yNZ0YhVH32MrY2E//nwNjWaQValSpXXIJs=
 github.com/mlboy/godb v0.0.0-20181228090412-4280bba24686/go.mod h1:SWEL27w9g2y5aci7WHYDzY7uDoeRPoqDUTTXEGbTKVg=
+github.com/mlboy/godb v0.0.0-20181229070848-0a6c560597b9 h1:htalWF4gYzvyZ++ont+TEhkj2axB0Zxmd81eTojm7ys=
+github.com/mlboy/godb v0.0.0-20181229070848-0a6c560597b9/go.mod h1:SWEL27w9g2y5aci7WHYDzY7uDoeRPoqDUTTXEGbTKVg=
 github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd h1:TRLaZ9cD/w8PVh93nsPXa1VrQ6jlwL5oN8l14QlcNfg=
 github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd/go.mod h1:6dJC0mAP4ikYIbvyc7fijjWJddQyLn8Ig3JB5CqoB9Q=
 github.com/modern-go/reflect2 v1.0.1 h1:9f412s+6RmYXLWZSEzVVgPGK7C2PphHj5RJrvfx9AWI=

@@ -51,10 +51,13 @@ http://127.0.0.1:9080/oauth2/token?client_id=1234&client_secret=test&grant_type=
 
 支付服务 pay-srv
     创建支付单
-    支付回调（暴露web post api）
-        支付宝
-        微信
+
+    支付回调(支付宝/微信)
+
     回调具体服务
+
+支付网关
+    支付回调
     
 
 
