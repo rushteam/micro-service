@@ -22,7 +22,7 @@ import (
 
 var (
 	//SERVICE_NAME service's name
-	SERVICE_NAME = "go.micro.api.pay_srv"
+	SERVICE_NAME = "go.micro.srv.pay_srv"
 	//SERVICE_VERSION service's version
 	SERVICE_VERSION = "latest"
 )

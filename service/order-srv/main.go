@@ -18,7 +18,7 @@ import (
 
 var (
 	//SERVICE_NAME service's name
-	SERVICE_NAME = "go.micro.api.order_srv"
+	SERVICE_NAME = "go.micro.srv.order_srv"
 	//SERVICE_VERSION service's version
 	SERVICE_VERSION = "latest"
 )
