@@ -51,6 +51,7 @@ http://127.0.0.1:9080/oauth2/token?client_id=1234&client_secret=test&grant_type=
 
 支付服务 pay-srv
     创建支付单
+     micro call go.micro.api.pay_srv PayService.Create '{"out_trade_no":"test_001","client_id":"hoo","access_token":"hoo","channel":"201","total_fee":100,"subject":"测试支付","trade_type":"JSAPI","extra":"{\"openid\":\"o8UFh1m1fS3QiuSZ5Ik3rYgt3vjQ\"}"}'
 
     支付回调(支付宝/微信)
         micro call go.micro.api.pay_srv PayService.Notify '{"client_id":"hoo","channel":"201","pvd_name":"wxpay","raw":"<xml><return_code>SUCCESS</return_code><result_code>SUCCESS</result_code></xml>"}'
