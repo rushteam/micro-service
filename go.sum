@@ -7,8 +7,6 @@ github.com/Azure/go-ansiterm v0.0.0-20170929234023-d6e3b3328b78 h1:w+iIsaOQNcT7O
 github.com/Azure/go-ansiterm v0.0.0-20170929234023-d6e3b3328b78/go.mod h1:LmzpDX56iTiv29bbRTIsUNlaFfuhWRQBWjQdVyAevI8=
 github.com/Azure/go-autorest v10.7.0+incompatible h1:dB+dKSLGdJLEhU/FoZTSNSPMZuE5H4M5p5zgSct7qwM=
 github.com/Azure/go-autorest v10.7.0+incompatible/go.mod h1:r+4oMnoxhatjLLJ6zxSWATqVooLgysK6ZNox3g/xq24=
-github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
-github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/DataDog/datadog-go v0.0.0-20180822151419-281ae9f2d895 h1:dmc/C8bpE5VkQn65PNbbyACDC8xw8Hpp/NEurdPmQDQ=
 github.com/DataDog/datadog-go v0.0.0-20180822151419-281ae9f2d895/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
 github.com/Jeffail/gabs v1.1.1 h1:V0uzR08Hj22EX8+8QMhyI9sX2hwRu+/RJhJUmnwda/E=
@@ -48,8 +46,6 @@ github.com/bgentry/speakeasy v0.1.0 h1:ByYyxL9InA1OWqxJqqp2A5pYHUrCiAL6K3J+LKSsQ
 github.com/bgentry/speakeasy v0.1.0/go.mod h1:+zsyZBPWlz7T6j88CTgSN5bM796AkVf0kBD4zp0CCIs=
 github.com/bitly/go-hostpool v0.0.0-20171023180738-a3a6125de932 h1:mXoPYz/Ul5HYEDvkta6I8/rnYM5gSdSV2tJ6XbZuEtY=
 github.com/bitly/go-hostpool v0.0.0-20171023180738-a3a6125de932/go.mod h1:NOuUCSz6Q9T7+igc/hlvDOUdtWKryOrtFyIVABv/p7k=
-github.com/bitly/go-simplejson v0.5.0 h1:6IH+V8/tVMab511d5bn4M7EwGXZf9Hj6i2xSwkNEM+Y=
-github.com/bitly/go-simplejson v0.5.0/go.mod h1:cXHtHw4XUPsvGaxgjIAn8PhEWG9NfngEKAMDJEczWVA=
 github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 h1:DDGfHa7BWjL4YnC6+E63dPcxHo2sUxDIu8g3QgEJdRY=
 github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869/go.mod h1:Ekp36dRnpXw/yCqJaO+ZrUyxD+3VXMFFr56k5XYrpB4=
 github.com/boltdb/bolt v1.3.1 h1:JQmyP4ZBrce+ZQu0dY660FMfatumYDLun9hBCUVIkF4=
@@ -71,8 +67,6 @@ github.com/denisenkom/go-mssqldb v0.0.0-20181014144952-4e0d7dc8888f h1:WH0w/R4Yo
 github.com/denisenkom/go-mssqldb v0.0.0-20181014144952-4e0d7dc8888f/go.mod h1:xN/JuLBIz4bjkxNmByTiV1IbhfnYb6oo99phBn4Eqhc=
 github.com/denverdino/aliyungo v0.0.0-20170926055100-d3308649c661 h1:lrWnAyy/F72MbxIxFUzKmcMCdt9Oi8RzpAxzTNQHD7o=
 github.com/denverdino/aliyungo v0.0.0-20170926055100-d3308649c661/go.mod h1:dV8lFg6daOBZbT6/BDGIz6Y3WFGn8juu6G+CQ6LHtl0=
-github.com/derekparker/delve v1.1.0 h1:icd65nMp7s2HiLz6y/6RCVXBdoED3xxYLwX09EMaRCc=
-github.com/derekparker/delve v1.1.0/go.mod h1:pMSZMfp0Nhbm8qdZJkuE/yPGOkLpGXLS1I4poXQpuJU=
 github.com/dgrijalva/jwt-go v3.2.0+incompatible h1:7qlOGliEKZXTDg6OTjfoBKDXWrumCAMpl/TFQ4/5kLM=
 github.com/dgrijalva/jwt-go v3.2.0+incompatible/go.mod h1:E3ru+11k8xSBh+hMPgOLZmtrrCbhqsmaPHjLKYnJCaQ=
 github.com/digitalocean/godo v1.1.1 h1:v0A7yF3xmKLjjdJGIeBbINfMufcrrRhqZsxuVQMoT+U=
@@ -111,8 +105,6 @@ github.com/go-log/log v0.1.0 h1:wudGTNsiGzrD5ZjgIkVZ517ugi2XRe9Q/xRCzwEO4/U=
 github.com/go-log/log v0.1.0/go.mod h1:4mBwpdRMFLiuXZDCwU2lKQFsoSCo72j3HqBK9d81N2M=
 github.com/go-ole/go-ole v1.2.1 h1:2lOsA72HgjxAuMlKpFiCbHTvu44PIVkZ5hqm3RSdI/E=
 github.com/go-ole/go-ole v1.2.1/go.mod h1:7FAglXiTm7HKlQRDeOQ6ZNUHidzCWXuZWq/1dTyBNF8=
-github.com/go-sql-driver/mysql v1.4.0 h1:7LxgVwFb2hIQtMm87NdgAVfXjnt4OePseqT1tKx+opk=
-github.com/go-sql-driver/mysql v1.4.0/go.mod h1:zAC/RDZ24gD3HViQzih4MyKcchzm+sOG5ZlKdlhCg5w=
 github.com/go-sql-driver/mysql v1.4.1 h1:g24URVg0OFbNUTx9qqY1IRZ9D9z3iPyi5zKhQZpNwpA=
 github.com/go-sql-driver/mysql v1.4.1/go.mod h1:zAC/RDZ24gD3HViQzih4MyKcchzm+sOG5ZlKdlhCg5w=
 github.com/go-test/deep v1.0.1 h1:UQhStjbkDClarlmv0am7OXXO4/GaPdCGiUiMTvi28sg=
@@ -260,13 +252,10 @@ github.com/matttproud/golang_protobuf_extensions v1.0.1 h1:4hp9jkHxhMHkqkrB3Ix0j
 github.com/matttproud/golang_protobuf_extensions v1.0.1/go.mod h1:D8He9yQNgCq6Z5Ld7szi9bcBfOoFv/3dc6xSMkL2PC0=
 github.com/micro/cli v0.0.0-20180830071301-8b9d33ec2f19 h1:yYBEdLtvpHSezqBvUkGHJynuhgAek5Uew5P3RG7teQw=
 github.com/micro/cli v0.0.0-20180830071301-8b9d33ec2f19/go.mod h1:x9x6qy+tXv17jzYWQup462+j3SIUgDa6vVTzU4IXy/w=
-github.com/micro/go-config v0.12.0 h1:WtM1JL64gfbVwotexhZxPQokKOdpgztXaZpx2yi94SI=
-github.com/micro/go-config v0.12.0/go.mod h1:fVecLls1kW+EJsrlkJYqUmVoJa1epSHhsPMDXppELx0=
 github.com/micro/go-log v0.0.0-20170512141327-cbfa9447f9b6 h1:Nz+rX1q6rJLAQcLBB6maXYUmSvcdzJR2OArDKCDkco4=
 github.com/micro/go-log v0.0.0-20170512141327-cbfa9447f9b6/go.mod h1:QikSuviYcIE8V0CY4e0RRqVs3Oh8EuzX+qCEOnh9Qh8=
 github.com/micro/go-micro v0.12.0 h1:+o71C0D7dUtPd7+XOfnIRd21sXD7tXJ+RfgD1Dd38K4=
 github.com/micro/go-micro v0.12.0/go.mod h1:3z3lfMkNU9Sr1L/CxL++8pVJmQapRo0N6kNjwYDtOVs=
-github.com/micro/go-micro v0.14.1 h1:E4mtachKO0y9iBYDvN9Ck5gv8xpdOebMr7XqJbD3kuA=
 github.com/micro/go-rcache v0.0.0-20180418165751-a581a57b5133 h1:hA0jzfRMat31ugTTK3BQfxGSuh7zD4Or/lEo/4edJiE=
 github.com/micro/go-rcache v0.0.0-20180418165751-a581a57b5133/go.mod h1:CBzgfnsCYHcyLg1qeTShF0iDErQmcLmSt+SdwjLkckI=
 github.com/micro/go-web v0.4.0 h1:AALhoa/SiHEUpF3oU/1+dNUKxV7zcNsVqLx9FNYQuPg=
@@ -292,8 +281,6 @@ github.com/mitchellh/mapstructure v1.1.2 h1:fmNYVwqnSfB9mZU6OS2O6GsXM+wcskZDuKQz
 github.com/mitchellh/mapstructure v1.1.2/go.mod h1:FVVH3fgwuzCH5S8UJGiWEs2h04kUh9fWfEaFds41c1Y=
 github.com/mitchellh/reflectwalk v1.0.0 h1:9D+8oIskB4VJBN5SFlmc27fSlIBZaov1Wpk/IfikLNY=
 github.com/mitchellh/reflectwalk v1.0.0/go.mod h1:mSTlrgnPZtwu0c4WaC2kGObEpuNDbx0jmZXqmk4esnw=
-github.com/mlboy/godb v0.0.0-20181228090412-4280bba24686 h1:pFl4pcvs8yNZ0YhVH32MrY2E//nwNjWaQValSpXXIJs=
-github.com/mlboy/godb v0.0.0-20181228090412-4280bba24686/go.mod h1:SWEL27w9g2y5aci7WHYDzY7uDoeRPoqDUTTXEGbTKVg=
 github.com/mlboy/godb v0.0.0-20181229070848-0a6c560597b9 h1:htalWF4gYzvyZ++ont+TEhkj2axB0Zxmd81eTojm7ys=
 github.com/mlboy/godb v0.0.0-20181229070848-0a6c560597b9/go.mod h1:SWEL27w9g2y5aci7WHYDzY7uDoeRPoqDUTTXEGbTKVg=
 github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd h1:TRLaZ9cD/w8PVh93nsPXa1VrQ6jlwL5oN8l14QlcNfg=
@@ -376,8 +363,6 @@ github.com/vmware/govmomi v0.18.0 h1:f7QxSmP7meCtoAmiKZogvVbLInT+CZx6Px6K5rYsJZo
 github.com/vmware/govmomi v0.18.0/go.mod h1:URlwyTFZX72RmxtxuaFL2Uj3fD1JTvZdx59bHWk6aFU=
 github.com/vmware/vic v1.4.1 h1:M8hwS40QBjVTWU46qSM+tCAUSMHTTyduCmtj9OPR49A=
 github.com/vmware/vic v1.4.1/go.mod h1:AiTDrZuV13NkqRzseA5ZmF2QqLpTydaaGN75xgV6Ork=
-golang.org/x/arch v0.0.0-20181203225421-5a4828bb7045 h1:Pn8fQdvx+z1avAi7fdM2kRYWQNxGlavNDSyzrQg2SsU=
-golang.org/x/arch v0.0.0-20181203225421-5a4828bb7045/go.mod h1:cYlCBUl1MsqxdiKgmc4uh7TxZfWSFLOGSRR090WDxt8=
 golang.org/x/crypto v0.0.0-20180820150726-614d502a4dac/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=
 golang.org/x/crypto v0.0.0-20181106171534-e4dc69e5b2fd h1:VtIkGDhk0ph3t+THbvXHfMZ8QHgsBO39Nh52+74pq7w=
 golang.org/x/crypto v0.0.0-20181106171534-e4dc69e5b2fd/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=

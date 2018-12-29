@@ -3,7 +3,6 @@ module gitee.com/rushteam/micro-service
 require (
 	cloud.google.com/go v0.32.0 // indirect
 	github.com/Azure/go-ansiterm v0.0.0-20170929234023-d6e3b3328b78 // indirect
-	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/DataDog/datadog-go v0.0.0-20180822151419-281ae9f2d895 // indirect
 	github.com/Jeffail/gabs v1.1.1 // indirect
 	github.com/Microsoft/go-winio v0.4.11 // indirect
@@ -19,7 +18,6 @@ require (
 	github.com/asaskevich/govalidator v0.0.0-20180720115003-f9ffefc3facf // indirect
 	github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973 // indirect
 	github.com/bitly/go-hostpool v0.0.0-20171023180738-a3a6125de932 // indirect
-	github.com/bitly/go-simplejson v0.5.0 // indirect
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 // indirect
 	github.com/boltdb/bolt v1.3.1 // indirect
 	github.com/cenkalti/backoff v2.0.0+incompatible // indirect
@@ -28,8 +26,6 @@ require (
 	github.com/containerd/continuity v0.0.0-20181027224239-bea7585dbfac // indirect
 	github.com/coredns/coredns v1.2.6 // indirect
 	github.com/denisenkom/go-mssqldb v0.0.0-20181014144952-4e0d7dc8888f // indirect
-	github.com/derekparker/delve v1.1.0 // indirect
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-units v0.3.3 // indirect
 	github.com/duosecurity/duo_api_golang v0.0.0-20181024123116-92fea9203dbc // indirect
@@ -41,7 +37,7 @@ require (
 	github.com/gin-contrib/sse v0.0.0-20170109093832-22d885f9ecc7 // indirect
 	github.com/gin-gonic/gin v1.3.0
 	github.com/go-ldap/ldap v2.5.1+incompatible // indirect
-	github.com/go-log/log v0.1.0
+	github.com/go-log/log v0.1.0 // indirect
 	github.com/go-ole/go-ole v1.2.1 // indirect
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/go-test/deep v1.0.1 // indirect
@@ -52,7 +48,6 @@ require (
 	github.com/google/go-cmp v0.2.0 // indirect
 	github.com/google/go-github v17.0.0+incompatible // indirect
 	github.com/google/go-querystring v1.0.0 // indirect
-	github.com/google/uuid v1.0.0
 	github.com/gotestyourself/gotestyourself v2.1.0+incompatible // indirect
 	github.com/hashicorp/consul v1.3.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.0 // indirect
@@ -90,7 +85,6 @@ require (
 	github.com/mattn/go-sqlite3 v1.10.0 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/micro/cli v0.0.0-20180830071301-8b9d33ec2f19
-	github.com/micro/go-config v0.12.0
 	github.com/micro/go-log v0.0.0-20170512141327-cbfa9447f9b6
 	github.com/micro/go-micro v0.12.0
 	github.com/micro/go-rcache v0.0.0-20180418165751-a581a57b5133 // indirect
@@ -103,7 +97,7 @@ require (
 	github.com/mitchellh/go-testing-interface v1.0.0 // indirect
 	github.com/mitchellh/hashstructure v1.0.0 // indirect
 	github.com/mitchellh/mapstructure v1.1.2 // indirect
-	github.com/mlboy/godb v0.0.0-20181229070848-0a6c560597b9 // indirect
+	github.com/mlboy/godb v0.0.0-20181229070848-0a6c560597b9
 	github.com/opencontainers/go-digest v1.0.0-rc1 // indirect
 	github.com/opencontainers/image-spec v1.0.1 // indirect
 	github.com/opencontainers/runc v0.1.1 // indirect
@@ -122,8 +116,6 @@ require (
 	github.com/stretchr/objx v0.1.1 // indirect
 	github.com/tv42/httpunix v0.0.0-20150427012821-b75d8614f926 // indirect
 	github.com/ugorji/go/codec v0.0.0-20181022190402-e5e69e061d4f // indirect
-	github.com/vmware/vic v1.4.1
-	golang.org/x/arch v0.0.0-20181203225421-5a4828bb7045 // indirect
 	golang.org/x/crypto v0.0.0-20181106171534-e4dc69e5b2fd // indirect
 	golang.org/x/net v0.0.0-20181023162649-9b4f9f5ad519 // indirect
 	google.golang.org/appengine v1.3.0 // indirect

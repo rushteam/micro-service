@@ -20,9 +20,10 @@ func Register(name string, p micro.Publisher) {
 //Publish ..
 func Publish(ctx context.Context, name string, ev interface{}) error {
 	if p, ok := Queues[name]; ok {
-		p.Publish(ctx, ev)
+		err := p.Publish(ctx, ev)
+		return fmt.Errorf("[queue] send fail, micro.Publisher.Publish %s", err)
 	}
-	return fmt.Errorf("[queue] 发送失败，未找到名为%s队列", name)
+	return fmt.Errorf("[queue] send fail, not found registered queue %s", name)
 }
 
 //Get ..

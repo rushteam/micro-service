@@ -1,5 +1,7 @@
 package model
 
+import "time"
+
 //TradeModel ..
 type TradeModel struct {
 	// gorm.Model
@@ -22,7 +24,7 @@ type TradeModel struct {
 	//支付状态
 	PayState int64
 	//支付时间
-	PayAt int64
+	PayAt time.Time
 	//提供商名字
 	Provider string
 	// Provider商户id
