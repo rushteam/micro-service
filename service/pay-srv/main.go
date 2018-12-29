@@ -60,8 +60,7 @@ func main() {
 			}
 			//初始化db
 			db.Init(config.App.DbConfig)
-
-			queue.InitPayNotify(service.Client())
+			queue.Register("pay_notify",micro.NewPublisher("pay_notify", service.Client()))
 			pay_srv.RegisterPayServiceHandler(service.Server(), &handler.PayService{Service:service})
 			//fmt.Printf("%s",c.String("server_id"))
 		}),

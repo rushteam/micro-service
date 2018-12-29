@@ -215,11 +215,18 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 		tm := model.TradeModel{}
 		tm.Save()
 		//进行真实回调任务
-		queue.PayNotify.Publish(&pay_srv.NotifyApp{})
+		// queue.PayNotify.Publish(&pay_srv.NotifyApp{})
+		//进行真实回调任务
+		ev := &pay_srv.NotifyEvent{
+			Id:        uuid.NewUUID().String(),
+			Timestamp: time.Now().Unix(),
+			Message:   "this first msg in system",
+		}
+		queue.Publish(ctx,"pay_notify",ev)
+		//返回支付成功信息
 		rsp.Result = wxpay.NotifyReplySuccess()
 		rsp.OutTradeNo = notify.OutTradeNo
 		//支付成功后
-
 	// } else if payConf.Provider == TradeAlipay { //阿里支付
 	} else {
 		return errors.BadRequest("PayService.Create", "pay channel is undefined")
