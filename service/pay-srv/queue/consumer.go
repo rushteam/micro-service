@@ -18,21 +18,25 @@ type Consumer struct{}
 //Process  Method can be of any name
 func (s *Consumer) Process(ctx context.Context, event *pay_srv.NotifyEvent) error {
 	// md, _ := metadata.FromContext(ctx)
-	log.Logf("recvied data: %+v\r\n", event)
+	log.Logf("[Consumer.Process] recvied data: %+v\r\n", event)
 	if event.Data == nil || event.Data.Url == "" || event.Data.Body == "" {
-		log.Logf("notifyEvent.Data not empty")
+		log.Logf("[Consumer.Process] notifyEvent.Data not empty")
 	}
 	var url = "http://1thx.com/"
 	// statusCode, body, err := utils.HttpPost(url, []byte(event.Message))
 	paramsReader := bytes.NewBufferString(event.Data.Body)
-	resp, err := http.Post(event.Url, "application/json", paramsReader)
+	resp, err := http.Post(event.Data.Url, "application/json", paramsReader)
 	if err != nil {
-		log.Logf(err.Error())
+		log.Logf("[Consumer.Process] post error: %s", err.Error())
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
-		log.Logf("response status code %d", resp.StatusCode)
+		log.Logf("[Consumer.Process] response status code: %d", resp.StatusCode)
 	}
 	body, err := ioutil.ReadAll(resp.Body)
+	if body != "OK" {
+		return log.Logf("[Consumer.Process] post error %s", err.Error())
+	} else {
 
+	}
 }
