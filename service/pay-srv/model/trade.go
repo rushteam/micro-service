@@ -1,6 +1,10 @@
 package model
 
-import "time"
+import (
+	"time"
+
+	"github.com/mlboy/godb/orm"
+)
 
 //TradeModel ..
 type TradeModel struct {
@@ -49,6 +53,10 @@ func (m *TradeModel) GetTradeByOrderNo(no string) (*TradeModel, error) {
 }
 
 //Save ..
-func (m TradeModel) Save() error {
+func (m *TradeModel) Save() error {
+	_, err := orm.Model(m).Update()
+	if err != nil {
+		return err
+	}
 	return nil
 }
