@@ -1,8 +1,10 @@
 package queue
 
 import (
+	"bytes"
 	"context"
-	"fmt"
+	"io/ioutil"
+	"net/http"
 
 	log "github.com/micro/go-log"
 
@@ -17,8 +19,20 @@ type Consumer struct{}
 func (s *Consumer) Process(ctx context.Context, event *pay_srv.NotifyEvent) error {
 	// md, _ := metadata.FromContext(ctx)
 	log.Logf("recvied data: %+v\r\n", event)
-	// utils.PostURL(url, params)
+	if event.Data == nil || event.Data.Url == "" || event.Data.Body == "" {
+		log.Logf("notifyEvent.Data not empty")
+	}
+	var url = "http://1thx.com/"
+	// statusCode, body, err := utils.HttpPost(url, []byte(event.Message))
+	paramsReader := bytes.NewBufferString(event.Data.Body)
+	resp, err := http.Post(event.Url, "application/json", paramsReader)
+	if err != nil {
+		log.Logf(err.Error())
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		log.Logf("response status code %d", resp.StatusCode)
+	}
+	body, err := ioutil.ReadAll(resp.Body)
 
-	return fmt.Errorf("xxx")
-	// return nil
 }
