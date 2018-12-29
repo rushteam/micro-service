@@ -67,8 +67,8 @@ func main() {
 			}
 			orm.InitDefaultDb(db)
 
-			queue.RegisterPublisher("pay_notify", micro.NewPublisher("pay_srv.pay_notify", service.Client()))
-			micro.RegisterSubscriber("pay_srv.pay_notify", service.Server(), new(queue.Consumer))
+			queue.RegisterPublisher("pay_notify", micro.NewPublisher("go.micro.evt.pay_srv.pay_notify", service.Client()))
+			micro.RegisterSubscriber("go.micro.evt.pay_srv.pay_notify", service.Server(), new(queue.Consumer))
 			pay_srv.RegisterPayServiceHandler(service.Server(), &handler.PayService{Service: service})
 			//fmt.Printf("%s",c.String("server_id"))
 		}),
