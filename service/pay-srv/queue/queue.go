@@ -20,8 +20,14 @@ func RegisterPublisher(name string, p micro.Publisher) {
 //Publish ..
 func Publish(ctx context.Context, name string, ev interface{}) error {
 	if p, ok := Queues[name]; ok {
+		if p == nil {
+			return fmt.Errorf("[queue] not found p")
+		}
 		err := p.Publish(ctx, ev)
-		return fmt.Errorf("[queue] send fail, micro.Publisher.Publish %s", err.Error())
+		if err != nil {
+			return fmt.Errorf("[queue] send fail, micro.Publisher.Publish %s", err.Error())
+		}
+		return nil
 	}
 	return fmt.Errorf("[queue] send fail, not found registered queue %s", name)
 }
