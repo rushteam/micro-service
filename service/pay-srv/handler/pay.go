@@ -16,6 +16,7 @@ import (
 	"gitee.com/rushteam/micro-service/common/pb/pay_srv"
 	"github.com/micro/go-log"
 	"github.com/micro/go-micro"
+	"github.com/pborman/uuid"
 	// "go.uber.org/zap"
 )
 const(

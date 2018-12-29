@@ -53,7 +53,7 @@ message QueryReq {
 //支付通知事件
 message NotifyEvent {
     string id =1;
-    string timestamp =2;
+    int64 timestamp =2;
     string name =3;
     string message =4;
 }

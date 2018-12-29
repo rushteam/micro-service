@@ -14,9 +14,6 @@ pay_channels:
 
 db_configs:
   default:
-      db_type: "mysql"
-			master:
-				- ""
-			slave:
-				- ""
-				- ""
+    db_type: "mysql"
+    nodes:
+      - ""

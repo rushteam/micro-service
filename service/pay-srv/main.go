@@ -1,18 +1,22 @@
 package main
 
 import (
-	"gitee.com/rushteam/micro-service/service/pay-srv/queue"
-	"gitee.com/rushteam/micro-service/common/pb/pay_srv"
-	"gitee.com/rushteam/micro-service/service/pay-srv/config"
+	"database/sql"
 	"log"
 
-	"gitee.com/rushteam/micro-service/common/db"
+	_ "github.com/go-sql-driver/mysql"
+
+	"gitee.com/rushteam/micro-service/common/pb/pay_srv"
+	"gitee.com/rushteam/micro-service/service/pay-srv/config"
+	"gitee.com/rushteam/micro-service/service/pay-srv/queue"
+	"github.com/mlboy/godb/orm"
+
+	// "gitee.com/rushteam/micro-service/common/db"
 	"gitee.com/rushteam/micro-service/common/micro/wrap"
-	"gitee.com/rushteam/micro-service/service/pay-srv/model"
 
 	"gitee.com/rushteam/micro-service/service/pay-srv/handler"
 	"github.com/micro/cli"
-	"github.com/micro/go-micro"
+	micro "github.com/micro/go-micro"
 	// "github.com/micro/go-micro/registry"
 )
 
@@ -32,14 +36,14 @@ func main() {
 				Name:   "app_db",
 				EnvVar: "MS_PAY_SRV_DB",
 				Usage:  "Db config for mysql e.g username:password@tcp(host:port)/database",
-				Value: "root:dream@tcp(127.0.0.1:3306)/rushteam",
+				Value:  "root:dream@tcp(127.0.0.1:3306)/rushteam",
 				// Value: "root:dream@tcp(mysql:3306)/rushteam",
 			},
 			cli.StringFlag{
 				Name:   "config_path",
 				EnvVar: "CONFIG_PATH",
 				Usage:  "The config PATH e.g ../config/config.yaml",
-				Value: "./config.yaml",
+				Value:  "./config.yaml",
 				// Value: "root:dream@tcp(mysql:3306)/rushteam",
 			},
 		),
@@ -59,9 +63,17 @@ func main() {
 				log.Fatal(err)
 			}
 			//初始化db
-			db.Init(config.App.DbConfig)
-			queue.Register("pay_notify",micro.NewPublisher("pay_notify", service.Client()))
-			pay_srv.RegisterPayServiceHandler(service.Server(), &handler.PayService{Service:service})
+			//config.App.DbConfig
+			dbConf := c.String("app_db")
+			dbSource := dbConf + "?" + "parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"
+			db, err := sql.Open("mysql", dbSource)
+			if err != nil {
+				log.Fatal(err)
+			}
+			orm.InitDefaultDb(db)
+
+			queue.Register("pay_notify", micro.NewPublisher("pay_notify", service.Client()))
+			pay_srv.RegisterPayServiceHandler(service.Server(), &handler.PayService{Service: service})
 			//fmt.Printf("%s",c.String("server_id"))
 		}),
 	)

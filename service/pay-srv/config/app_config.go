@@ -20,6 +20,8 @@ type AppConfig struct {
 		MchID     string `yaml:"mch_id"`
 		NotifyURL string `yaml:"notify_url"`
 	} `yaml:"pay_channels"`
+	DbConfigs struct {
+	} `yaml:"db_configs"`
 }
 
 //App ..
