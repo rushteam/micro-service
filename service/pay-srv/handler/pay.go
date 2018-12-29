@@ -181,8 +181,6 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 
 //Notify ..
 func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pay_srv.NotifyRsp) error {
-	log.Log("[access] PayService.Notify")
-
 	if req.GetChannel() == "" {
 		return errors.BadRequest("PayService.Notify", "params err, channel is undefined")
 	}
@@ -244,6 +242,6 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 
 //Query ..
 func (s *PayService) Query(ctx context.Context, req *pay_srv.QueryReq, rsp *pay_srv.PayRsp) error {
-	log.Log("[access] PayService.Query")
+	// log.Log("[access] PayService.Query")
 	return nil
 }
