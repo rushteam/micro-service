@@ -37,7 +37,7 @@ require (
 	github.com/gin-contrib/sse v0.0.0-20170109093832-22d885f9ecc7 // indirect
 	github.com/gin-gonic/gin v1.3.0
 	github.com/go-ldap/ldap v2.5.1+incompatible // indirect
-	github.com/go-log/log v0.1.0 // indirect
+	github.com/go-log/log v0.1.0
 	github.com/go-ole/go-ole v1.2.1 // indirect
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/go-test/deep v1.0.1 // indirect

@@ -12,8 +12,8 @@ var (
 	Queues = make(map[string]micro.Publisher, 0)
 )
 
-//Register ..
-func Register(name string, p micro.Publisher) {
+//RegisterPublisher 注册一个micro.Publisher
+func RegisterPublisher(name string, p micro.Publisher) {
 	Queues[name] = p
 }
 
@@ -21,7 +21,7 @@ func Register(name string, p micro.Publisher) {
 func Publish(ctx context.Context, name string, ev interface{}) error {
 	if p, ok := Queues[name]; ok {
 		err := p.Publish(ctx, ev)
-		return fmt.Errorf("[queue] send fail, micro.Publisher.Publish %s", err)
+		return fmt.Errorf("[queue] send fail, micro.Publisher.Publish %s", err.Error())
 	}
 	return fmt.Errorf("[queue] send fail, not found registered queue %s", name)
 }

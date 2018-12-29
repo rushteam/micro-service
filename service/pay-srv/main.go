@@ -52,11 +52,6 @@ func main() {
 	// var ctx = context.TODO()
 	service.Init(
 		micro.Action(func(c *cli.Context) {
-			// dbConf := c.String("app_db")
-			// dbSource := dbConf + "?" + "parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"
-			// pool := db.InitDb("mysql",dbSource,true)
-			// model.Init(pool)
-
 			configFile := c.String("config_path")
 			err := config.App.Load(configFile)
 			if err != nil {
@@ -72,7 +67,8 @@ func main() {
 			}
 			orm.InitDefaultDb(db)
 
-			queue.Register("pay_notify", micro.NewPublisher("pay_notify", service.Client()))
+			queue.RegisterPublisher("pay_notify", micro.NewPublisher("pay_srv.pay_notify", service.Client()))
+			micro.RegisterSubscriber("pay_srv.pay_notify", service.Server(), new(queue.Consumer))
 			pay_srv.RegisterPayServiceHandler(service.Server(), &handler.PayService{Service: service})
 			//fmt.Printf("%s",c.String("server_id"))
 		}),

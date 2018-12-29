@@ -210,15 +210,15 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 		}
 		// utils.FormatDate(time.Now()),
 		//修改状态
-		tm := model.TradeModel{
-			PayState: 1,
-			PayAt:    time.Now(),
-		}
-		err = tm.Save()
-		if err != nil {
-			rsp.Result = wxpay.NotifyReplyFail("交易数据存储时发生错误")
-			return errors.BadRequest("PayService.Notify", "trade data save fail")
-		}
+		// tm := model.TradeModel{
+		// 	PayState: 1,
+		// 	PayAt:    time.Now(),
+		// }
+		// err = tm.Save()
+		// if err != nil {
+		// 	rsp.Result = wxpay.NotifyReplyFail("交易数据存储时发生错误")
+		// 	return errors.BadRequest("PayService.Notify", "trade data save fail")
+		// }
 		//进行真实回调任务
 		// queue.PayNotify.Publish(&pay_srv.NotifyApp{})
 		//进行真实回调任务
