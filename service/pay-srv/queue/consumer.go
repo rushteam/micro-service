@@ -7,13 +7,10 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/mlboy/godb/builder"
-
 	"gitee.com/rushteam/micro-service/service/pay-srv/model"
 
-	"github.com/mlboy/godb/orm"
-
 	log "github.com/micro/go-log"
+	"github.com/mlboy/godb/orm"
 
 	"gitee.com/rushteam/micro-service/common/pb/pay_srv"
 	// "github.com/go-log/log"
@@ -47,8 +44,9 @@ func (s *Consumer) Process(ctx context.Context, event *pay_srv.NotifyEvent) erro
 	}
 	// todo 更新状态
 	t := model.TradeModel{}
-	orm.Model(t).Builder(func(s *builder.SQLSegments) {
-
-	})
+	// orm.Model(t).Update(func(s *builder.SQLSegments) {
+	// 	s.Where("")
+	// })
+	orm.Model(t).UpdateField("[+]notify_num", 1).Update()
 	return nil
 }
