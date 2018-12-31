@@ -40,6 +40,9 @@ type TradeModel struct {
 	//交易单号
 	PvdTradeNo string
 	//pay_field
+	//
+	NotifyUrl string
+	NotifyNum string
 }
 
 //TableName ..

@@ -15,7 +15,6 @@ It has these top-level messages:
 	NotifyRsp
 	QueryReq
 	NotifyEvent
-	PostData
 */
 package pay_srv
 

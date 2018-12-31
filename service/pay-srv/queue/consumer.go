@@ -3,8 +3,13 @@ package queue
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"io/ioutil"
 	"net/http"
+
+	"gitee.com/rushteam/micro-service/service/pay-srv/model"
+
+	"github.com/mlboy/godb/orm"
 
 	log "github.com/micro/go-log"
 
@@ -19,24 +24,27 @@ type Consumer struct{}
 func (s *Consumer) Process(ctx context.Context, event *pay_srv.NotifyEvent) error {
 	// md, _ := metadata.FromContext(ctx)
 	log.Logf("[Consumer.Process] recvied data: %+v\r\n", event)
-	if event.Data == nil || event.Data.Url == "" || event.Data.Body == "" {
+	if event.Url == "" || event.Body == "" {
 		log.Logf("[Consumer.Process] notifyEvent.Data not empty")
 	}
-	var url = "http://1thx.com/"
 	// statusCode, body, err := utils.HttpPost(url, []byte(event.Message))
-	paramsReader := bytes.NewBufferString(event.Data.Body)
-	resp, err := http.Post(event.Data.Url, "application/json", paramsReader)
+	paramsReader := bytes.NewBufferString(event.Body)
+	resp, err := http.Post(event.Url, "application/json", paramsReader)
 	if err != nil {
-		log.Logf("[Consumer.Process] post error: %s", err.Error())
+		log.Logf("[Consumer.Process] failed,post error: %s", err.Error())
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
-		log.Logf("[Consumer.Process] response status code: %d", resp.StatusCode)
+		log.Logf("[Consumer.Process] failed,response status code: %d", resp.StatusCode)
 	}
 	body, err := ioutil.ReadAll(resp.Body)
-	if body != "OK" {
-		return log.Logf("[Consumer.Process] post error %s", err.Error())
-	} else {
-
+	data := string(body)
+	fmt.Println(string(body))
+	if data != "OK" {
+		return fmt.Errorf("[Consumer.Process] failed,return %s", data)
 	}
+	// todo 更新状态
+	t := model.TradeModel{}
+	orm.Model(t).Update().Where()
+	return nil
 }

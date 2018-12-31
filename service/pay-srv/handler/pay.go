@@ -223,7 +223,9 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 		ev := &pay_srv.NotifyEvent{
 			Id:        uuid.NewUUID().String(),
 			Timestamp: time.Now().Unix(),
-			Message:   "this first msg in system",
+			Name:      "this first msg in system",
+			Url:       "https://1thx.com",
+			Body:      "{}",
 		}
 		err = queue.Publish(ctx, "pay_notify", ev)
 		if err != nil {
