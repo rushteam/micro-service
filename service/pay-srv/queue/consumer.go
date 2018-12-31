@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/mlboy/godb/builder"
+
 	"gitee.com/rushteam/micro-service/service/pay-srv/model"
 
 	"github.com/mlboy/godb/orm"
@@ -45,6 +47,8 @@ func (s *Consumer) Process(ctx context.Context, event *pay_srv.NotifyEvent) erro
 	}
 	// todo 更新状态
 	t := model.TradeModel{}
-	orm.Model(t).Update().Where()
+	orm.Model(t).Builder(func(s *builder.SQLSegments) {
+
+	})
 	return nil
 }
