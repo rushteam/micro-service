@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/pborman/uuid"
+
 	"github.com/mlboy/godb/orm"
 
 	"gitee.com/rushteam/micro-service/common/sdk/wxsdk/wxpay"
@@ -226,35 +228,39 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 			rsp.Result = wxpay.NotifyReplyFail("签名校验失败")
 			return nil
 		}
+		if notify.OutTradeNo == "" {
+			rsp.Result = wxpay.NotifyReplyFail("缺少订单号数据")
+			return nil
+		}
 		//查找订单
 		tm := &model.TradeModel{}
 		err = orm.Model(tm).Where("pvd_out_trade_no", notify.OutTradeNo).Find()
 		if err != nil {
 			log.Logf("PayService.Notify not_found_trade_record %+v", notify)
-			return errors.BadRequest("PayService.Notify", fmt.Sprintf("not found trade record ,pvd_out_trade_no=%s", notify.OutTradeNo))
+			return errors.BadRequest("PayService.Notify", fmt.Sprintf("not found trade record, pvd_out_trade_no=%s", notify.OutTradeNo))
 		}
 
 		// utils.FormatDate(time.Now()),
 		//修改状态
 		tm.PayState = 1
 		tm.PayAt = time.Now()
-		_, err := orm.Model(tm).Where("pvd_out_trade_no", notify.OutTradeNo).Update()
+		_, err = orm.Model(tm).Where("pvd_out_trade_no", notify.OutTradeNo).Update()
 		if err != nil {
 			rsp.Result = wxpay.NotifyReplyFail("存储交易数据时发生错误")
 			return errors.BadRequest("PayService.Notify", "Failed update trade record")
 		}
 		body := struct {
-			OutTradeNo string `json:"out_trade_no"`	//三方单号
-			TotalFee   int    `json:"total_fee"`	//支付金额
-			PayTime      string `json:"total_fee"` //支付时间
-			Raw      string `json:"raw"` //原始数据
+			OutTradeNo string `json:"out_trade_no"` //三方单号
+			TotalFee   int64  `json:"total_fee"`    //支付金额
+			PayTime    string `json:"total_fee"`    //支付时间
+			Raw        string `json:"raw"`          //原始数据
 		}{
 			OutTradeNo: tm.OutTradeNo,
 			TotalFee:   tm.TotalFee,
 			PayTime:    utils.FormatDate(tm.PayAt),
-			Raw: raw
+			Raw:        raw,
 		}
-		bodyByte,_ := json.Marshal(body)
+		bodyByte, _ := json.Marshal(body)
 		if err != nil {
 			rsp.Result = wxpay.NotifyReplyFail("转码交易数据时发生错误")
 			return errors.BadRequest("PayService.Notify", "Failed json.marshal trade record")

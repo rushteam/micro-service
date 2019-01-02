@@ -48,6 +48,7 @@ require (
 	github.com/google/go-cmp v0.2.0 // indirect
 	github.com/google/go-github v17.0.0+incompatible // indirect
 	github.com/google/go-querystring v1.0.0 // indirect
+	github.com/google/uuid v1.0.0
 	github.com/gotestyourself/gotestyourself v2.1.0+incompatible // indirect
 	github.com/hashicorp/consul v1.3.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.0 // indirect

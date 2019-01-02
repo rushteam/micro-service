@@ -50,6 +50,9 @@ func (s *Consumer) Process(ctx context.Context, event *pay_srv.NotifyEvent) erro
 	// orm.Model(t).UpdateField("[+]notify_num", 1).Update()
 	// orm.Exec("")
 	// orm.Model(t).Update()
-	_, err := orm.Model(t).UpdateField("[+]notify_num", 1).Where("pvd_out_trade_no", event.Id).Update()
+	_, err = orm.Model(t).UpdateField("[+]notify_num", 1).Where("pvd_out_trade_no", event.Id).Update()
+	if err != nil {
+		return err
+	}
 	return nil
 }
