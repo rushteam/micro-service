@@ -10,7 +10,7 @@ import (
 type AppConfig struct {
 	Apps map[string]struct {
 		Secret      string   `yaml:"secret"`
-		PayChannels []string `yaml:"channels"`
+		PayChannels []string `yaml:"pay_channels"`
 	} `yaml:"apps"`
 	PayChannels map[string]struct {
 		Name      string `yaml:"name"`

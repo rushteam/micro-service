@@ -39,8 +39,10 @@ type TradeModel struct {
 	PvdOutTradeNo string
 	//交易单号
 	PvdTradeNo string
+	//第三方通知url
+	PvdNotifyUrl string
 	//pay_field
-	//
+	//通知url
 	NotifyUrl string
 	NotifyNum string
 }

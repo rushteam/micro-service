@@ -105,8 +105,8 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	tradeModel.Subject = req.GetSubject()
 	tradeModel.FromIp = req.GetFromIp()
 	tradeModel.TradeType = req.GetTradeType()
-	tradeModel.PvdOutTradeNo = tradeModel.OutTradeNo //暂时透传 应用方的第三方单号
-	tradeModel.PvdTradeNo = ""                       //调用第三方支付成功后赋值
+	tradeModel.PvdOutTradeNo = clientID + "_" + tradeModel.OutTradeNo //暂时透传 应用方的第三方单号
+	// tradeModel.PvdTradeNo = ""                       //调用第三方支付成功后赋值
 	tradeModel.Provider = payConf.Provider
 
 	if tradeModel.Provider == TradeWxpay { //微信
@@ -114,12 +114,12 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 		order.AppID = tradeModel.PvdAppid
 		order.MchID = tradeModel.PvdMchId
 
-		order.OutTradeNo = tradeModel.OutTradeNo //商户订单号
-		order.TotalFee = tradeModel.TotalFee     //订单总金额，单位为分
-		order.FeeType = "RMB"                    //标价币种 目前写死
-		order.Body = tradeModel.Subject          //商品描述 128
-		order.NotifyURL = payConf.NotifyURL      //异步通知地址
-		order.TradeType = tradeModel.TradeType   //TradeType  (JSAPI|NATIVE)
+		order.OutTradeNo = tradeModel.PvdOutTradeNo //商户订单号
+		order.TotalFee = tradeModel.TotalFee        //订单总金额，单位为分
+		order.FeeType = "RMB"                       //标价币种 目前写死
+		order.Body = tradeModel.Subject             //商品描述 128
+		order.NotifyURL = payConf.NotifyURL         //异步通知地址
+		order.TradeType = tradeModel.TradeType      //TradeType  (JSAPI|NATIVE)
 
 		if tradeModel.TradeType == TradeTypeWxJsAPI {
 			//仅在 TradeType=JSAPI 时必须
