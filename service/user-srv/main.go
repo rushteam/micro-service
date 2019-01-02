@@ -44,7 +44,6 @@ func main() {
 			// user_srv.RegisterUserServiceHandler(service.Server(), handler.NewUserServiceHandler(ctx))
 		}),
 	)
-
 	if err := service.Run(); err != nil {
 		log.Fatal(err)
 	}
