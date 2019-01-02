@@ -92,6 +92,15 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	if !ok {
 		return errors.BadRequest("PayService.Create", "not found channel for pay: "+payChannelID)
 	}
+	if payConf.MchID == "" {
+		return errors.BadRequest("PayService.Create", fmt.Sprintf("channel(%s) info is incomplete", payChannelID))
+	}
+	if payConf.AppID == "" {
+		return errors.BadRequest("PayService.Create", fmt.Sprintf("channel(%s) info is incomplete", payChannelID))
+	}
+	if payConf.NotifyURL == "" {
+		return errors.BadRequest("PayService.Create", fmt.Sprintf("channel(%s) info is incomplete", payChannelID))
+	}
 
 	//生成 订单信息
 	tradeModel := model.TradeModel{}
@@ -105,6 +114,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	tradeModel.Subject = req.GetSubject()
 	tradeModel.FromIp = req.GetFromIp()
 	tradeModel.TradeType = req.GetTradeType()
+	tradeModel.PvdNotifyUrl = payConf.NotifyURL
 	tradeModel.PvdOutTradeNo = clientID + "_" + tradeModel.OutTradeNo //暂时透传 应用方的第三方单号
 	// tradeModel.PvdTradeNo = ""                       //调用第三方支付成功后赋值
 	tradeModel.Provider = payConf.Provider
