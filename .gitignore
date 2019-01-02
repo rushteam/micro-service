@@ -15,5 +15,6 @@
 .DS_Store
 
 /.micro-service.deploy/mysql/data/
+/.deploy/
 /.idea/
 /docker/
