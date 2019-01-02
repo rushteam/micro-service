@@ -120,6 +120,12 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	// tradeModel.PvdTradeNo = ""                       //调用第三方支付成功后赋值
 	tradeModel.Provider = payConf.Provider
 
+	//保存订单到数据库
+	_, err = orm.Model(tradeModel).Insert()
+	if err != nil {
+		return errors.BadRequest("PayService.Create", "insert trade record error")
+	}
+
 	if tradeModel.Provider == TradeWxpay { //微信
 		order := &wxpay.UnifiedOrderReq{}
 		order.AppID = tradeModel.PvdAppid
@@ -186,11 +192,12 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	} else {
 		return errors.BadRequest("PayService.Create", "pay channel is undefined")
 	}
-	res, err := orm.Model(tradeModel).Insert()
-	if err != nil {
-		return errors.BadRequest("PayService.Create", "save order error")
-	}
 	//保存订单到数据库
+	_, err = orm.Model(tradeModel).Update()
+	if err != nil {
+		return errors.BadRequest("PayService.Create", "save trade record error")
+	}
+
 	return nil
 }
 
