@@ -48,6 +48,7 @@ func (s *Consumer) Process(ctx context.Context, event *pay_srv.NotifyEvent) erro
 	// 	s.Where("")
 	// })
 	// orm.Model(t).UpdateField("[+]notify_num", 1).Update()
+	// orm.Exec("")
 	orm.Model(t).Update()
 	fmt.Println()
 	return nil
