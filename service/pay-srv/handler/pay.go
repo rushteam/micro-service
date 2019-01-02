@@ -19,7 +19,6 @@ import (
 	"gitee.com/rushteam/micro-service/common/pb/pay_srv"
 	log "github.com/micro/go-log"
 	micro "github.com/micro/go-micro"
-	"github.com/pborman/uuid"
 	// "go.uber.org/zap"
 )
 
@@ -239,21 +238,34 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 		//修改状态
 		tm.PayState = 1
 		tm.PayAt = time.Now()
-		orm.Model(tm).Where("pvd_out_trade_no", notify.OutTradeNo).Update()
-		// err = tm.Save()
-		// if err != nil {
-		// 	rsp.Result = wxpay.NotifyReplyFail("交易数据存储时发生错误")
-		// 	return errors.BadRequest("PayService.Notify", "trade data save fail")
-		// }
-		//进行真实回调任务
-		// queue.PayNotify.Publish(&pay_srv.NotifyApp{})
+		_, err := orm.Model(tm).Where("pvd_out_trade_no", notify.OutTradeNo).Update()
+		if err != nil {
+			rsp.Result = wxpay.NotifyReplyFail("存储交易数据时发生错误")
+			return errors.BadRequest("PayService.Notify", "Failed update trade record")
+		}
+		body := struct {
+			OutTradeNo string `json:"out_trade_no"`	//三方单号
+			TotalFee   int    `json:"total_fee"`	//支付金额
+			PayTime      string `json:"total_fee"` //支付时间
+			Raw      string `json:"raw"` //原始数据
+		}{
+			OutTradeNo: tm.OutTradeNo,
+			TotalFee:   tm.TotalFee,
+			PayTime:    utils.FormatDate(tm.PayAt),
+			Raw: raw
+		}
+		bodyByte,_ := json.Marshal(body)
+		if err != nil {
+			rsp.Result = wxpay.NotifyReplyFail("转码交易数据时发生错误")
+			return errors.BadRequest("PayService.Notify", "Failed json.marshal trade record")
+		}
 		//进行真实回调任务
 		ev := &pay_srv.NotifyEvent{
 			Id:        uuid.NewUUID().String(),
 			Timestamp: time.Now().Unix(),
-			Name:      "this first msg in system",
-			Url:       "https://1thx.com",
-			Body:      "{}",
+			Name:      "pay_notify",
+			Url:       tm.NotifyUrl,
+			Body:      string(bodyByte),
 		}
 		err = queue.Publish(ctx, "pay_notify", ev)
 		if err != nil {
