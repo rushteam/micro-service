@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/mlboy/godb/orm"
+
 	"gitee.com/rushteam/micro-service/common/sdk/wxsdk/wxpay"
 	"gitee.com/rushteam/micro-service/common/utils"
 	"gitee.com/rushteam/micro-service/service/pay-srv/config"
@@ -102,7 +104,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	}
 
 	//生成 订单信息
-	tradeModel := model.TradeModel{}
+	tradeModel := &model.TradeModel{}
 	tradeModel.ClientId = clientID
 	tradeModel.PvdMchId = payConf.MchID
 	tradeModel.PvdAppid = payConf.AppID
@@ -183,6 +185,10 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 		return errors.BadRequest("PayService.Create", "alipay channel is undefined")
 	} else {
 		return errors.BadRequest("PayService.Create", "pay channel is undefined")
+	}
+	res, err := orm.Model(tradeModel).Insert()
+	if err != nil {
+		return errors.BadRequest("PayService.Create", "save order error")
 	}
 	//保存订单到数据库
 	return nil
