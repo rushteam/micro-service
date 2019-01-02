@@ -197,7 +197,6 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	if err != nil {
 		return errors.BadRequest("PayService.Create", "save trade record error")
 	}
-
 	return nil
 }
 
@@ -230,10 +229,11 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 		}
 		// utils.FormatDate(time.Now()),
 		//修改状态
-		// tm := model.TradeModel{
-		// 	PayState: 1,
-		// 	PayAt:    time.Now(),
-		// }
+		tm := model.TradeModel{
+			ID
+			PayState: 1,
+			PayAt:    time.Now(),
+		}
 		// err = tm.Save()
 		// if err != nil {
 		// 	rsp.Result = wxpay.NotifyReplyFail("交易数据存储时发生错误")
