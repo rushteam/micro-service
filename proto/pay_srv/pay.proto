@@ -48,7 +48,7 @@ message NotifyRsp {
 
 }
 message QueryReq {
-    string out_trade_no=3;//交易号、订单号
+    string uni_trade_no=3;//交易号、订单号
 }
 //支付通知事件
 message NotifyEvent {

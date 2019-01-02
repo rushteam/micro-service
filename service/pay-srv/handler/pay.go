@@ -87,7 +87,6 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	if isAblePayChannel == false {
 		return errors.BadRequest("PayService.Create", "not found channel for pay in this client: "+payChannelID)
 	}
-
 	payConf, ok := config.App.PayChannels[payChannelID]
 	if !ok {
 		return errors.BadRequest("PayService.Create", "not found channel for pay: "+payChannelID)
@@ -115,7 +114,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	tradeModel.FromIp = req.GetFromIp()
 	tradeModel.TradeType = req.GetTradeType()
 	tradeModel.PvdNotifyUrl = payConf.NotifyURL
-	tradeModel.PvdOutTradeNo = clientID + "_" + tradeModel.OutTradeNo //暂时透传 应用方的第三方单号
+	tradeModel.PvdOutTradeNo = tradeModel.OutTradeNo //暂时透传 应用方的第三方单号
 	// tradeModel.PvdTradeNo = ""                       //调用第三方支付成功后赋值
 	tradeModel.Provider = payConf.Provider
 
@@ -158,8 +157,8 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 		//rsp.ClientId = tradeModel.ClientId
 		payField := &pay_srv.PayField{
 			AppId:      tradeModel.PvdAppid,
-			OutTradeNo: tradeModel.OutTradeNo,
-			TradeNo:    tradeModel.TradeNo,
+			OutTradeNo: tradeModel.PvdOutTradeNo,
+			TradeNo:    tradeModel.PvdTradeNo,
 			TotalFee:   tradeModel.TotalFee,
 			FieldStr:   "",
 		}

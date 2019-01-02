@@ -114,7 +114,7 @@ type PayServiceHandler interface {
 	Query(context.Context, *QueryReq, *PayRsp) error
 }
 
-func RegisterPayServiceHandler(s server.Server, hdlr PayServiceHandler, opts ...server.HandlerOption) {
+func RegisterPayServiceHandler(s server.Server, hdlr PayServiceHandler, opts ...server.HandlerOption) error {
 	type payService interface {
 		Create(ctx context.Context, in *CreateReq, out *PayRsp) error
 		Notify(ctx context.Context, in *NotifyReq, out *NotifyRsp) error
@@ -124,7 +124,7 @@ func RegisterPayServiceHandler(s server.Server, hdlr PayServiceHandler, opts ...
 		payService
 	}
 	h := &payServiceHandler{hdlr}
-	s.Handle(s.NewHandler(&PayService{h}, opts...))
+	return s.Handle(s.NewHandler(&PayService{h}, opts...))
 }
 
 type payServiceHandler struct {
