@@ -9,11 +9,11 @@ import (
 //TradeModel ..
 type TradeModel struct {
 	//交易单号
-	TradeNo string `db:"trade_no,pk"`
-	//商户号
-	ClientId string `db:"client_id"`
+	TradeNo string `db:"trade_de"`
 	//外部交易号、订单号
 	OutTradeNo string `db:"out_trade_no"`
+	//商户号
+	ClientId string `db:"client_id"`
 	//交易渠道 (微信支\付宝)
 	Channel string `db:"channel"`
 	//支付金额
@@ -41,7 +41,7 @@ type TradeModel struct {
 	//三方订单号
 	PvdOutTradeNo string `db:"pvd_out_trade_no"`
 	//三方交易单号
-	PvdTradeNo string `db:"pvd_out_trade_no"`
+	PvdTradeNo string `db:"pvd_trade_no"`
 	//三方异步通知url
 	PvdNotifyUrl string `db:"pvd_notify_url"`
 }

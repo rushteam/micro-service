@@ -227,13 +227,19 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 			rsp.Result = wxpay.NotifyReplyFail("签名校验失败")
 			return nil
 		}
+		//查找订单
+		tm := &model.TradeModel{}
+		err = orm.Model(tm).Where("pvd_out_trade_no", notify.OutTradeNo).Find()
+		if err != nil {
+			log.Logf("PayService.Notify not_found_trade_record %+v", notify)
+			return errors.BadRequest("PayService.Notify", fmt.Sprintf("not found trade record ,pvd_out_trade_no=%s", notify.OutTradeNo))
+		}
+
 		// utils.FormatDate(time.Now()),
 		//修改状态
-		tm := model.TradeModel{
-			ID
-			PayState: 1,
-			PayAt:    time.Now(),
-		}
+		tm.PayState = 1
+		tm.PayAt = time.Now()
+		orm.Model(tm).Where("pvd_out_trade_no", notify.OutTradeNo).Update()
 		// err = tm.Save()
 		// if err != nil {
 		// 	rsp.Result = wxpay.NotifyReplyFail("交易数据存储时发生错误")
