@@ -6,6 +6,9 @@ import (
 	"github.com/mlboy/godb/orm"
 )
 
+/*
+create
+*/
 //TradeModel ..
 type TradeModel struct {
 	//交易单号
@@ -18,6 +21,8 @@ type TradeModel struct {
 	Channel string `db:"channel"`
 	//支付金额
 	TotalFee int64 `db:"total_fee"`
+	//币种
+	FeeType string `db:"fee_type"`
 	//交易方式 (JSAPI\NATIVE)
 	TradeType string `db:"trade_type"`
 	//交易标题
@@ -25,7 +30,7 @@ type TradeModel struct {
 	//交易来源ip
 	FromIp string `db:"from_ip"`
 	//支付状态
-	PayState int64 `db:"pay_statte"`
+	PayState int64 `db:"pay_state"`
 	//支付时间
 	PayAt time.Time `db:"pay_at"`
 	//通知url
@@ -43,7 +48,7 @@ type TradeModel struct {
 	//三方交易单号
 	PvdTradeNo string `db:"pvd_trade_no"`
 	//三方异步通知url
-	PvdNotifyUrl string `db:"pvd_notify_url"`
+	PvdNotifyUrl string `db:"-"`
 }
 
 //TableName ..
