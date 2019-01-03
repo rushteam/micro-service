@@ -65,6 +65,9 @@ func validateCreateReq(req *pay_srv.CreateReq) error {
 	if req.GetSubject() == "" {
 		return errors.BadRequest("PayService.Create", "params err, subject is undefined")
 	}
+	if req.GetNotifyUrl() == "" {
+		return errors.BadRequest("PayService.Create", "params err, notify_url is undefined")
+	}
 	return nil
 }
 
@@ -110,7 +113,6 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	//生成单号
 	sn, _ := snowflake.NewSnowFlake(1)
 	payNo := strconv.FormatUint(sn.Next(), 10)
-	fmt.Println(payNo)
 	if payNo == "" {
 		return errors.BadRequest("PayService.Create", "not created payNo ")
 	}
@@ -125,6 +127,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	tradeModel.OutPayNo = req.GetOutPayNo()
 	tradeModel.TotalFee = req.GetTotalFee()
 	tradeModel.Subject = req.GetSubject()
+	tradeModel.NotifyURL = req.GetNotifyUrl()
 	tradeModel.FromIP = req.GetFromIp()
 	tradeModel.TradeType = req.GetTradeType()
 	tradeModel.PvdNotifyURL = payConf.NotifyURL

@@ -25,34 +25,46 @@ func (s *Consumer) Process(ctx context.Context, event *pay_srv.NotifyEvent) erro
 	log.Logf("[Consumer.Process] recvied data: %+v\r\n", event)
 	if event.GetUrl() == "" || event.GetBody() == "" || event.GetPayNo() == "" {
 		log.Logf("[Consumer.Process] notifyEvent.Data not empty")
+		return fmt.Errorf("[Consumer.Process] notifyEvent.Data not empty")
 	}
-	// statusCode, body, err := utils.HttpPost(url, []byte(event.Message))
 	paramsReader := bytes.NewBufferString(event.Body)
 	resp, err := http.Post(event.Url, "application/json", paramsReader)
 	if err != nil {
 		log.Logf("[Consumer.Process] failed,post error: %s", err.Error())
+		return fmt.Errorf("[Consumer.Process] notifyEvent.Data not empty")
 	}
 	defer resp.Body.Close()
+	var state = true
 	if resp.StatusCode != http.StatusOK {
 		log.Logf("[Consumer.Process] failed,response status code: %d", resp.StatusCode)
+		state = false
 	}
 	body, err := ioutil.ReadAll(resp.Body)
 	data := string(body)
-	fmt.Println(string(body))
 	if data != "OK" {
-		return fmt.Errorf("[Consumer.Process] failed,return %s", data)
+		log.Logf("[Consumer.Process] failed,return %s", data)
+		state = false
 	}
-	// todo 更新状态
-	t := model.TradeModel{}
-	// orm.Model(t).Update(func(s *builder.SQLSegments) {
-	// 	s.Where("")
-	// })
-	// orm.Model(t).UpdateField("[+]notify_num", 1).Update()
-	// orm.Exec("")
-	// orm.Model(t).Update()
-	_, err = orm.Model(t).UpdateField("[+]notify_num", 1).Where("pay_no", event.GetPayNo()).Update()
+	//更新状态
+	t := &model.TradeModel{}
+	if state == false {
+		_, err = orm.Model(t).UpdateField("[+]notify_num", 1).Where("pay_no", event.GetPayNo()).Update()
+		if err != nil {
+			return fmt.Errorf("failed %s", err.Error())
+		}
+		return fmt.Errorf("failed")
+
+	}
+	_, err = orm.Model(t).UpdateField("[+]notify_num", 1).UpdateField("[+]notify_state", 1).Where("pay_no", event.GetPayNo()).Update()
 	if err != nil {
 		return err
 	}
 	return nil
 }
+
+// orm.Model(t).Update(func(s *builder.SQLSegments) {
+// 	s.Where("")
+// })
+// orm.Model(t).UpdateField("[+]notify_num", 1).Update()
+// orm.Exec("")
+// orm.Model(t).Update()
