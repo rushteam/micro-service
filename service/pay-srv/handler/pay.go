@@ -41,8 +41,8 @@ type PayService struct {
 
 //validateCreateReq
 func validateCreateReq(req *pay_srv.CreateReq) error {
-	if req.GetOutTradeNo() == "" {
-		return errors.BadRequest("PayService.Create", "params err, out_trade_no is undefined")
+	if req.GetOutPayNo() == "" {
+		return errors.BadRequest("PayService.Create", "params err, out_pay_no is undefined")
 	}
 	if req.GetClientId() == "" {
 		return errors.BadRequest("PayService.Create", "params err, client_id is undefined")
