@@ -110,6 +110,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	//生成单号
 	sn, _ := snowflake.NewSnowFlake(1)
 	payNo := strconv.FormatUint(sn.Next(), 10)
+	fmt.Println(payNo)
 	if payNo == "" {
 		return errors.BadRequest("PayService.Create", "not created payNo ")
 	}
@@ -134,7 +135,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	//保存订单到数据库
 	_, err = orm.Model(tradeModel).Insert()
 	if err != nil {
-		return errors.BadRequest("PayService.Create", "insert trade record error")
+		return errors.BadRequest("PayService.Create", "insert trade record error "+err.Error())
 	}
 	if tradeModel.Provider == TradeWxpay { //微信
 		order := &wxpay.UnifiedOrderReq{}
