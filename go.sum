@@ -287,6 +287,8 @@ github.com/mlboy/godb v0.0.0-20190102184331-2440cc2e37fe h1:4wy8T5T8IBhTLcTwPhxo
 github.com/mlboy/godb v0.0.0-20190102184331-2440cc2e37fe/go.mod h1:SWEL27w9g2y5aci7WHYDzY7uDoeRPoqDUTTXEGbTKVg=
 github.com/mlboy/godb v0.0.0-20190103162736-f40169bddeb7 h1:RhH8V3lblyZPPsyjIx3iyfaCEs6PyN8K+qcqXCZ4GVU=
 github.com/mlboy/godb v0.0.0-20190103162736-f40169bddeb7/go.mod h1:SWEL27w9g2y5aci7WHYDzY7uDoeRPoqDUTTXEGbTKVg=
+github.com/mlboy/godb v0.0.0-20190103180501-f913e3c09e16 h1:tZ5VIY1eRYHRlqINAugu6wgGiAIl/A3eLwupLEkhRu8=
+github.com/mlboy/godb v0.0.0-20190103180501-f913e3c09e16/go.mod h1:SWEL27w9g2y5aci7WHYDzY7uDoeRPoqDUTTXEGbTKVg=
 github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd h1:TRLaZ9cD/w8PVh93nsPXa1VrQ6jlwL5oN8l14QlcNfg=
 github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd/go.mod h1:6dJC0mAP4ikYIbvyc7fijjWJddQyLn8Ig3JB5CqoB9Q=
 github.com/modern-go/reflect2 v1.0.1 h1:9f412s+6RmYXLWZSEzVVgPGK7C2PphHj5RJrvfx9AWI=
