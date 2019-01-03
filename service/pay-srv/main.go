@@ -60,7 +60,7 @@ func main() {
 			//初始化db
 			//config.App.DbConfig
 			dbConf := c.String("app_db")
-			dbSource := dbConf + "?" + "parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"
+			dbSource := dbConf + "?" + "parseTime=true&loc=Local&readTimeout=3s&writeTimeout=3s&timeout=3s"
 			db, err := sql.Open("mysql", dbSource)
 			if err != nil {
 				log.Fatal(err)
