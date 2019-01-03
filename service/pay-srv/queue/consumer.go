@@ -34,30 +34,37 @@ func (s *Consumer) Process(ctx context.Context, event *pay_srv.NotifyEvent) erro
 		return fmt.Errorf("[Consumer.Process] notifyEvent.Data not empty")
 	}
 	defer resp.Body.Close()
-	var state = true
-	if resp.StatusCode != http.StatusOK {
-		log.Logf("[Consumer.Process] failed,response status code: %d", resp.StatusCode)
-		state = false
-	}
-	body, err := ioutil.ReadAll(resp.Body)
-	data := string(body)
-	if data != "OK" {
-		log.Logf("[Consumer.Process] failed,return %s", data)
-		state = false
+	var state = false
+	for {
+		if resp.StatusCode != http.StatusOK {
+			log.Logf("[Consumer.Process] failed,response status code: %d", resp.StatusCode)
+			break
+		}
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Logf("[Consumer.Process] failed,read %s", err)
+			break
+		}
+		data := string(body)
+		if data != "OK" {
+			log.Logf("[Consumer.Process] failed,return %s", data)
+			break
+		}
+		state = true
+		break
 	}
 	//更新状态
 	t := &model.TradeModel{}
 	if state == false {
 		_, err = orm.Model(t).UpdateField("[+]notify_num", 1).Where("pay_no", event.GetPayNo()).Update()
 		if err != nil {
-			return fmt.Errorf("failed %s", err.Error())
+			log.Logf("[Consumer.Process] ERROR update error %s", err.Error())
 		}
 		return fmt.Errorf("failed")
-
 	}
 	_, err = orm.Model(t).UpdateField("[+]notify_num", 1).UpdateField("[+]notify_state", 1).Where("pay_no", event.GetPayNo()).Update()
 	if err != nil {
-		return err
+		log.Logf("[Consumer.Process] INFO update error %s", err.Error())
 	}
 	return nil
 }
