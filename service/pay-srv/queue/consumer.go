@@ -23,7 +23,7 @@ type Consumer struct{}
 func (s *Consumer) Process(ctx context.Context, event *pay_srv.NotifyEvent) error {
 	// md, _ := metadata.FromContext(ctx)
 	log.Logf("[Consumer.Process] recvied data: %+v\r\n", event)
-	if event.Url == "" || event.Body == "" {
+	if event.Url() == "" || event.Body() == "" || event.GetPayNo() {
 		log.Logf("[Consumer.Process] notifyEvent.Data not empty")
 	}
 	// statusCode, body, err := utils.HttpPost(url, []byte(event.Message))
@@ -50,7 +50,7 @@ func (s *Consumer) Process(ctx context.Context, event *pay_srv.NotifyEvent) erro
 	// orm.Model(t).UpdateField("[+]notify_num", 1).Update()
 	// orm.Exec("")
 	// orm.Model(t).Update()
-	_, err = orm.Model(t).UpdateField("[+]notify_num", 1).Where("pvd_out_trade_no", event.Id).Update()
+	_, err = orm.Model(t).UpdateField("[+]notify_num", 1).Where("pay_no", event.GetPayNo()).Update()
 	if err != nil {
 		return err
 	}

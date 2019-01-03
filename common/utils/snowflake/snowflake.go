@@ -46,7 +46,16 @@ func NewSnowFlake(workerID uint32) (*SnowFlake, error) {
 }
 
 // Next generates the next unique ID.
-func (sf *SnowFlake) Next() (uint64, error) {
+func (sf *SnowFlake) Next() uint64 {
+	n, err := sf.MustNext()
+	if err != nil {
+		n = 0
+	}
+	return n
+}
+
+// Next generates the next unique ID.
+func (sf *SnowFlake) MustNext() (uint64, error) {
 	sf.lock.Lock()
 	defer sf.lock.Unlock()
 

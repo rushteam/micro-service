@@ -35,7 +35,7 @@ CREATE TABLE `pay_trade` (
 //TradeModel ..
 type TradeModel struct {
 	//交易单号
-	PayID string `db:"pay_id"`
+	PayNo string `db:"pay_no"`
 	//外部交易号、订单号
 	OutPayNo string `db:"out_pay_no"`
 	//商户号

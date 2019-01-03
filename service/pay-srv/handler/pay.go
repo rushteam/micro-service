@@ -4,7 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"time"
+
+	"gitee.com/rushteam/micro-service/common/utils/snowflake"
 
 	"github.com/pborman/uuid"
 
@@ -41,8 +44,8 @@ type PayService struct {
 
 //validateCreateReq
 func validateCreateReq(req *pay_srv.CreateReq) error {
-	if req.GetOutTradeNo() == "" {
-		return errors.BadRequest("PayService.Create", "params err, out_trade_no is undefined")
+	if req.GetOutPayNo() == "" {
+		return errors.BadRequest("PayService.Create", "params err, out_pay_no is undefined")
 	}
 	if req.GetClientId() == "" {
 		return errors.BadRequest("PayService.Create", "params err, client_id is undefined")
@@ -104,14 +107,21 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 		return errors.BadRequest("PayService.Create", fmt.Sprintf("channel(%s) info is incomplete", payChannelID))
 	}
 
+	//生成单号
+	sn, _ := snowflake.NewSnowFlake(1)
+	payNo := strconv.FormatUint(sn.Next(), 10)
+	if payNo == "" {
+		return errors.BadRequest("PayService.Create", "not created payNo ")
+	}
 	//生成 订单信息
 	tradeModel := &model.TradeModel{}
+	tradeModel.PayNo = payNo //第三方单号 使用网关支付号
 	tradeModel.ClientID = clientID
 	tradeModel.PvdMchID = payConf.MchID
 	tradeModel.PvdAppID = payConf.AppID
 	tradeModel.Channel = payChannelID
 
-	tradeModel.OutPayNo = req.GetOutTradeNo()
+	tradeModel.OutPayNo = req.GetOutPayNo()
 	tradeModel.TotalFee = req.GetTotalFee()
 	tradeModel.Subject = req.GetSubject()
 	tradeModel.FromIP = req.GetFromIp()
@@ -126,19 +136,17 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	if err != nil {
 		return errors.BadRequest("PayService.Create", "insert trade record error")
 	}
-	tradeModel.PvdOutTradeNo = tradeModel.OutPayNo //暂时透传 应用方的第三方单号
-
 	if tradeModel.Provider == TradeWxpay { //微信
 		order := &wxpay.UnifiedOrderReq{}
 		order.AppID = tradeModel.PvdAppID
 		order.MchID = tradeModel.PvdMchID
 
-		order.OutTradeNo = tradeModel.PvdOutTradeNo //商户订单号
-		order.TotalFee = tradeModel.TotalFee        //订单总金额，单位为分
-		order.FeeType = tradeModel.FeeType          //标价币种 目前写死
-		order.Body = tradeModel.Subject             //商品描述 128
-		order.NotifyURL = payConf.NotifyURL         //异步通知地址
-		order.TradeType = tradeModel.TradeType      //TradeType  (JSAPI|NATIVE)
+		order.OutTradeNo = payNo               //商户订单号
+		order.TotalFee = tradeModel.TotalFee   //订单总金额，单位为分
+		order.FeeType = tradeModel.FeeType     //标价币种 目前写死
+		order.Body = tradeModel.Subject        //商品描述 128
+		order.NotifyURL = payConf.NotifyURL    //异步通知地址
+		order.TradeType = tradeModel.TradeType //TradeType  (JSAPI|NATIVE)
 
 		if tradeModel.TradeType == TradeTypeWxJsAPI {
 			//仅在 TradeType=JSAPI 时必须
@@ -167,7 +175,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 		//rsp.ClientId = tradeModel.ClientId
 		payField := &pay_srv.PayField{
 			AppId:      tradeModel.PvdAppID,
-			OutTradeNo: tradeModel.PvdOutTradeNo,
+			OutTradeNo: payNo,
 			TradeNo:    tradeModel.PvdTradeNo,
 			TotalFee:   tradeModel.TotalFee,
 			FieldStr:   "",
@@ -233,19 +241,21 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 			rsp.Result = wxpay.NotifyReplyFail("缺少订单号数据")
 			return nil
 		}
+		//支付成功后
+
 		//查找订单
 		tm := &model.TradeModel{}
-		err = orm.Model(tm).Where("out_pay_no", notify.OutTradeNo).Find()
+		err = orm.Model(tm).Where("pay_no", notify.OutTradeNo).Find()
 		if err != nil {
 			log.Logf("PayService.Notify not_found_trade_record %+v", notify)
-			return errors.BadRequest("PayService.Notify", fmt.Sprintf("not found trade record, out_pay_no=%s", notify.OutTradeNo))
+			return errors.BadRequest("PayService.Notify", fmt.Sprintf("not found trade record, pay_no=%s", notify.OutTradeNo))
 		}
 
 		// utils.FormatDate(time.Now()),
 		//修改状态
 		tm.PayState = 1
 		tm.PayAt = time.Now()
-		_, err = orm.Model(tm).Where("out_pay_no", notify.OutTradeNo).Update()
+		_, err = orm.Model(tm).Where("pay_no", notify.OutTradeNo).Update()
 		if err != nil {
 			rsp.Result = wxpay.NotifyReplyFail("存储交易数据时发生错误")
 			return errors.BadRequest("PayService.Notify", "Failed update trade record")
@@ -271,6 +281,7 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 			Id:        uuid.NewUUID().String(),
 			Timestamp: time.Now().Unix(),
 			Name:      "pay_notify",
+			PayNo:     tm.PayNo,
 			Url:       tm.NotifyURL,
 			Body:      string(bodyByte),
 		}
@@ -280,8 +291,8 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 		}
 		//返回支付成功信息
 		rsp.Result = wxpay.NotifyReplySuccess()
-		rsp.OutPayNo = notify.OutTradeNo
-		//支付成功后
+		//notify.OutTradeNo
+		rsp.OutPayNo = tm.OutPayNo
 		// } else if payConf.Provider == TradeAlipay { //阿里支付
 	} else {
 		return errors.BadRequest("PayService.Create", "pay channel is undefined")
