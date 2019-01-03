@@ -23,7 +23,7 @@ type Consumer struct{}
 func (s *Consumer) Process(ctx context.Context, event *pay_srv.NotifyEvent) error {
 	// md, _ := metadata.FromContext(ctx)
 	log.Logf("[Consumer.Process] recvied data: %+v\r\n", event)
-	if event.Url() == "" || event.Body() == "" || event.GetPayNo() {
+	if event.GetUrl() == "" || event.GetBody() == "" || event.GetPayNo() == "" {
 		log.Logf("[Consumer.Process] notifyEvent.Data not empty")
 	}
 	// statusCode, body, err := utils.HttpPost(url, []byte(event.Message))
