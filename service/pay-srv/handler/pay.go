@@ -106,35 +106,36 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 
 	//生成 订单信息
 	tradeModel := &model.TradeModel{}
-	tradeModel.ClientId = clientID
-	tradeModel.PvdMchId = payConf.MchID
-	tradeModel.PvdAppid = payConf.AppID
+	tradeModel.ClientID = clientID
+	tradeModel.PvdMchID = payConf.MchID
+	tradeModel.PvdAppID = payConf.AppID
 	tradeModel.Channel = payChannelID
 
-	tradeModel.OutTradeNo = req.GetOutTradeNo()
+	tradeModel.OutPayNo = req.GetOutTradeNo()
 	tradeModel.TotalFee = req.GetTotalFee()
 	tradeModel.Subject = req.GetSubject()
-	tradeModel.FromIp = req.GetFromIp()
+	tradeModel.FromIP = req.GetFromIp()
 	tradeModel.TradeType = req.GetTradeType()
-	tradeModel.PvdNotifyUrl = payConf.NotifyURL
-	tradeModel.PvdOutTradeNo = tradeModel.OutTradeNo //暂时透传 应用方的第三方单号
+	tradeModel.PvdNotifyURL = payConf.NotifyURL
 	// tradeModel.PvdTradeNo = ""                       //调用第三方支付成功后赋值
 	tradeModel.Provider = payConf.Provider
+	tradeModel.FeeType = "RMB"
 
 	//保存订单到数据库
 	_, err = orm.Model(tradeModel).Insert()
 	if err != nil {
 		return errors.BadRequest("PayService.Create", "insert trade record error")
 	}
+	tradeModel.PvdOutTradeNo = tradeModel.OutPayNo //暂时透传 应用方的第三方单号
 
 	if tradeModel.Provider == TradeWxpay { //微信
 		order := &wxpay.UnifiedOrderReq{}
-		order.AppID = tradeModel.PvdAppid
-		order.MchID = tradeModel.PvdMchId
+		order.AppID = tradeModel.PvdAppID
+		order.MchID = tradeModel.PvdMchID
 
 		order.OutTradeNo = tradeModel.PvdOutTradeNo //商户订单号
 		order.TotalFee = tradeModel.TotalFee        //订单总金额，单位为分
-		order.FeeType = "RMB"                       //标价币种 目前写死
+		order.FeeType = tradeModel.FeeType          //标价币种 目前写死
 		order.Body = tradeModel.Subject             //商品描述 128
 		order.NotifyURL = payConf.NotifyURL         //异步通知地址
 		order.TradeType = tradeModel.TradeType      //TradeType  (JSAPI|NATIVE)
@@ -151,7 +152,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 		}
 
 		// order.OpenID = "o8UFh1m1fS3QiuSZ5Ik3rYgt3vjQ"
-		order.SpbillCreateIP = tradeModel.FromIp
+		order.SpbillCreateIP = tradeModel.FromIP
 		order.NonceStr = utils.RandomStr(32) //随机字符串
 		order.MakeSign(payConf.ApiKey)
 		orderRsp, err := order.Call()
@@ -165,7 +166,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 		tradeModel.PvdTradeNo = orderRsp.PrepayID
 		//rsp.ClientId = tradeModel.ClientId
 		payField := &pay_srv.PayField{
-			AppId:      tradeModel.PvdAppid,
+			AppId:      tradeModel.PvdAppID,
 			OutTradeNo: tradeModel.PvdOutTradeNo,
 			TradeNo:    tradeModel.PvdTradeNo,
 			TotalFee:   tradeModel.TotalFee,
@@ -234,31 +235,31 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 		}
 		//查找订单
 		tm := &model.TradeModel{}
-		err = orm.Model(tm).Where("pvd_out_trade_no", notify.OutTradeNo).Find()
+		err = orm.Model(tm).Where("out_pay_no", notify.OutTradeNo).Find()
 		if err != nil {
 			log.Logf("PayService.Notify not_found_trade_record %+v", notify)
-			return errors.BadRequest("PayService.Notify", fmt.Sprintf("not found trade record, pvd_out_trade_no=%s", notify.OutTradeNo))
+			return errors.BadRequest("PayService.Notify", fmt.Sprintf("not found trade record, out_pay_no=%s", notify.OutTradeNo))
 		}
 
 		// utils.FormatDate(time.Now()),
 		//修改状态
 		tm.PayState = 1
 		tm.PayAt = time.Now()
-		_, err = orm.Model(tm).Where("pvd_out_trade_no", notify.OutTradeNo).Update()
+		_, err = orm.Model(tm).Where("out_pay_no", notify.OutTradeNo).Update()
 		if err != nil {
 			rsp.Result = wxpay.NotifyReplyFail("存储交易数据时发生错误")
 			return errors.BadRequest("PayService.Notify", "Failed update trade record")
 		}
 		body := struct {
-			OutTradeNo string `json:"out_trade_no"` //三方单号
-			TotalFee   int64  `json:"total_fee"`    //支付金额
-			PayTime    string `json:"total_fee"`    //支付时间
-			Raw        string `json:"raw"`          //原始数据
+			OutPayNo string `json:"out_pay_no"` //三方单号
+			TotalFee int64  `json:"total_fee"`  //支付金额
+			PayTime  string `json:"total_fee"`  //支付时间
+			Raw      string `json:"raw"`        //原始数据
 		}{
-			OutTradeNo: tm.OutTradeNo,
-			TotalFee:   tm.TotalFee,
-			PayTime:    utils.FormatDate(tm.PayAt),
-			Raw:        raw,
+			OutPayNo: tm.OutPayNo,
+			TotalFee: tm.TotalFee,
+			PayTime:  utils.FormatDate(tm.PayAt),
+			Raw:      raw,
 		}
 		bodyByte, _ := json.Marshal(body)
 		if err != nil {
@@ -270,7 +271,7 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 			Id:        uuid.NewUUID().String(),
 			Timestamp: time.Now().Unix(),
 			Name:      "pay_notify",
-			Url:       tm.NotifyUrl,
+			Url:       tm.NotifyURL,
 			Body:      string(bodyByte),
 		}
 		err = queue.Publish(ctx, "pay_notify", ev)
@@ -279,7 +280,7 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 		}
 		//返回支付成功信息
 		rsp.Result = wxpay.NotifyReplySuccess()
-		rsp.OutTradeNo = notify.OutTradeNo
+		rsp.OutPayNo = notify.OutTradeNo
 		//支付成功后
 		// } else if payConf.Provider == TradeAlipay { //阿里支付
 	} else {

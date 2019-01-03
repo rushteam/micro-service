@@ -65,7 +65,7 @@ type TradeModel struct {
 	//三方商户
 	PvdMchID string `db:"pvd_mch_id"`
 	//三方appid 公众号
-	PvdAppid string `db:"pvd_app_id"`
+	PvdAppID string `db:"pvd_app_id"`
 	//三方订单号
 	PvdOutTradeNo string `db:"pvd_out_trade_no"`
 	//三方交易单号
