@@ -66,7 +66,6 @@ func main() {
 				log.Fatal(err)
 			}
 			orm.InitDefaultDb(db)
-
 			queue.RegisterPublisher("pay_notify", micro.NewPublisher("go.micro.evt.pay_srv.pay_notify", service.Client()))
 			micro.RegisterSubscriber("go.micro.evt.pay_srv.pay_notify", service.Server(), new(queue.Consumer))
 			pay_srv.RegisterPayServiceHandler(service.Server(), &handler.PayService{Service: service})
