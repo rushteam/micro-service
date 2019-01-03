@@ -60,11 +60,13 @@ func main() {
 			//初始化db
 			//config.App.DbConfig
 			dbConf := c.String("app_db")
-			dbSource := dbConf + "?" + "parseTime=true&loc=Local&readTimeout=3s&writeTimeout=3s&timeout=3s"
+			// dbSource := dbConf + "?" + "parseTime=true&loc=Asia%2FShanghai&readTimeout=3s&writeTimeout=3s&timeout=3s"
+			dbSource := dbConf + "?" + "parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"
 			db, err := sql.Open("mysql", dbSource)
 			if err != nil {
 				log.Fatal(err)
 			}
+			// fmt.Println(time.Now().Format("2006-01-02 15:04:05"))
 			orm.InitDefaultDb(db)
 			queue.RegisterPublisher("pay_notify", micro.NewPublisher("go.micro.evt.pay_srv.pay_notify", service.Client()))
 			micro.RegisterSubscriber("go.micro.evt.pay_srv.pay_notify", service.Server(), new(queue.Consumer))

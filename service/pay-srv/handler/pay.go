@@ -307,5 +307,13 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 //Query ..
 func (s *PayService) Query(ctx context.Context, req *pay_srv.QueryReq, rsp *pay_srv.PayRsp) error {
 	// log.Log("[access] PayService.Query")
+	// req.GetUniTradeNo()
+	//查找订单
+	tm := &model.TradeModel{}
+	err := orm.Model(tm).Where("pay_no", "554988925916024832").Find()
+	if err != nil {
+		return errors.BadRequest("PayService.Query", fmt.Sprintf("not found trade record, pay_no=%s, %s", "554988925916024832", err.Error()))
+	}
+	fmt.Println(tm)
 	return nil
 }

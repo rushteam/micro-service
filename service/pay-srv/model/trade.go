@@ -71,7 +71,9 @@ type TradeModel struct {
 	//三方交易单号
 	PvdTradeNo string `db:"pvd_trade_no"`
 	//三方异步通知url
-	PvdNotifyURL string `db:"-"`
+	PvdNotifyURL string    `db:"-"`
+	CreatedAt    time.Time `db:"created_at"`
+	UpdatedAt    time.Time `db:"updated_at"`
 }
 
 //TableName ..
