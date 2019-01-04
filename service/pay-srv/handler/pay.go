@@ -53,6 +53,9 @@ func validateCreateReq(req *pay_srv.CreateReq) error {
 	if req.GetAccessToken() == "" {
 		return errors.BadRequest("PayService.Create", "params err, client_id is undefined")
 	}
+	if req.GetSign() == "" {
+		return errors.BadRequest("PayService.Create", "params err, sign is undefined")
+	}
 	//todo check token
 	//permission denied
 
@@ -70,6 +73,25 @@ func validateCreateReq(req *pay_srv.CreateReq) error {
 	}
 	return nil
 }
+func checkSign(req *pay_srv.CreateReq, secret string) error {
+	var params = make(map[string]interface{}, 0)
+	v, err := json.Marshal(req)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(v, params)
+	if err != nil {
+		return err
+	}
+	if sign, ok := params["sign"]; ok {
+		if sign != utils.Sign(params, "", secret, nil) {
+			return fmt.Errorf("sign error")
+		}
+		return nil
+	}
+	return fmt.Errorf("params err not found sign")
+
+}
 
 //Create ..
 func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pay_srv.PayRsp) error {
@@ -84,6 +106,15 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 		return errors.BadRequest("PayService.Create", "not found client_id: "+clientID)
 	}
 	//todo 检测商户秘钥是否正确
+	signType := req.GetSignType()
+	if signType == "" {
+		signType = "MD5"
+	}
+	sign := req.GetSign()
+	err := checkSign(res, sign)
+	if err != nil {
+
+	}
 
 	payChannelID := req.GetChannel()
 	var isAblePayChannel = false
