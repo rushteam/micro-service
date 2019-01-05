@@ -84,9 +84,10 @@ func checkSign(req *pay_srv.CreateReq, secret string) error {
 		return err
 	}
 	if sign, ok := params["sign"]; ok {
-		if sign != utils.Sign(params, "", secret, nil) {
-			return fmt.Errorf("sign error")
-		}
+		fmt.Println(sign)
+		// if sign != utils.Sign(params, "", secret, nil) {
+		// 	return fmt.Errorf("sign error")
+		// }
 		return nil
 	}
 	return fmt.Errorf("params err not found sign")
@@ -110,8 +111,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	if signType == "" {
 		signType = "MD5"
 	}
-	sign := req.GetSign()
-	err = checkSign(res, sign)
+	err = checkSign(req, "secret")
 	if err != nil {
 
 	}
