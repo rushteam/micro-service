@@ -22,8 +22,6 @@ message CreateReq {
     int64 create_at =9;     //支付单创建时间
     string extra=10;        //额外信息 json字符串 trade_type=WX_JSAPI 时候 需要传递 {"openid":""}
     string notify_url=11;   //通知回调
-    string sign = 12; //签名
-    string sign_type = 13; //签名方式 默认 MD5
 }
 message PayField {
     string app_id = 1;       //app_id

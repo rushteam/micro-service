@@ -54,9 +54,6 @@ func validateCreateReq(req *pay_srv.CreateReq) error {
 	if req.GetAccessToken() == "" {
 		return errors.BadRequest("PayService.Create", "params err, client_id is undefined")
 	}
-	if req.GetSign() == "" {
-		return errors.BadRequest("PayService.Create", "params err, sign is undefined")
-	}
 	//todo check token
 	//permission denied
 
@@ -74,26 +71,6 @@ func validateCreateReq(req *pay_srv.CreateReq) error {
 	}
 	return nil
 }
-func checkSign(req *pay_srv.CreateReq, secret string) error {
-	var params = make(map[string]interface{}, 0)
-	v, err := json.Marshal(req)
-	if err != nil {
-		return err
-	}
-	err = json.Unmarshal(v, &params)
-	if err != nil {
-		return err
-	}
-	if sign, ok := params["sign"]; ok {
-		utils.Sign(params, "", secret, nil)
-		if sign != "" {
-			return fmt.Errorf("sign error")
-		}
-		return nil
-	}
-	return fmt.Errorf("params err not found sign")
-
-}
 
 //Create ..
 func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pay_srv.PayRsp) error {
@@ -108,16 +85,11 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 		return errors.BadRequest("PayService.Create", "not found client_id: "+clientID)
 	}
 	//TODO: 检测商户秘钥是否正确
-	signType := req.GetSignType()
-	var signHandler hash.Hash
-	if signType == "" {
-		signType = "MD5"
-		signHandler = md5.New()
-	}
-	err = checkSign(req, "secret")
-	if err != nil {
-		fmt.Println(err)
-	}
+
+	// err = checkSign(req, "secret")
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
 
 	payChannelID := req.GetChannel()
 	var isAblePayChannel = false
@@ -185,6 +157,9 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 		order.Body = tradeModel.Subject        //商品描述 128
 		order.NotifyURL = payConf.NotifyURL    //异步通知地址
 		order.TradeType = tradeModel.TradeType //TradeType  (JSAPI|NATIVE)
+		//写死md5支付
+		order.SignType = "MD5"
+		var signHandler = md5.New()
 
 		if tradeModel.TradeType == TradeTypeWxJsAPI {
 			//仅在 TradeType=JSAPI 时必须
