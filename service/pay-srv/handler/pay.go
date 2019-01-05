@@ -105,13 +105,13 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	if !ok {
 		return errors.BadRequest("PayService.Create", "not found client_id: "+clientID)
 	}
-	//todo 检测商户秘钥是否正确
+	//TODO: 检测商户秘钥是否正确
 	signType := req.GetSignType()
 	if signType == "" {
 		signType = "MD5"
 	}
 	sign := req.GetSign()
-	err := checkSign(res, sign)
+	err = checkSign(res, sign)
 	if err != nil {
 
 	}
@@ -224,6 +224,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 				NonceStr:  utils.RandomStr(32),
 				Package:   fmt.Sprintf("prepay_id=%s", orderRsp.PrepayID),
 			}
+			//TODO: 签名算法需要fix
 			payConfig.MakeSign(payConf.ApiKey)
 			jsonBytes, err := json.Marshal(payConfig)
 			if err != nil {
