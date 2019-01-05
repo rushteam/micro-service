@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"log"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 
@@ -29,6 +30,8 @@ var (
 
 func main() {
 	service := micro.NewService(
+		micro.RegisterTTL(time.Second*15),
+		micro.RegisterInterval(time.Second*5),
 		micro.Name(SERVICE_NAME),
 		micro.Version(SERVICE_VERSION),
 		micro.Flags(
