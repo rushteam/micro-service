@@ -83,6 +83,7 @@ func checkSign(req *pay_srv.CreateReq, secret string) error {
 	if err != nil {
 		return err
 	}
+	fmt.Println(params)
 	if sign, ok := params["sign"]; ok {
 		fmt.Println(sign)
 		// if sign != utils.Sign(params, "", secret, nil) {
