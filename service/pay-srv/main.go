@@ -40,14 +40,12 @@ func main() {
 				EnvVar: "MS_PAY_SRV_DB",
 				Usage:  "Db config for mysql e.g username:password@tcp(host:port)/database",
 				Value:  "root:dream@tcp(127.0.0.1:3306)/rushteam",
-				// Value: "root:dream@tcp(mysql:3306)/rushteam",
 			},
 			cli.StringFlag{
 				Name:   "config_path",
 				EnvVar: "CONFIG_PATH",
 				Usage:  "The config PATH e.g ../config/config.yaml",
 				Value:  "./config.yaml",
-				// Value: "root:dream@tcp(mysql:3306)/rushteam",
 			},
 		),
 		micro.WrapHandler(wrap.Access),
@@ -69,12 +67,12 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
-			// fmt.Println(time.Now().Format("2006-01-02 15:04:05"))
 			orm.InitDefaultDb(db)
 			queue.RegisterPublisher("pay_notify", micro.NewPublisher("go.micro.evt.pay_srv.pay_notify", service.Client()))
 			micro.RegisterSubscriber("go.micro.evt.pay_srv.pay_notify", service.Server(), new(queue.Consumer))
 			pay_srv.RegisterPayServiceHandler(service.Server(), &handler.PayService{Service: service})
-			//fmt.Printf("%s",c.String("server_id"))
+			// fmt.Println(uuid.Parse(service.Server().Options().Id).Version())
+			// fmt.Printf("%s", c.String("server_id"))
 		}),
 	)
 	if err := service.Run(); err != nil {

@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/go-sql-driver/mysql"
+
 	"gitee.com/rushteam/micro-service/common/utils/snowflake"
 
 	"github.com/pborman/uuid"
@@ -74,6 +76,7 @@ func validateCreateReq(req *pay_srv.CreateReq) error {
 
 //Create ..
 func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pay_srv.PayRsp) error {
+	// fmt.Println(s.Service.Server().Options().Registry.GetService("go.micro.srv.pay_srv"))
 	err := validateCreateReq(req)
 	if err != nil {
 		return err
@@ -144,6 +147,11 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	//保存订单到数据库
 	_, err = orm.Model(tradeModel).Insert()
 	if err != nil {
+		if me, ok := err.(*mysql.MySQLError); ok {
+			if me.Number == 1062 {
+				return errors.BadRequest("PayService.Create", "支付单%s已存在", payNo)
+			}
+		}
 		return errors.BadRequest("PayService.Create", "insert trade record error "+err.Error())
 	}
 	if tradeModel.Provider == TradeWxpay { //微信
