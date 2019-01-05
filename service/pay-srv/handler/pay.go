@@ -2,8 +2,10 @@ package handler
 
 import (
 	"context"
+	"crypto/md5"
 	"encoding/json"
 	"fmt"
+	"hash"
 	"strconv"
 	"time"
 
@@ -20,7 +22,6 @@ import (
 	"gitee.com/rushteam/micro-service/service/pay-srv/queue"
 	"github.com/micro/go-micro/errors"
 
-	// "gitee.com/rushteam/micro-service/common/utils"
 	"gitee.com/rushteam/micro-service/common/pb/pay_srv"
 	log "github.com/micro/go-log"
 	micro "github.com/micro/go-micro"
@@ -79,16 +80,15 @@ func checkSign(req *pay_srv.CreateReq, secret string) error {
 	if err != nil {
 		return err
 	}
-	err = json.Unmarshal(v, params)
+	err = json.Unmarshal(v, &params)
 	if err != nil {
 		return err
 	}
-	fmt.Println(params)
 	if sign, ok := params["sign"]; ok {
-		fmt.Println(sign)
-		// if sign != utils.Sign(params, "", secret, nil) {
-		// 	return fmt.Errorf("sign error")
-		// }
+		utils.Sign(params, "", secret, nil)
+		if sign != "" {
+			return fmt.Errorf("sign error")
+		}
 		return nil
 	}
 	return fmt.Errorf("params err not found sign")
@@ -109,12 +109,14 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	}
 	//TODO: 检测商户秘钥是否正确
 	signType := req.GetSignType()
+	var signHandler hash.Hash
 	if signType == "" {
 		signType = "MD5"
+		signHandler = md5.New()
 	}
 	err = checkSign(req, "secret")
 	if err != nil {
-
+		fmt.Println(err)
 	}
 
 	payChannelID := req.GetChannel()
@@ -173,7 +175,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 		return errors.BadRequest("PayService.Create", "insert trade record error "+err.Error())
 	}
 	if tradeModel.Provider == TradeWxpay { //微信
-		order := &wxpay.UnifiedOrderReq{}
+		order := &wxpay.UnifiedOrder{}
 		order.AppID = tradeModel.PvdAppID
 		order.MchID = tradeModel.PvdMchID
 
@@ -190,7 +192,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 			rawExtra := []byte(req.GetExtra())
 			json.Unmarshal(rawExtra, &extra)
 			if _, ok := extra["openid"]; !ok {
-				return errors.BadRequest("PayService.Create", "params err, openid is undefined")
+				return errors.BadRequest("PayService.Create", "params error: openid is undefined")
 			}
 			order.OpenID = extra["openid"]
 		}
@@ -198,13 +200,11 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 		// order.OpenID = "o8UFh1m1fS3QiuSZ5Ik3rYgt3vjQ"
 		order.SpbillCreateIP = tradeModel.FromIP
 		order.NonceStr = utils.RandomStr(32) //随机字符串
-		order.MakeSign(payConf.ApiKey)
-		orderRsp, err := order.Call()
+		order.Sign = wxpay.Sign(order, payConf.ApiKey, signHandler)
+		orderRsp := &wxpay.UnifiedOrderRsp{}
+		err := wxpay.Request(order, orderRsp)
 		if err != nil {
-			return errors.BadRequest("PayService.Create", "pay channel call err, "+err.Error())
-		}
-		if err = orderRsp.Error(); err != nil {
-			return errors.BadRequest("PayService.Create", "pay channel resp err, "+err.Error())
+			return errors.BadRequest("PayService.Create", "pay channel error: %s", err.Error())
 		}
 		//赋值第三方交易号
 		tradeModel.PvdTradeNo = orderRsp.PrepayID
@@ -219,19 +219,18 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 		rsp.Channel = tradeModel.Channel
 		rsp.Provider = tradeModel.Provider
 		if tradeModel.TradeType == TradeTypeWxJsAPI {
-			payConfig := &wxpay.PayConfigJs{
+			payment := &wxpay.Payment{
 				AppID:     order.AppID,
 				TimeStamp: time.Now().Unix(),
 				NonceStr:  utils.RandomStr(32),
 				Package:   fmt.Sprintf("prepay_id=%s", orderRsp.PrepayID),
 			}
-			//TODO: 签名算法需要fix
-			payConfig.MakeSign(payConf.ApiKey)
-			jsonBytes, err := json.Marshal(payConfig)
+			payment.PaySign = wxpay.Sign(payment, payConf.ApiKey, signHandler)
+			paymentBytes, err := json.Marshal(payment)
 			if err != nil {
 				return errors.BadRequest("PayService.Create", "pay channel jsapi err, "+err.Error())
 			}
-			payField.FieldStr = string(jsonBytes)
+			payField.FieldStr = string(paymentBytes)
 		}
 		rsp.PayField = payField
 	} else if tradeModel.Provider == TradeAlipay {
@@ -262,16 +261,19 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 	}
 	raw := req.GetRaw()
 	if payConf.Provider == TradeWxpay { //微信支付
-		notify, err := wxpay.UnmarshalNotify(raw)
+		notify := &wxpay.Notify{}
+		err := wxpay.Response([]byte(raw), notify)
 		if err != nil {
 			return errors.BadRequest("PayService.Notify", "params err, raw is invalid")
 		}
-		if notify.IsSuccess() == false {
-			rsp.Result = wxpay.NotifyReplyFail("服务商返回失败")
-			return nil
+		var signHandler hash.Hash
+		if notify.SignType == "MD5" {
+			signHandler = md5.New()
+		} else {
+			signHandler = md5.New()
 		}
-		if wxpay.CheckSign(payConf.ApiKey, notify) == false {
-			rsp.Result = wxpay.NotifyReplyFail("签名校验失败")
+		if wxpay.Sign(notify, payConf.ApiKey, signHandler) != notify.Sign {
+			rsp.Result = wxpay.NotifyReplyFail("sign error")
 			return nil
 		}
 		if notify.OutTradeNo == "" {
@@ -279,7 +281,6 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 			return nil
 		}
 		//支付成功后
-
 		//查找订单
 		tm := &model.TradeModel{}
 		err = orm.Model(tm).Where("pay_no", notify.OutTradeNo).Find()
@@ -287,7 +288,6 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 			log.Logf("PayService.Notify not_found_trade_record %+v", notify)
 			return errors.BadRequest("PayService.Notify", fmt.Sprintf("not found trade record, pay_no=%s", notify.OutTradeNo))
 		}
-
 		// utils.FormatDate(time.Now()),
 		//修改状态
 		tm.PayState = 1
@@ -300,7 +300,7 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 		body := struct {
 			OutPayNo string `json:"out_pay_no"` //三方单号
 			TotalFee int64  `json:"total_fee"`  //支付金额
-			PayTime  string `json:"total_fee"`  //支付时间
+			PayTime  string `json:"pay_time"`   //支付时间
 			Raw      string `json:"raw"`        //原始数据
 		}{
 			OutPayNo: tm.OutPayNo,
@@ -328,7 +328,6 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 		}
 		//返回支付成功信息
 		rsp.Result = wxpay.NotifyReplySuccess()
-		//notify.OutTradeNo
 		rsp.OutPayNo = tm.OutPayNo
 		// } else if payConf.Provider == TradeAlipay { //阿里支付
 	} else {

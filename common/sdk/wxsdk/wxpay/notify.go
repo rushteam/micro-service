@@ -1,7 +1,6 @@
 package wxpay
 
 import (
-	"encoding/xml"
 	"fmt"
 )
 
@@ -36,43 +35,33 @@ type Notify struct {
 	CouponCount        int64  `xml:"coupon_count"`         //代金券使用数量
 
 	CouponType0 int64  `xml:"coupon_type_0"` //代金券类型	coupon_type_$n	否	String	CASH (CASH--充值代金券,NO_CASH---非充值代金券)
-	CouponId0   string `xml:"coupon_id_0"`   //代金券ID	coupon_id_$n	否	String(20)	10000	代金券ID,$n为下标，从0开始编号
+	CouponID0   string `xml:"coupon_id_0"`   //代金券ID	coupon_id_$n	否	String(20)	10000	代金券ID,$n为下标，从0开始编号
 	CouponFee0  string `xml:"coupon_fee_0"`  //单个代金券支付金额	coupon_fee_$n	否	Int	100	单个代金券支付金额,$n为下标，从0开始编号
 
-	TransactionId string `xml:"transaction_id"` //微信支付订单号 1217752501201407033233368018	微信支付订单号
+	TransactionID string `xml:"transaction_id"` //微信支付订单号 1217752501201407033233368018	微信支付订单号
 	OutTradeNo    string `xml:"out_trade_no"`   //商户订单号
 	Attach        string `xml:"attach"`         //商家数据包 (128)
 	TimeEnd       string `xml:"time_end"`       //支付完成时间 格式为yyyyMMddHHmmss
 }
 
-//IsSuccess ...
-func (r *Notify) IsSuccess() bool {
-	if r.ReturnCode == SUCCESS && r.ResultCode == SUCCESS {
-		return true
+//Error ...
+func (r *Notify) Error() error {
+	if r.ReturnCode == Success && r.ResultCode == Success {
+		return nil
 	}
-	return false
+	if r.ReturnCode == Fail {
+		return fmt.Errorf(r.ReturnMsg)
+	}
+	if r.ResultCode == Fail {
+		return fmt.Errorf("%s: %s", r.ErrCode, r.ErrCodeDes)
+	}
+	return fmt.Errorf("unknow error")
 }
 
-//UnmarshalNotify ..
-func UnmarshalNotify(raw string) (*Notify, error) {
-	rawBytes := []byte(raw)
-	notify := &Notify{}
-	err := xml.Unmarshal(rawBytes, notify)
-	return notify, err
-}
-
-//NotifyReplySuccess ..
-func NotifyReplySuccess() string {
-	return `<xml>
-	<return_code><![CDATA[SUCCESS]]></return_code>
-	<return_msg><![CDATA[OK]]></return_msg>
-	</xml>`
-}
-
-//NotifyReplyFail
-func NotifyReplyFail(msg string) string {
-	return fmt.Sprintf(`<xml>
-	<return_code><![CDATA[FAIL]]></return_code>
-	<return_msg><![CDATA[%s]]></return_msg>
-	</xml>`, msg)
-}
+// //UnmarshalNotify ..
+// func UnmarshalNotify(raw string) (*Notify, error) {
+// 	rawBytes := []byte(raw)
+// 	notify := &Notify{}
+// 	err := xml.Unmarshal(rawBytes, notify)
+// 	return notify, err
+// }

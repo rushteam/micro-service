@@ -6,6 +6,7 @@ import (
 	"crypto/md5"
 	"crypto/sha1"
 	"encoding/hex"
+	"fmt"
 	"hash"
 	"io"
 	"reflect"
@@ -41,10 +42,11 @@ func SignMD5(frist, laster string, params ...string) string {
 //  params: 待签名的参数集合
 //  apiKey: api密钥
 //  h:      hash.Hash, 如果为 nil 则默认用 md5.New(), 特别注意 h 必须是 initial state.
-func Sign(params map[string]string, first, laster string, h hash.Hash) string {
+func Sign(params map[string]interface{}, first, laster string, h hash.Hash) string {
 	if h == nil {
 		h = md5.New()
 	}
+	// h.Reset()
 	keys := make([]string, 0, len(params))
 	for k := range params {
 		if k == "sign" {
@@ -53,26 +55,20 @@ func Sign(params map[string]string, first, laster string, h hash.Hash) string {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
-	var s string
 	bufw := bufio.NewWriterSize(h, 128)
-	s += first
 	bufw.WriteString(first)
 	for i, k := range keys {
-		v := params[k]
+		v := fmt.Sprint(params[k])
 		if v == "" {
 			continue
 		}
 		bufw.WriteString(k)
 		bufw.WriteByte('=')
 		bufw.WriteString(v)
-		s += k + "=" + v
 		if i < len(keys)-1 {
-			s += "&"
 			bufw.WriteByte('&')
 		}
 	}
-	s += laster
-	//fmt.Println(s)
 	bufw.WriteString(laster)
 	bufw.Flush()
 	signature := make([]byte, hex.EncodedLen(h.Size()))
@@ -85,8 +81,8 @@ func Struct2Map(obj interface{}, tagName string) map[string]string {
 	//t := reflect.TypeOf(obj)
 	v := reflect.ValueOf(obj)
 	//if t.Kind() == reflect.Ptr {
-		//t = t.Elem()
-		v = reflect.Indirect(v)
+	//t = t.Elem()
+	v = reflect.Indirect(v)
 	//}
 	t := v.Type()
 	var data = make(map[string]string)
