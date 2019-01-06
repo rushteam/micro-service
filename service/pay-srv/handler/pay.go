@@ -149,7 +149,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	if err != nil {
 		if me, ok := err.(*mysql.MySQLError); ok {
 			if me.Number == 1062 {
-				return errors.BadRequest("PayService.Create", "支付单%s已存在", payNo)
+				return errors.BadRequest("PayService.Create", "支付单号%s已存在", tradeModel.OutPayNo)
 			}
 		}
 		return errors.BadRequest("PayService.Create", "insert trade record error "+err.Error())
