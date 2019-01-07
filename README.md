@@ -67,3 +67,6 @@ http://127.0.0.1:9080/oauth2/token?client_id=1234&client_secret=test&grant_type=
 启动服务
 
 go run service/pay-srv/main.go --config_path="service/pay-srv/config.yaml"
+
+
+ mysql -uroot -h127.0.0.1  -e "CREATE DATABASE b3log_symphony DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;"
