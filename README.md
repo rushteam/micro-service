@@ -1,7 +1,6 @@
 # micro-service
 protoc --proto_path=./proto --micro_out=./common/pb/ --go_out=plugins=micro:./common/pb/ ./proto/user_srv/*.proto
 
-
 micro call pay_center PayCenter.CreatePayOrder '{}'
 
 micro call pay_center PayCenter.CreatePayOrder '{"client_id":"hoo","channel":"201","out_trade_no":"001","total_fee":1,"subject":"测试","from_ip":"127.0.0.1","open_id":"o8UFh1m1fS3QiuSZ5Ik3rYgt3vjQ"}'
@@ -61,12 +60,9 @@ http://127.0.0.1:9080/oauth2/token?client_id=1234&client_secret=test&grant_type=
 
 支付网关
     支付回调
-    
-
 
 启动服务
 
 go run service/pay-srv/main.go --config_path="service/pay-srv/config.yaml"
 
-
- mysql -uroot -h127.0.0.1  -e "CREATE DATABASE b3log_symphony DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;"
+mysql -uroot -h127.0.0.1  -e "CREATE DATABASE rushteam DEFAULT CHARSET utf8 DEFAULT COLLATE utf8_general_ci;"
