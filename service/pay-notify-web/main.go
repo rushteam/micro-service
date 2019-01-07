@@ -55,6 +55,7 @@ func main() {
 	r.Use(gin.Recovery())
 
 	payNotifyHandler := &PayNotifyHandler{}
+	//TODO: /pay/notify/wcpay/:channel 对channel的处理
 	r.POST("/pay/notify/wcpay", payNotifyHandler.Wcpay)
 	// r.POST("/pay/notify/alipay", PayNotifyHandler)
 	// r.HandleFunc("/objects/{object}", objectHandler)

@@ -249,12 +249,12 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 	if req.GetRaw() == "" {
 		return errors.BadRequest("PayService.Notify", "params err, raw is undefined")
 	}
+	raw := req.GetRaw()
 	payChannelID := req.GetChannel()
 	payConf, ok := config.App.PayChannels[payChannelID]
 	if !ok {
 		return errors.BadRequest("PayService.Notify", "not found channel for pay: "+payChannelID)
 	}
-	raw := req.GetRaw()
 	if payConf.Provider == TradeWxpay { //微信支付
 		notify := &wxpay.Notify{}
 		err := wxpay.Response([]byte(raw), notify)
