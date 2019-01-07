@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/micro/go-micro/metadata"
+
 	"github.com/go-sql-driver/mysql"
 
 	"gitee.com/rushteam/micro-service/common/utils/snowflake"
@@ -236,6 +238,11 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 
 //Notify ..
 func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pay_srv.NotifyRsp) error {
+	md, ok := metadata.FromContext(ctx)
+	if !ok {
+		md = metadata.Metadata{}
+	}
+	fmt.Println(md)
 	if req.GetChannel() == "" {
 		return errors.BadRequest("PayService.Notify", "params err, channel is undefined")
 	}

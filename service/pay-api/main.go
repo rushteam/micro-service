@@ -44,12 +44,10 @@ func (h PayNotifyHandler) Wcpay(c *gin.Context) {
 		return
 	}
 	// fmt.Println(rst.Result)
-	c.Data(200, "application/xml; charset=utf-8", []byte(rst.Result))
-	// c.String(200, "%s", rst.Result)
+	c.String(200, "%s", rst.Result)
 }
 func main() {
 	// Creates an application without any middleware by default.
-	// gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
