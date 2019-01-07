@@ -41,6 +41,7 @@ message NotifyReq {
     string client_id = 1; //商户
     string channel = 2;//交易渠道 (微信\支付宝)
     string raw = 3; //支付原始数据
+    // bytes raw2=4;
 }
 message NotifyRsp {
     string result = 1; //通知结果

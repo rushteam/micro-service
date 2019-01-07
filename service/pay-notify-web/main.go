@@ -27,20 +27,24 @@ func (h PayNotifyHandler) Wcpay(c *gin.Context) {
 	// c.GetQuery()
 	// author := c.GetHeader("Authorization") //Authorization: Signature xxx
 	// author := c.GetHeader("X-Signature") //Authorization: Signature
+	channel := c.Param("channel")
 	raw, err := c.GetRawData()
 	if err != nil {
-		c.String(500, "%s", err.Error())
+		c.String(500, "ERROR: %s", err.Error())
 		return
 	}
 	if len(raw) == 0 {
-		c.String(500, "%s", "NO DATA")
+		c.String(500, "ERROR: %s", "NO DATA")
 		return
 	}
 	// fmt.Println(raw)
 	paySrv := pay_srv.NewPayService("go.micro.srv.pay_srv", client.DefaultClient)
-	rst, err := paySrv.Notify(c, &pay_srv.NotifyReq{})
+	rst, err := paySrv.Notify(c, &pay_srv.NotifyReq{
+		Channel: channel,
+		Raw:     string(raw),
+	})
 	if err != nil {
-		c.String(500, "%s", err.Error())
+		c.String(500, "ERROR: %s", err.Error())
 		return
 	}
 	// fmt.Println(rst.Result)
@@ -56,7 +60,7 @@ func main() {
 
 	payNotifyHandler := &PayNotifyHandler{}
 	//TODO: /pay/notify/wcpay/:channel 对channel的处理
-	r.POST("/pay/notify/wcpay", payNotifyHandler.Wcpay)
+	r.POST("/pay/notify/wcpay/:channel", payNotifyHandler.Wcpay)
 	// r.POST("/pay/notify/alipay", PayNotifyHandler)
 	// r.HandleFunc("/objects/{object}", objectHandler)
 	service := micro.NewService(
