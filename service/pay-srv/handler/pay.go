@@ -77,6 +77,11 @@ func validateCreateReq(req *pay_srv.CreateReq) error {
 //Create ..
 func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pay_srv.PayRsp) error {
 	// fmt.Println(s.Service.Server().Options().Registry.GetService("go.micro.srv.pay_srv"))
+	// md, ok := metadata.FromContext(ctx)
+	// if !ok {
+	// 	md = metadata.Metadata{}
+	// }
+	// fmt.Println(md)
 	err := validateCreateReq(req)
 	if err != nil {
 		return err

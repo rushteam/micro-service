@@ -2,32 +2,49 @@ package main
 
 import (
 	"log"
+	"time"
 
+	"github.com/micro/go-micro/client"
+
+	"gitee.com/rushteam/micro-service/common/pb/pay_srv"
 	"github.com/gin-gonic/gin"
 	"github.com/micro/cli"
-	micro "github.com/micro/go-micro"
+	micro "github.com/micro/go-web"
 )
 
 var (
 	//SERVICE_NAME service's name
-	SERVICE_NAME = "go.micro.web.auth_web"
+	SERVICE_NAME = "go.micro.web.pay_notify"
 	//SERVICE_VERSION service's version
 	SERVICE_VERSION = "latest"
 )
 
 //PayNotifyHandler ..
-func PayNotifyHandler(c *gin.Context) {
+type PayNotifyHandler struct{}
+
+//Wcpay ..
+func (h PayNotifyHandler) Wcpay(c *gin.Context) {
 	// c.GetQuery()
+	// author := c.GetHeader("Authorization") //Authorization: Signature xxx
+	// author := c.GetHeader("X-Signature") //Authorization: Signature
 	raw, err := c.GetRawData()
 	if err != nil {
+		c.String(500, "%s", err.Error())
 		return
 	}
-	// redirectURI := c.Query("redirect_uri")
-	// if redirectURI == "" {
-	// 	// c.AbortWithError(http.StatusBadRequest, errors.New("缺少参数 redirect_uri"))
-	// 	c.String(http.StatusOK, "缺少参数 redirect_uri")
-	// 	return
-	// }
+	if len(raw) == 0 {
+		c.String(500, "%s", "NO")
+		return
+	}
+	// fmt.Println(raw)
+	paySrv := pay_srv.NewPayService("go.micro.srv.pay_srv", client.DefaultClient)
+	rst, err := paySrv.Notify(c, &pay_srv.NotifyReq{})
+	if err != nil {
+		c.String(500, "%s", err.Error())
+		return
+	}
+	// fmt.Println(rst.Result)
+	c.String(200, "%s", rst.Result)
 }
 func main() {
 	// Creates an application without any middleware by default.
@@ -35,14 +52,15 @@ func main() {
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 
-	r.GET("/pay/notify/", PayNotifyHandler)
+	payNotifyHandler := &PayNotifyHandler{}
+	r.POST("/pay/notify/wcpay", payNotifyHandler.Wcpay)
+	// r.POST("/pay/notify/alipay", PayNotifyHandler)
 	// r.HandleFunc("/objects/{object}", objectHandler)
-
 	service := micro.NewService(
-		micro.Handler(r),
+		micro.RegisterTTL(time.Second*15),
+		micro.RegisterInterval(time.Second*5),
 		micro.Name(SERVICE_NAME),
 		micro.Version(SERVICE_VERSION),
-		micro.Address(":9080"),
 		// micro.Flags(
 		// 	cli.StringFlag{
 		// 		Name:   "config_path",
@@ -63,6 +81,9 @@ func main() {
 			// model.Init(pool)
 			// user_srv.RegisterUserServiceHandler(service.Server(), handler.NewUserServiceHandler(ctx))
 		}),
+		//web
+		micro.Handler(r),
+		micro.Address(":9080"),
 	)
 
 	if err := service.Run(); err != nil {
