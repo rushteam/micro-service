@@ -1,12 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"time"
 
-	"github.com/micro/go-micro/client"
+	"gitee.com/rushteam/micro-service/service/pay-api/handler"
 
-	"gitee.com/rushteam/micro-service/common/pb/pay_srv"
 	"github.com/gin-gonic/gin"
 	"github.com/micro/cli"
 	micro "github.com/micro/go-web"
@@ -19,40 +19,13 @@ var (
 	SERVICE_VERSION = "latest"
 )
 
-//PayNotifyHandler ..
-type PayNotifyHandler struct{}
-
-//Wcpay ..
-func (h PayNotifyHandler) Wcpay(c *gin.Context) {
-	// c.GetQuery()
-	// author := c.GetHeader("Authorization") //Authorization: Signature xxx
-	// author := c.GetHeader("X-Signature") //Authorization: Signature
-	raw, err := c.GetRawData()
-	if err != nil {
-		c.String(500, "%s", err.Error())
-		return
-	}
-	if len(raw) == 0 {
-		c.String(500, "%s", "NO DATA")
-		return
-	}
-	// fmt.Println(raw)
-	paySrv := pay_srv.NewPayService("go.micro.srv.pay_srv", client.DefaultClient)
-	rst, err := paySrv.Notify(c, &pay_srv.NotifyReq{})
-	if err != nil {
-		c.String(500, "%s", err.Error())
-		return
-	}
-	// fmt.Println(rst.Result)
-	c.String(200, "%s", rst.Result)
-}
 func main() {
 	// Creates an application without any middleware by default.
 	r := gin.New()
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 
-	payNotifyHandler := &PayNotifyHandler{}
+	payNotifyHandler := &handler.PayNotifyHandler{}
 	r.POST("/pay/notify/wcpay", payNotifyHandler.Wcpay)
 	// r.POST("/pay/notify/alipay", PayNotifyHandler)
 	// r.HandleFunc("/objects/{object}", objectHandler)
@@ -61,6 +34,14 @@ func main() {
 		micro.RegisterInterval(time.Second*5),
 		micro.Name(SERVICE_NAME),
 		micro.Version(SERVICE_VERSION),
+		micro.Flags(
+			cli.StringFlag{
+				Name:   "port",
+				EnvVar: "MS_HTTP_PORT",
+				Usage:  "http port",
+				Value:  ":8080",
+			},
+		),
 		// micro.Flags(
 		// 	cli.StringFlag{
 		// 		Name:   "config_path",
@@ -72,6 +53,7 @@ func main() {
 	// var ctx = context.TODO()
 	service.Init(
 		micro.Action(func(c *cli.Context) {
+			fmt.Println(c.String("port"))
 			// var configFile = "./config.yaml"
 			// if len(c.String("config_path")) > 0 {
 			// 	configFile = c.String("config_path")
@@ -82,6 +64,7 @@ func main() {
 			// user_srv.RegisterUserServiceHandler(service.Server(), handler.NewUserServiceHandler(ctx))
 		}),
 		//web
+		// micro.
 		micro.Handler(r),
 		micro.Address(":9080"),
 	)
