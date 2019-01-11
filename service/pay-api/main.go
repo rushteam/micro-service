@@ -1,12 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"time"
 
 	"gitee.com/rushteam/micro-service/service/pay-api/handler"
-
 	"github.com/gin-gonic/gin"
 	"github.com/micro/cli"
 	micro "github.com/micro/go-web"
@@ -26,34 +24,19 @@ func main() {
 	r.Use(gin.Recovery())
 
 	payNotifyHandler := &handler.PayNotifyHandler{}
-	r.POST("/pay/notify/wcpay", payNotifyHandler.Wcpay)
-	// r.POST("/pay/notify/alipay", PayNotifyHandler)
-	// r.HandleFunc("/objects/{object}", objectHandler)
+	r.POST("/pay/order/create", payOrderHandler.Create)
+	r.POST("/pay/order/query", payOrderHandler.Query)
+
 	service := micro.NewService(
 		micro.RegisterTTL(time.Second*15),
 		micro.RegisterInterval(time.Second*5),
 		micro.Name(SERVICE_NAME),
 		micro.Version(SERVICE_VERSION),
-		micro.Flags(
-			cli.StringFlag{
-				Name:   "port",
-				EnvVar: "MS_HTTP_PORT",
-				Usage:  "http port",
-				Value:  ":8080",
-			},
-		),
-		// micro.Flags(
-		// 	cli.StringFlag{
-		// 		Name:   "config_path",
-		// 		EnvVar: "CONFIG_PATH",
-		// 		Usage:  "The config PATH e.g ./config.yaml",
-		// 	},
-		// ),
 	)
 	// var ctx = context.TODO()
 	service.Init(
 		micro.Action(func(c *cli.Context) {
-			fmt.Println(c.String("port"))
+			// address = c.String("address")
 			// var configFile = "./config.yaml"
 			// if len(c.String("config_path")) > 0 {
 			// 	configFile = c.String("config_path")
@@ -64,9 +47,8 @@ func main() {
 			// user_srv.RegisterUserServiceHandler(service.Server(), handler.NewUserServiceHandler(ctx))
 		}),
 		//web
-		// micro.
 		micro.Handler(r),
-		micro.Address(":9080"),
+		// micro.Address(address),
 	)
 
 	if err := service.Run(); err != nil {

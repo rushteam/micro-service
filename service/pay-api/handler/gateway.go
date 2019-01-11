@@ -6,11 +6,11 @@ import (
 	"github.com/micro/go-micro/client"
 )
 
-//PayNotifyHandler ..
-type PayNotifyHandler struct{}
+//payOrderHandler ..
+type payOrderHandler struct{}
 
 //Wcpay ..
-func (h PayNotifyHandler) Wcpay(c *gin.Context) {
+func (h PayNotifyHandler) (c *gin.Context) {
 	// c.GetQuery()
 	// author := c.GetHeader("Authorization") //Authorization: Signature xxx
 	// author := c.GetHeader("X-Signature") //Authorization: Signature
