@@ -8,6 +8,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-log/log"
+
 	"github.com/micro/go-micro/client"
 	"github.com/micro/go-micro/cmd"
 	"github.com/micro/go-micro/errors"
@@ -32,9 +34,9 @@ type Handler struct{}
 //Create ..
 func (h Handler) Create(c *gin.Context) {
 	if c.Request.Method != "POST" {
+		log.Log("Method not must POST")
 		return
 	}
-	//.Header.Get("Content-Type")
 	ct := c.GetHeader("Content-Type")
 	if idx := strings.IndexRune(ct, ';'); idx >= 0 {
 		ct = ct[:idx]
@@ -49,6 +51,7 @@ func (h Handler) Create(c *gin.Context) {
 		d.UseNumber()
 		if err := d.Decode(&rpcReq); err != nil {
 			// badRequest(err.Error())
+			log.Log(err.Error())
 			return
 		}
 		service = rpcReq.Service
@@ -62,8 +65,8 @@ func (h Handler) Create(c *gin.Context) {
 		if req, ok := rpcReq.Request.(string); ok {
 			d := json.NewDecoder(strings.NewReader(req))
 			d.UseNumber()
-
 			if err := d.Decode(&request); err != nil {
+				log.Log("error decoding request string: " + err.Error())
 				// badRequest("error decoding request string: " + err.Error())
 				return
 			}
@@ -78,15 +81,18 @@ func (h Handler) Create(c *gin.Context) {
 		d := json.NewDecoder(strings.NewReader(c.PostForm("request")))
 		d.UseNumber()
 		if err := d.Decode(&request); err != nil {
+			log.Log("error decoding request string: " + err.Error())
 			// badRequest("error decoding request string: " + err.Error())
 			return
 		}
 	}
 	if len(service) == 0 {
+		log.Log("invalid service")
 		// badRequest("invalid service")
 		return
 	}
 	if len(endpoint) == 0 {
+		log.Log("invalid endpoint")
 		// badRequest("invalid endpoint")
 		return
 	}
