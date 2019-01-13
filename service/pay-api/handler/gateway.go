@@ -42,6 +42,13 @@ func (h Handler) Create(c *gin.Context) {
 		ct = ct[:idx]
 	}
 	defer c.Request.Body.Close()
+
+	badRequest := func(description string) {
+		log.Log(description)
+		e := errors.BadRequest("go.micro.rpc", description)
+		c.JSON(400, e)
+	}
+
 	var service, endpoint, address string
 	var request interface{}
 	switch ct {
@@ -50,8 +57,7 @@ func (h Handler) Create(c *gin.Context) {
 		d := json.NewDecoder(c.Request.Body)
 		d.UseNumber()
 		if err := d.Decode(&rpcReq); err != nil {
-			// badRequest(err.Error())
-			log.Log(err.Error())
+			badRequest(err.Error())
 			return
 		}
 		service = rpcReq.Service
@@ -66,8 +72,8 @@ func (h Handler) Create(c *gin.Context) {
 			d := json.NewDecoder(strings.NewReader(req))
 			d.UseNumber()
 			if err := d.Decode(&request); err != nil {
-				log.Log("error decoding request string: " + err.Error())
-				// badRequest("error decoding request string: " + err.Error())
+				// log.Log("error decoding request string: " + err.Error())
+				badRequest("error decoding request string: " + err.Error())
 				return
 			}
 		}
@@ -81,19 +87,20 @@ func (h Handler) Create(c *gin.Context) {
 		d := json.NewDecoder(strings.NewReader(c.PostForm("request")))
 		d.UseNumber()
 		if err := d.Decode(&request); err != nil {
-			log.Log("error decoding request string: " + err.Error())
-			// badRequest("error decoding request string: " + err.Error())
+			// log.Log("error decoding request string: " + err.Error())
+			badRequest("error decoding request string: " + err.Error())
 			return
 		}
 	}
 	if len(service) == 0 {
-		log.Log("invalid service")
-		// badRequest("invalid service")
+		// fmt.Println("invalid service")
+		// log.Log("invalid service")
+		badRequest("invalid service")
 		return
 	}
 	if len(endpoint) == 0 {
-		log.Log("invalid endpoint")
-		// badRequest("invalid endpoint")
+		// log.Log("invalid endpoint")
+		badRequest("invalid endpoint")
 		return
 	}
 	// create request/response
