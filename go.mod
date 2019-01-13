@@ -93,6 +93,7 @@ require (
 	github.com/micro/go-rcache v0.0.0-20180418165751-a581a57b5133 // indirect
 	github.com/micro/go-web v0.4.0
 	github.com/micro/mdns v0.0.0-20160929165650-cdf30746f9f7 // indirect
+	github.com/micro/micro v0.17.2
 	github.com/micro/util v0.0.0-20180417104657-4b7ed83e8520 // indirect
 	github.com/miekg/dns v1.0.15 // indirect
 	github.com/mitchellh/cli v1.0.0 // indirect

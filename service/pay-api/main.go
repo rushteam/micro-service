@@ -23,9 +23,9 @@ func main() {
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 
-	payNotifyHandler := &handler.PayNotifyHandler{}
-	r.POST("/pay/order/create", payOrderHandler.Create)
-	r.POST("/pay/order/query", payOrderHandler.Query)
+	handler := &handler.Handler{}
+	r.POST("/pay/order/create", handler.Create)
+	// r.POST("/pay/order/query", handler.Query)
 
 	service := micro.NewService(
 		micro.RegisterTTL(time.Second*15),
