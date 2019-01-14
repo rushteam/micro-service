@@ -72,7 +72,6 @@ func (h Handler) Create(c *gin.Context) {
 			d := json.NewDecoder(strings.NewReader(req))
 			d.UseNumber()
 			if err := d.Decode(&request); err != nil {
-				// log.Log("error decoding request string: " + err.Error())
 				badRequest("error decoding request string: " + err.Error())
 				return
 			}
@@ -87,24 +86,20 @@ func (h Handler) Create(c *gin.Context) {
 		d := json.NewDecoder(strings.NewReader(c.PostForm("request")))
 		d.UseNumber()
 		if err := d.Decode(&request); err != nil {
-			// log.Log("error decoding request string: " + err.Error())
 			badRequest("error decoding request string: " + err.Error())
 			return
 		}
 	}
 	if len(service) == 0 {
-		// fmt.Println("invalid service")
-		// log.Log("invalid service")
 		badRequest("invalid service")
 		return
 	}
 	if len(endpoint) == 0 {
-		// log.Log("invalid endpoint")
 		badRequest("invalid endpoint")
 		return
 	}
 	// create request/response
-	var response json.RawMessage
+	var resp json.RawMessage
 	var err error
 	req := (*cmd.DefaultOptions().Client).NewRequest(service, endpoint, request, client.WithContentType("application/json"))
 	// create context
@@ -120,7 +115,7 @@ func (h Handler) Create(c *gin.Context) {
 		opts = append(opts, client.WithAddress(address))
 	}
 	// remote call
-	err = (*cmd.DefaultOptions().Client).Call(ctx, req, &response, opts...)
+	err = (*cmd.DefaultOptions().Client).Call(ctx, req, &resp, opts...)
 	if err != nil {
 		ce := errors.Parse(err.Error())
 		switch ce.Code {
@@ -136,29 +131,6 @@ func (h Handler) Create(c *gin.Context) {
 		}
 		return
 	}
-	// b, _ := response.MarshalJSON()
-	c.JSON(200, response)
-	// w.Header().Set("Content-Length", strconv.Itoa(len(b)))
-	// w.Write(b)
-
-	// raw, err := c.GetRawData()
-	// if err != nil {
-	// 	c.String(500, "%s", err.Error())
-	// 	return
-	// }
-	// if len(raw) == 0 {
-	// 	c.String(500, "%s", "NO DATA")
-	// 	return
-	// }
-	// // fmt.Println(raw)
-	// paySrv := pay_srv.NewPayService("go.micro.srv.pay_srv", client.DefaultClient)
-	// rst, err := paySrv.Create(c, &pay_srv.CreateReq{})
-	// if err != nil {
-	// 	c.String(500, "%s", err.Error())
-	// 	return
-	// }
-	// // fmt.Println(rst.Result)
-	// c.String(200, "%s", rst.Result)
 }
 
 //RequestToContext ..
