@@ -1,0 +1,8 @@
+services:
+  -
+    path: "/pay/order/create"
+    method: "POST"
+    service: ""
+    endpoint: ""
+    address: ""
+    request: "rpc"

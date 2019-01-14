@@ -24,6 +24,11 @@ func main() {
 	r.Use(gin.Recovery())
 
 	handler := &handler.Handler{}
+	// var services []interface{}
+	// for i, srv := range services {
+	// 	r.Handle(srv.Method, srv, Path, handler.RPC)
+	// }
+
 	r.POST("/pay/order/create", handler.Create)
 	// r.POST("/pay/order/query", handler.Query)
 

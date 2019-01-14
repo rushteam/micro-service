@@ -27,6 +27,11 @@ type rpcRequest struct {
 	Address  string
 	Request  interface{}
 }
+type rpcResponse struct {
+	Errno  int    `json:"errno"`
+	Errmsg string `json:"errmsg"`
+	Data   json.RawMessage
+}
 
 //Handler ..
 type Handler struct{}
@@ -45,7 +50,7 @@ func (h Handler) Create(c *gin.Context) {
 
 	badRequest := func(description string) {
 		log.Log(description)
-		e := errors.BadRequest("go.micro.rpc", description)
+		e := errors.BadRequest("go.micro.gateway", description)
 		c.JSON(400, e)
 	}
 
@@ -118,19 +123,39 @@ func (h Handler) Create(c *gin.Context) {
 	err = (*cmd.DefaultOptions().Client).Call(ctx, req, &resp, opts...)
 	if err != nil {
 		ce := errors.Parse(err.Error())
+		// switch ce.Code {
+		// case 0:
+		// 	// assuming it's totally screwed
+		// 	ce.Code = 500
+		// 	ce.Id = "go.micro.rpc"
+		// 	ce.Status = http.StatusText(500)
+		// 	ce.Detail = "error during request: " + ce.Detail
+		// 	c.JSON(500, ce)
+		// default:
+		// 	c.JSON(int(ce.Code), ce)
+		// }
 		switch ce.Code {
 		case 0:
-			// assuming it's totally screwed
-			ce.Code = 500
-			ce.Id = "go.micro.rpc"
-			ce.Status = http.StatusText(500)
-			ce.Detail = "error during request: " + ce.Detail
-			c.JSON(500, ce)
+			c.JSON(1, rpcResponse{
+				Errno:  1,
+				Errmsg: "system: " + ce.Detail,
+				Data:   resp,
+			})
 		default:
-			c.JSON(int(ce.Code), ce)
+			c.JSON(int(ce.Code), rpcResponse{
+				Errno:  int(ce.Code) + 10000,
+				Errmsg: ce.Detail,
+				Data:   resp,
+			})
 		}
 		return
+
 	}
+	c.JSON(200, rpcResponse{
+		Errno:  0,
+		Errmsg: "",
+		Data:   resp,
+	})
 }
 
 //RequestToContext ..
