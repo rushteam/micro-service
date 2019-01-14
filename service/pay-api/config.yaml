@@ -2,7 +2,13 @@ services:
   -
     path: "/pay/order/create"
     method: "POST"
-    service: ""
+    service: "go.micro.srv.pay_srv"
     endpoint: ""
     address: ""
-    request: "rpc"
+  -
+    path: "/pay/order/query"
+    method: "POST"
+    service: "go.micro.srv.pay_srv"
+    endpoint: ""
+    address: ""
+    
