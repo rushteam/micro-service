@@ -12,15 +12,20 @@ WORKDIR /app/src/micro-service
 
 COPY ./ /app/src/micro-service
 
-RUN set -ex && \
-    # go get -d -v && \
-    go build -v -o /go/bin/ms-user-srv \
-    -mod=vendor \
-    -gcflags '-N -l' \
-    ./service/user-srv/main.go
+RUN set -ex
+# RUN go build -v -o /go/bin/micro-user-srv -mod=vendor -gcflags '-N -l' ./service/user-srv/main.go
+RUN go build -v -o /go/bin/micro-pay-srv -mod=vendor -gcflags '-N -l' ./service/pay-srv/main.go
+RUN go build -v -o /go/bin/micro-pay-api -mod=vendor -gcflags '-N -l' ./service/pay-api/main.go
+RUN go build -v -o /go/bin/micro-pay-notify-web -mod=vendor -gcflags '-N -l' ./service/pay-notify-web/main.go
+# RUN set -ex && \
+#     # go get -d -v && \
+#     go build -v -o /go/bin/ms-user-srv \
+#     -mod=vendor \
+#     -gcflags '-N -l' \
+#     ./service/user-srv/main.go
 
 FROM golang:1.11-alpine
 
-COPY --from=builder /go/bin/ms-user-srv /usr/bin/
+COPY --from=builder /go/bin/ /usr/bin/
 
-CMD ["ms-user-srv"]
+CMD ["micro-pay-api"]
