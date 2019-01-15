@@ -28,4 +28,4 @@ FROM golang:1.11-alpine
 
 COPY --from=builder /go/bin/ /usr/bin/
 
-CMD ["micro-pay-api"]
+# CMD ["micro-pay-api","--config_path=service/pay-srv/config.yaml"]
