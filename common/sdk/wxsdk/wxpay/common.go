@@ -64,11 +64,11 @@ func Sign(args interface{}, secret string, h hash.Hash) string {
 	if err != nil {
 		return ""
 	}
-	query, err := url.QueryUnescape(params.Encode())
+	querystr, err := url.QueryUnescape(params.Encode())
 	if err != nil {
 		return ""
 	}
-	h.Write([]byte(query))
+	h.Write([]byte(querystr))
 	h.Write([]byte(fmt.Sprintf("&key=%s", secret)))
 	signature := make([]byte, hex.EncodedLen(h.Size()))
 	hex.Encode(signature, h.Sum(nil))
