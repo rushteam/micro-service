@@ -4,6 +4,7 @@ FROM golang:1.11-alpine as builder
 
  #COPY ./ /go/src/micro-service
 
+
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
 
 RUN apk add --no-cache gcc musl-dev 
@@ -17,6 +18,8 @@ RUN set -ex
 RUN go build -v -o /go/bin/pay-srv -mod=vendor -gcflags '-N -l' ./service/pay-srv/main.go
 
 FROM golang:1.11-alpine
+
+ENV 
 
 COPY --from=builder /go/bin/ /usr/bin/
 RUN mkdir -p /data/pay-srv/

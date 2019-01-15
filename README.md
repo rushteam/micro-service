@@ -71,3 +71,6 @@ mysql -uroot -h127.0.0.1  -e "CREATE DATABASE rushteam DEFAULT CHARSET utf8 DEFA
 127.0.0.1:9080/pay/order/create
 
 {"service":"go.micro.srv.pay_srv","endpoint":"","method":"PayService.Create","request":{"out_pay_no":"test_001","client_id":"hoo","access_token":"hoo","channel":"201","total_fee":100,"subject":"测试支付","trade_type":"JSAPI","notify_url":"https://1thx.com/","extra":"{\"openid\":\"o8UFh1m1fS3QiuSZ5Ik3rYgt3vjQ\"}"}}
+
+
+docker run --env="MICRO_REGISTRY_ADDRESS=127.0.0.1:8500" rushteam/micro-pay-srv:latest
