@@ -49,7 +49,6 @@ require (
 	github.com/google/go-github v17.0.0+incompatible // indirect
 	github.com/google/go-querystring v1.0.0
 	github.com/google/pprof v0.0.0-20181206194817-3ea8567a2e57 // indirect
-	github.com/google/uuid v1.0.0
 	github.com/gotestyourself/gotestyourself v2.1.0+incompatible // indirect
 	github.com/hashicorp/consul v1.3.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.0 // indirect
@@ -93,7 +92,7 @@ require (
 	github.com/micro/go-rcache v0.0.0-20180418165751-a581a57b5133 // indirect
 	github.com/micro/go-web v0.4.0
 	github.com/micro/mdns v0.0.0-20160929165650-cdf30746f9f7 // indirect
-	github.com/micro/micro v0.17.2
+	github.com/micro/micro v0.17.2 // indirect
 	github.com/micro/util v0.0.0-20180417104657-4b7ed83e8520 // indirect
 	github.com/miekg/dns v1.0.15 // indirect
 	github.com/mitchellh/cli v1.0.0 // indirect
