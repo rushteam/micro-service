@@ -28,9 +28,9 @@ type rpcRequest struct {
 	Request  interface{}
 }
 type rpcResponse struct {
-	Errno  int    `json:"errno"`
-	Errmsg string `json:"errmsg"`
-	Data   json.RawMessage
+	Errno  int             `json:"errno"`
+	Errmsg string          `json:"errmsg"`
+	Data   json.RawMessage `json:"data"`
 }
 
 //Handler ..
@@ -134,6 +134,7 @@ func (h Handler) Create(c *gin.Context) {
 		// default:
 		// 	c.JSON(int(ce.Code), ce)
 		// }
+		resp = []byte("{}")
 		switch ce.Code {
 		case 0:
 			c.JSON(1, rpcResponse{
