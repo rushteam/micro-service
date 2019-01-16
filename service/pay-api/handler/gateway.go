@@ -139,13 +139,13 @@ func (h Handler) Create(c *gin.Context) {
 		case 0:
 			c.JSON(1, rpcResponse{
 				Errno:  1,
-				Errmsg: "system: " + ce.Detail,
+				Errmsg: "system: " + ce.Status + " " + ce.Detail,
 				Data:   resp,
 			})
 		default:
 			c.JSON(int(ce.Code), rpcResponse{
 				Errno:  int(ce.Code) + 10000,
-				Errmsg: ce.Detail,
+				Errmsg: ce.Status + " " + ce.Detail,
 				Data:   resp,
 			})
 		}

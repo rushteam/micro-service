@@ -19,8 +19,6 @@ RUN go build -v -o /go/bin/pay-srv -mod=vendor -gcflags '-N -l' ./service/pay-sr
 
 FROM golang:1.11-alpine
 
-ENV 
-
 COPY --from=builder /go/bin/ /usr/bin/
 RUN mkdir -p /data/pay-srv/
 COPY --from=builder /app/src/micro-service/service/pay-srv/*.yaml /data/pay-srv/
