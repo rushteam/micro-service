@@ -74,3 +74,5 @@ mysql -uroot -h127.0.0.1  -e "CREATE DATABASE rushteam DEFAULT CHARSET utf8 DEFA
 
 
 docker run --env="MICRO_REGISTRY_ADDRESS=127.0.0.1:8500" rushteam/micro-pay-srv:latest
+
+172.17.0.1
