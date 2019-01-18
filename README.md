@@ -76,3 +76,7 @@ mysql -uroot -h127.0.0.1  -e "CREATE DATABASE rushteam DEFAULT CHARSET utf8 DEFA
 docker run --env="MICRO_REGISTRY_ADDRESS=127.0.0.1:8500" rushteam/micro-pay-srv:latest
 
 172.17.0.1
+
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o micro-pay-srv  -gcflags '-N -l' ./service/pay-srv/*.go
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o micro-pay-api  -gcflags '-N -l' ./service/pay-api/*.go
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o micro-pay-notify-web  -gcflags '-N -l' ./service/pay-notify-web/*.go
