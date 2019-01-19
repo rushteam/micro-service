@@ -7,17 +7,17 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
-	"gitee.com/rushteam/micro-service/common/pb/pay_srv"
-	"gitee.com/rushteam/micro-service/service/pay-srv/config"
-	"gitee.com/rushteam/micro-service/service/pay-srv/queue"
 	"github.com/mlboy/godb/orm"
+	"github.com/mlboy/micro-service/common/pb/pay_srv"
+	"github.com/mlboy/micro-service/service/pay-srv/config"
+	"github.com/mlboy/micro-service/service/pay-srv/queue"
 
-	// "gitee.com/rushteam/micro-service/common/db"
-	"gitee.com/rushteam/micro-service/common/micro/wrap"
+	// "github.com/mlboy/micro-service/common/db"
+	"github.com/mlboy/micro-service/common/micro/wrap"
 
-	"gitee.com/rushteam/micro-service/service/pay-srv/handler"
 	"github.com/micro/cli"
 	micro "github.com/micro/go-micro"
+	"github.com/mlboy/micro-service/service/pay-srv/handler"
 	// "github.com/micro/go-micro/registry"
 )
 

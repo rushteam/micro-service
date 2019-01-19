@@ -1,8 +1,8 @@
 package model
 
 import (
-	"gitee.com/rushteam/micro-service/common/db"
 	"github.com/jinzhu/gorm"
+	"github.com/mlboy/micro-service/common/db"
 )
 
 //DbPool ..

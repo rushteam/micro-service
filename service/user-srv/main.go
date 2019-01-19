@@ -3,13 +3,13 @@ package main
 import (
 	"log"
 
-	"gitee.com/rushteam/micro-service/common/db"
-	"gitee.com/rushteam/micro-service/service/user-srv/model"
+	"github.com/mlboy/micro-service/common/db"
+	"github.com/mlboy/micro-service/service/user-srv/model"
 
-	"gitee.com/rushteam/micro-service/common/pb/user_srv"
-	"gitee.com/rushteam/micro-service/service/user-srv/handler"
 	"github.com/micro/cli"
 	micro "github.com/micro/go-micro"
+	"github.com/mlboy/micro-service/common/pb/user_srv"
+	"github.com/mlboy/micro-service/service/user-srv/handler"
 )
 
 var (
