@@ -7,4 +7,3 @@ pipeline:
     image: golang:1.11-alpine
     commands:
       - go build -v -o micro-pay-srv  -gcflags '-N -l' ./service/pay-srv/*.go
-      - pwd
