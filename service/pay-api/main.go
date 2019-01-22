@@ -28,7 +28,6 @@ func main() {
 	// for i, srv := range services {
 	// 	r.Handle(srv.Method, srv, Path, handler.RPC)
 	// }
-
 	r.POST("/pay/order/create", handler.Create)
 	// r.POST("/pay/order/query", handler.Query)
 
