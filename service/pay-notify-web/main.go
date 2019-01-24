@@ -22,8 +22,8 @@ var (
 //PayNotifyHandler ..
 type PayNotifyHandler struct{}
 
-//Wcpay ..
-func (h PayNotifyHandler) Wcpay(c *gin.Context) {
+//Notify ..
+func (h PayNotifyHandler) Notify(c *gin.Context) {
 	// c.GetQuery()
 	// author := c.GetHeader("Authorization") //Authorization: Signature xxx
 	// author := c.GetHeader("X-Signature") //Authorization: Signature
@@ -75,7 +75,7 @@ func main() {
 			payNotifyHandler := &PayNotifyHandler{}
 			//TODO: /pay/notify/wcpay/:channel 对channel的校验？
 			// r.POST("/pay/notify/wcpay/:channel", payNotifyHandler.Wcpay)
-			r.POST("/pay/notify/wcpay/201", payNotifyHandler.Wcpay)
+			r.POST("/pay/notify/wcpay/201", payNotifyHandler.Notify)
 		}),
 		//web
 		micro.Handler(r),
