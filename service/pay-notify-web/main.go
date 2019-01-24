@@ -22,8 +22,8 @@ var (
 //PayNotifyHandler ..
 type PayNotifyHandler struct{}
 
-//Wcpay ..
-func (h PayNotifyHandler) Wcpay(c *gin.Context) {
+//Notify ..
+func (h PayNotifyHandler) Notify(c *gin.Context) {
 	// c.GetQuery()
 	// author := c.GetHeader("Authorization") //Authorization: Signature xxx
 	// author := c.GetHeader("X-Signature") //Authorization: Signature
@@ -52,16 +52,10 @@ func (h PayNotifyHandler) Wcpay(c *gin.Context) {
 	// c.String(200, "%s", rst.Result)
 }
 func main() {
-	// Creates an application without any middleware by default.
 	// gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
-	payNotifyHandler := &PayNotifyHandler{}
-	//TODO: /pay/notify/wcpay/:channel 对channel的处理
-	r.POST("/pay/notify/wcpay/:channel", payNotifyHandler.Wcpay)
-	// r.POST("/pay/notify/alipay", PayNotifyHandler)
-	// r.HandleFunc("/objects/{object}", objectHandler)
 	service := micro.NewService(
 		micro.RegisterTTL(time.Second*15),
 		micro.RegisterInterval(time.Second*5),
@@ -78,14 +72,10 @@ func main() {
 	// var ctx = context.TODO()
 	service.Init(
 		micro.Action(func(c *cli.Context) {
-			// var configFile = "./config.yaml"
-			// if len(c.String("config_path")) > 0 {
-			// 	configFile = c.String("config_path")
-			// }
-			// dbSource := "root:dream@tcp(127.0.0.1:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"
-			// pool := db.InitDb("mysql", dbSource, true)
-			// model.Init(pool)
-			// user_srv.RegisterUserServiceHandler(service.Server(), handler.NewUserServiceHandler(ctx))
+			payNotifyHandler := &PayNotifyHandler{}
+			//TODO: /pay/notify/wcpay/:channel 对channel的校验？
+			// r.POST("/pay/notify/wcpay/:channel", payNotifyHandler.Wcpay)
+			r.POST("/pay/notify/wcpay/201", payNotifyHandler.Notify)
 		}),
 		//web
 		micro.Handler(r),
