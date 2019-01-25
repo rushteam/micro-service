@@ -5,12 +5,12 @@ import (
 	errs "errors"
 	"strconv"
 
-	"gitee.com/rushteam/micro-service/common/utils/snowflake"
+	"github.com/mlboy/micro-service/common/utils/snowflake"
 
 	"github.com/micro/go-micro/errors"
-	// "gitee.com/rushteam/micro-service/common/utils"
-	"gitee.com/rushteam/micro-service/common/pb/order_srv"
-	"gitee.com/rushteam/micro-service/service/order-srv/model"
+	// "github.com/mlboy/micro-service/common/utils"
+	"github.com/mlboy/micro-service/common/pb/order_srv"
+	"github.com/mlboy/micro-service/service/order-srv/model"
 	"github.com/micro/go-log"
 	micro "github.com/micro/go-micro"
 	// "go.uber.org/zap"

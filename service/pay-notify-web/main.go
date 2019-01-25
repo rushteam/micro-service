@@ -6,10 +6,10 @@ import (
 
 	"github.com/micro/go-micro/client"
 
-	"gitee.com/rushteam/micro-service/common/pb/pay_srv"
 	"github.com/gin-gonic/gin"
 	"github.com/micro/cli"
 	micro "github.com/micro/go-web"
+	"github.com/mlboy/micro-service/common/pb/pay_srv"
 )
 
 var (

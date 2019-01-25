@@ -1,4 +1,4 @@
-module gitee.com/rushteam/micro-service
+module github.com/mlboy/micro-service
 
 require (
 	cloud.google.com/go v0.32.0 // indirect

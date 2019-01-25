@@ -13,22 +13,22 @@ import (
 
 	"github.com/go-sql-driver/mysql"
 
-	"gitee.com/rushteam/micro-service/common/utils/snowflake"
+	"github.com/mlboy/micro-service/common/utils/snowflake"
 
 	"github.com/pborman/uuid"
 
 	"github.com/mlboy/godb/orm"
 
-	"gitee.com/rushteam/micro-service/common/sdk/wxsdk/wxpay"
-	"gitee.com/rushteam/micro-service/common/utils"
-	"gitee.com/rushteam/micro-service/service/pay-srv/config"
-	"gitee.com/rushteam/micro-service/service/pay-srv/model"
-	"gitee.com/rushteam/micro-service/service/pay-srv/queue"
 	"github.com/micro/go-micro/errors"
+	"github.com/mlboy/micro-service/common/sdk/wxsdk/wxpay"
+	"github.com/mlboy/micro-service/common/utils"
+	"github.com/mlboy/micro-service/service/pay-srv/config"
+	"github.com/mlboy/micro-service/service/pay-srv/model"
+	"github.com/mlboy/micro-service/service/pay-srv/queue"
 
-	"gitee.com/rushteam/micro-service/common/pb/pay_srv"
 	log "github.com/micro/go-log"
 	micro "github.com/micro/go-micro"
+	"github.com/mlboy/micro-service/common/pb/pay_srv"
 	// "go.uber.org/zap"
 )
 
