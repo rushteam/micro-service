@@ -3,12 +3,12 @@ services:
     path: "/pay/order/create"
     method: "POST"
     service: "go.micro.srv.pay_srv"
-    endpoint: ""
+    endpoint: "PayService.Create"
     address: ""
   -
     path: "/pay/order/query"
     method: "POST"
     service: "go.micro.srv.pay_srv"
-    endpoint: ""
+    endpoint: "PayService.Query"
     address: ""
     
