@@ -18,7 +18,7 @@ func (SkuModel) TableName() string {
 //GetSkuListBySkuIds ..
 func (m *SkuModel) GetSkuListBySkuIds(skuIds []int64) ([]SkuModel, error) {
 	var skuList []SkuModel
-	orm.Model(m).Where("").FindAll()
+	orm.Model(m).Where("[in]sku_id", skuIds).FindAll()
 	return skuList, nil
 }
 
