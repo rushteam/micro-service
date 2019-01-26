@@ -80,3 +80,4 @@ docker run --env="MICRO_REGISTRY_ADDRESS=127.0.0.1:8500" rushteam/micro-pay-srv:
 CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o micro-pay-srv  -gcflags '-N -l' ./service/pay-srv/*.go
 CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o micro-pay-api  -gcflags '-N -l' ./service/pay-api/*.go
 CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o micro-pay-notify-web  -gcflags '-N -l' ./service/pay-notify-web/*.go
+test
