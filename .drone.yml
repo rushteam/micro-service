@@ -9,4 +9,14 @@ steps:
   - name: build
     image: golang:1.11-alpine
     commands:
+      - pwd
       - go build -v -o micro-pay-srv  -gcflags '-N -l' ./service/pay-srv/*.go
+      - ls
+  - name: docker  
+    image: plugins/docker
+    settings:
+      auto_tag: true
+      username: 415235169
+      password: maliang1224
+      repo: hub.tencentyun.com/micro/pay-srv
+      registry: hub.tencentyun.com
