@@ -14,10 +14,14 @@ steps:
       # - go build -v -o /go/bin/pay-srv  -gcflags '-N -l' ./service/pay-srv/*.go
       # - go build -v -o /go/bin/pay-srv  -gcflags '-N -l' ./service/pay-srv/*.go
       - ls
-      - ls /go/bin/
+    when:
+      event:
+        - push
+        - tag
   - name: docker
     image: plugins/docker
     settings:
+      context: /go/bin
       auto_tag: true
       username: 415235169
       password: maliang1224
