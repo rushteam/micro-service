@@ -14,6 +14,7 @@ steps:
       # - go build -v -o /go/bin/pay-srv  -gcflags '-N -l' ./service/pay-srv/*.go
       # - go build -v -o /go/bin/pay-srv  -gcflags '-N -l' ./service/pay-srv/*.go
       - ls
+      - ls /go/bin/
   - name: docker
     image: plugins/docker
     settings:
