@@ -1,4 +1,4 @@
 FROM golang:1.11-alpine
 
-COPY /go/bin/ /usr/bin/
+COPY ./dist/ /usr/bin/
 CMD ["pay-srv"]
