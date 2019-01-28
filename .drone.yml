@@ -10,8 +10,8 @@ steps:
     image: golang:1.11-alpine
     commands:
       - go build -v -o ./dist/pay-srv  -gcflags '-N -l' ./service/pay-srv/*.go
-      - go build -v -o ./dist/pay-srv  -gcflags '-N -l' ./service/pay-srv/*.go
-      - go build -v -o ./dist/pay-srv  -gcflags '-N -l' ./service/pay-srv/*.go
+      - go build -v -o ./dist/pay-api  -gcflags '-N -l' ./service/pay-api/*.go
+      - go build -v -o ./dist/pay-notify-web  -gcflags '-N -l' ./service/pay-notify-web/*.go
     when:
       event:
         - push
@@ -24,6 +24,7 @@ steps:
         from_secret: hub_username
       password: #maliang1224
         from_secret: hub_password
-      dockerfile: dockerfile.d/pay-srv/Dockerfile
+      # dockerfile: dockerfile.d/pay-srv/Dockerfile
+      dockerfile: dockerfile.d/Dockerfile
       repo: hub.tencentyun.com/micro/pay-srv
       registry: hub.tencentyun.com
