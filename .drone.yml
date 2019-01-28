@@ -9,11 +9,9 @@ steps:
   - name: build
     image: golang:1.11-alpine
     commands:
-      - pwd
       - go build -v -o ./dist/pay-srv  -gcflags '-N -l' ./service/pay-srv/*.go
-      # - go build -v -o /go/bin/pay-srv  -gcflags '-N -l' ./service/pay-srv/*.go
-      # - go build -v -o /go/bin/pay-srv  -gcflags '-N -l' ./service/pay-srv/*.go
-      - ls
+      - go build -v -o ./dist/pay-srv  -gcflags '-N -l' ./service/pay-srv/*.go
+      - go build -v -o ./dist/pay-srv  -gcflags '-N -l' ./service/pay-srv/*.go
     when:
       event:
         - push
@@ -22,8 +20,10 @@ steps:
     image: plugins/docker
     settings:
       auto_tag: true
-      username: 415235169
-      password: maliang1224
+      username: #415235169
+        from_secret: username
+      password: #maliang1224
+        from_secret: password
       dockerfile: dockerfile.d/pay-srv/Dockerfile
       repo: hub.tencentyun.com/micro/pay-srv
       registry: hub.tencentyun.com
