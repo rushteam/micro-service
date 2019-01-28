@@ -16,7 +16,7 @@ steps:
       event:
         - push
         - tag
-  - name: docker
+  - name: docker_pay-srv
     image: plugins/docker
     settings:
       auto_tag: true
@@ -28,7 +28,7 @@ steps:
       dockerfile: service/pay-srv/Dockerfile
       repo: hub.tencentyun.com/micro/pay-srv
       registry: hub.tencentyun.com
-  - name: docker
+  - name: docker_pay-api
     image: plugins/docker
     settings:
       auto_tag: true
@@ -39,14 +39,14 @@ steps:
       dockerfile: service/pay-api/Dockerfile
       repo: hub.tencentyun.com/micro/pay-api
       registry: hub.tencentyun.com
-  - name: docker
-    image: plugins/docker
-    settings:
-      auto_tag: true
-      username:
-        from_secret: hub_username
-      password:
-        from_secret: hub_password
-      dockerfile: service/pay-notify-web/Dockerfile
-      repo: hub.tencentyun.com/micro/pay-notify-web
-      registry: hub.tencentyun.com
+  # - name: docker_pay-notify-web
+  #   image: plugins/docker
+  #   settings:
+  #     auto_tag: true
+  #     username:
+  #       from_secret: hub_username
+  #     password:
+  #       from_secret: hub_password
+  #     dockerfile: service/pay-notify-web/Dockerfile
+  #     repo: hub.tencentyun.com/micro/pay-notify-web
+  #     registry: hub.tencentyun.com
