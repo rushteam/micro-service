@@ -1,4 +1,4 @@
-FROM golang:1.11-alpine
+FROM alpine
 
 COPY ./dist/ /usr/bin/
 COPY ./service/pay-srv/config.yaml /usr/bin/config.yaml

@@ -25,6 +25,6 @@ steps:
       password: #maliang1224
         from_secret: hub_password
       # dockerfile: dockerfile.d/pay-srv/Dockerfile
-      dockerfile: dockerfile.d/Dockerfile
+      dockerfile: dockerfile.d/pay-srv/Dockerfile
       repo: hub.tencentyun.com/micro/pay-srv
       registry: hub.tencentyun.com
