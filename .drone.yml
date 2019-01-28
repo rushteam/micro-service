@@ -21,9 +21,9 @@ steps:
     settings:
       auto_tag: true
       username: #415235169
-        from_secret: username
+        from_secret: hub_username
       password: #maliang1224
-        from_secret: password
+        from_secret: hub_password
       dockerfile: dockerfile.d/pay-srv/Dockerfile
       repo: hub.tencentyun.com/micro/pay-srv
       registry: hub.tencentyun.com
