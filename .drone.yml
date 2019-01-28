@@ -25,7 +25,7 @@ steps:
       password: #maliang1224
         from_secret: hub_password
       # dockerfile: dockerfile.d/pay-srv/Dockerfile
-      dockerfile: dockerfile.d/pay-srv/Dockerfile
+      dockerfile: service/pay-srv/Dockerfile
       repo: hub.tencentyun.com/micro/pay-srv
       registry: hub.tencentyun.com
   - name: docker
@@ -36,7 +36,7 @@ steps:
         from_secret: hub_username
       password:
         from_secret: hub_password
-      dockerfile: dockerfile.d/pay-api/Dockerfile
+      dockerfile: service/pay-api/Dockerfile
       repo: hub.tencentyun.com/micro/pay-api
       registry: hub.tencentyun.com
   - name: docker
@@ -47,6 +47,6 @@ steps:
         from_secret: hub_username
       password:
         from_secret: hub_password
-      dockerfile: dockerfile.d/pay-notify-web/Dockerfile
+      dockerfile: service/pay-notify-web/Dockerfile
       repo: hub.tencentyun.com/micro/pay-notify-web
       registry: hub.tencentyun.com
