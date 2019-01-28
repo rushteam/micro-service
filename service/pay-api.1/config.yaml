@@ -1,0 +1,14 @@
+services:
+  -
+    path: "/pay/order/create"
+    method: "POST"
+    service: "go.micro.srv.pay_srv"
+    endpoint: ""
+    address: ""
+  -
+    path: "/pay/order/query"
+    method: "POST"
+    service: "go.micro.srv.pay_srv"
+    endpoint: ""
+    address: ""
+    
