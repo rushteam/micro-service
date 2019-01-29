@@ -39,14 +39,3 @@ steps:
       dockerfile: service/pay-api/Dockerfile
       repo: hub.tencentyun.com/micro/pay-api
       registry: hub.tencentyun.com
-  # - name: docker_pay-notify-web
-  #   image: plugins/docker
-  #   settings:
-  #     auto_tag: true
-  #     username:
-  #       from_secret: hub_username
-  #     password:
-  #       from_secret: hub_password
-  #     dockerfile: service/pay-notify-web/Dockerfile
-  #     repo: hub.tencentyun.com/micro/pay-notify-web
-  #     registry: hub.tencentyun.com
