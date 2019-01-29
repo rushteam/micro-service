@@ -11,7 +11,7 @@ steps:
     commands:
       - go build -v -o ./dist/pay-srv  -gcflags '-N -l' ./service/pay-srv/*.go
       - go build -v -o ./dist/pay-api  -gcflags '-N -l' ./service/pay-api/*.go
-      - go build -v -o ./dist/pay-notify-web  -gcflags '-N -l' ./service/pay-notify-web/*.go
+      # - go build -v -o ./dist/pay-notify-web  -gcflags '-N -l' ./service/pay-notify-web/*.go
     when:
       event:
         - push
