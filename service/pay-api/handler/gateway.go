@@ -33,11 +33,11 @@ type rpcResponse struct {
 	Data   json.RawMessage `json:"data"`
 }
 
-//Handler ..
-type Handler struct{}
+//RpcHandler ..
+type RpcHandler struct{}
 
 //Create ..
-func (h Handler) Create(c *gin.Context) {
+func (h RpcHandler) Create(c *gin.Context) {
 	if c.Request.Method != "POST" {
 		log.Log("Method not must POST")
 		return
@@ -103,6 +103,7 @@ func (h Handler) Create(c *gin.Context) {
 		badRequest("invalid endpoint")
 		return
 	}
+
 	// create request/response
 	var resp json.RawMessage
 	var err error

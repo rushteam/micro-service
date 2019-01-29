@@ -1,4 +1,0 @@
-FROM alpine
-
-COPY ./dist/ /usr/bin/
-CMD ["pay-notify-web"]

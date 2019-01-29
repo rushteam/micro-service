@@ -31,8 +31,14 @@ func main() {
 		micro.Action(func(c *cli.Context) {
 			r.Use(gin.Logger())
 			r.Use(gin.Recovery())
-			handler := &handler.Handler{}
-			r.POST("/", handler.Create)
+			rpcHandler := &handler.RpcHandler{}
+			r.POST("/rpc", rpcHandler.Create)
+
+			payNotifyHandler := &handler.PayNotifyHandler{}
+			//TODO: /pay/notify/wcpay/:channel 对channel的校验？
+			// r.POST("/pay/notify/wcpay/:channel", payNotifyHandler.Wcpay)
+			r.POST("/pay/notify/wcpay/201", payNotifyHandler.Notify)
+
 			// var services []interface{}
 			// for i, srv := range services {
 			// 	r.Handle(srv.Method, srv, Path, handler.RPC)
