@@ -37,7 +37,7 @@ func main() {
 			payNotifyHandler := &handler.PayNotifyHandler{}
 			//TODO: /pay/notify/wcpay/:channel 对channel的校验？
 			// r.POST("/pay/notify/wcpay/:channel", payNotifyHandler.Wcpay)
-			r.POST("/pay/notify/wcpay/201", payNotifyHandler.Notify)
+			r.POST("/pay/notify/:channel", payNotifyHandler.Notify)
 
 			// var services []interface{}
 			// for i, srv := range services {
