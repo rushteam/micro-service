@@ -9,4 +9,4 @@ COPY ./service/pay-srv/config.yaml /usr/bin/config.yaml
 # CMD pay-srv --config_path=config.yaml
 # CMD pay-srv
 # CMD ["pay-srv","--config_path=config.yaml"]
-ENTRYPOINT [ "./pay-srv" ]
+ENTRYPOINT [ "/usr/bin/pay-srv" ]
