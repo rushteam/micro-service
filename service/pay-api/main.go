@@ -39,6 +39,9 @@ func main() {
 			// r.POST("/pay/notify/wcpay/:channel", payNotifyHandler.Wcpay)
 			r.POST("/pay/notify/:channel", payNotifyHandler.Notify)
 
+			r.GET("/health", func(c *gin.Context) {
+				c.String(200, "")
+			})
 			// var services []interface{}
 			// for i, srv := range services {
 			// 	r.Handle(srv.Method, srv, Path, handler.RPC)

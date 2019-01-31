@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"time"
 
@@ -35,12 +36,12 @@ func main() {
 		micro.Name(SERVICE_NAME),
 		micro.Version(SERVICE_VERSION),
 		micro.Flags(
-			cli.StringFlag{
-				Name:   "app_db",
-				EnvVar: "MS_PAY_SRV_DB",
-				Usage:  "Db config for mysql e.g username:password@tcp(host:port)/database",
-				Value:  "root:dream@tcp(127.0.0.1:3306)/rushteam",
-			},
+			// cli.StringFlag{
+			// 	Name:   "app_db",
+			// 	EnvVar: "MS_PAY_SRV_DB",
+			// 	Usage:  "Db config for mysql e.g username:password@tcp(host:port)/database",
+			// 	Value:  "root:dream@tcp(127.0.0.1:3306)/rushteam",
+			// },
 			cli.StringFlag{
 				Name:   "config_path",
 				EnvVar: "CONFIG_PATH",
@@ -59,11 +60,15 @@ func main() {
 				log.Fatal(err)
 			}
 			//初始化db
-			//config.App.DbConfig
-			dbConf := c.String("app_db")
-			// dbSource := dbConf + "?" + "parseTime=true&loc=Asia%2FShanghai&readTimeout=3s&writeTimeout=3s&timeout=3s"
-			dbSource := dbConf + "?" + "parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"
-			db, err := sql.Open("mysql", dbSource)
+			// dbSource := dbConf + "?parseTime=true&loc=Asia%2FShanghai&readTimeout=3s&writeTimeout=3s&timeout=3s"
+			// dbConf := c.String("app_db")
+			// dbSource := dbConf +  "?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"
+			dbConf, err := config.App.Db.Default()
+			if err != nil {
+				log.Fatal(err)
+			}
+			fmt.Println(dbConf.Nodes[0])
+			db, err := sql.Open(dbConf.DbType, dbConf.Nodes[0])
 			if err != nil {
 				log.Fatal(err)
 			}

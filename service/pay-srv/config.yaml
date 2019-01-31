@@ -10,10 +10,10 @@ pay_channels:
     app_id: wx5e596d33cb663cd1
     api_key: 6eeee65a188ac4f5935f3f0a0f5d6528
     mch_id: 1512978741
-    notify_url: "http://www.xixihi.com/pay-gateway/notify/wxpay"
+    notify_url: "http://pay.xixihi.com/pay/notify/wxpay"
 
 db_configs:
   default:
     db_type: "mysql"
     nodes:
-      - ""
+      - "root:maliang2048@tcp(mariadb:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"
