@@ -1,0 +1,28 @@
+version: "3"
+services:
+  consul:
+    image: consul
+    #command: -server -bootstrap -rejoin
+    restart: always
+  mariadb:
+    image: mariadb:10.4
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: hoo2019!
+    volumes:
+      - /data/mariadb/data:/var/lib/mysql
+      - /data/mariadb/conf.d:/etc/mysql/conf.d
+  pay-srv:
+    image: hub.tencentyun.com/micro/pay-srv:latest
+    restart: always
+    command: --registry_address=consul:8500
+    depends_on:
+        - "consul"
+  pay-api:
+    image: hub.tencentyun.com/micro/pay-api:latest
+    restart: always
+    command: --registry_address="consul:8500" --server_address=:8080
+    ports:
+       - "8801:8080"
+    depends_on:
+        - "consul"

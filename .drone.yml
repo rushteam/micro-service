@@ -39,3 +39,7 @@ steps:
       dockerfile: service/pay-api/Dockerfile
       repo: hub.tencentyun.com/micro/pay-api
       registry: hub.tencentyun.com
+  - name: docker_swarm
+    image: docker:dind
+    commands:
+      - docker deploy
