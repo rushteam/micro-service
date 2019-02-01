@@ -42,7 +42,7 @@ steps:
   - name: docker_swarm
     image: docker:dind
     commands:
-      - cd /data/micro-service
+      # - cd /data/micro-service
       - docker pull hub.tencentyun.com/micro/pay-api
       - docker pull hub.tencentyun.com/micro/pay-srv
       - docker stack deploy -c docker-compose.yml micro
