@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"time"
 
@@ -67,7 +66,7 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
-			fmt.Println(dbConf.Nodes[0])
+			// fmt.Println(dbConf.Nodes[0])
 			db, err := sql.Open(dbConf.DbType, dbConf.Nodes[0])
 			if err != nil {
 				log.Fatal(err)
