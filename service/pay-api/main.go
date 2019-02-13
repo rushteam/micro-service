@@ -32,12 +32,9 @@ func main() {
 			r.Use(gin.Logger())
 			r.Use(gin.Recovery())
 			rpcHandler := &handler.RpcHandler{}
-
 			r.POST("/rpc", rpcHandler.Handler)
-
 			payNotifyHandler := &handler.PayNotifyHandler{}
 			r.POST("/pay/notify/:channel", payNotifyHandler.Notify)
-
 			r.GET("/health", func(c *gin.Context) {
 				c.String(200, "")
 			})
