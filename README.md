@@ -81,3 +81,6 @@ CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o micro-pay-srv  -gcflags '-N
 CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o micro-pay-api  -gcflags '-N -l' ./service/pay-api/*.go
 CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o micro-pay-notify-web  -gcflags '-N -l' ./service/pay-notify-web/*.go
 test
+
+
+https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6

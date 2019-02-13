@@ -67,6 +67,7 @@ type UnifiedOrderRsp struct {
 	TradeTypes string `xml:"trade_type"` //交易类型 JSAPI 公众号支付 NATIVE 扫码支付 APP APP支付
 	PrepayID   string `xml:"prepay_id"`  //预支付交易会话标识 微信生成的预支付会话标识，用于后续接口调用中使用，该值有效期为2小时
 	CodeURL    string `xml:"code_url"`   //二维码链接 URl：weixin：//wxpay/s/An4baqw	trade_type为NATIVE时有返回，用于生成二维码，展示给用户进行扫码支付
+	MwebURL    string `xml:"mweb_url"`   //拉起微信支付收银台的中间页面，可通过访问该url来拉起微信客户端，完成支付,mweb_url的有效期为5分钟
 }
 
 func (r *UnifiedOrderRsp) Error() error {
