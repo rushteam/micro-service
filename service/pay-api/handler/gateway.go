@@ -36,8 +36,8 @@ type rpcResponse struct {
 //RpcHandler ..
 type RpcHandler struct{}
 
-//Create ..
-func (h RpcHandler) Create(c *gin.Context) {
+//Handler ..
+func (h RpcHandler) Handler(c *gin.Context) {
 	if c.Request.Method != "POST" {
 		log.Log("Method not must POST")
 		return

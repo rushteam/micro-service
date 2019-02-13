@@ -33,7 +33,7 @@ func main() {
 			r.Use(gin.Recovery())
 			rpcHandler := &handler.RpcHandler{}
 
-			r.POST("/rpc", rpcHandler.Create)
+			r.POST("/rpc", rpcHandler.Handler)
 
 			payNotifyHandler := &handler.PayNotifyHandler{}
 			r.POST("/pay/notify/:channel", payNotifyHandler.Notify)
