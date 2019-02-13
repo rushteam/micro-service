@@ -32,11 +32,10 @@ func main() {
 			r.Use(gin.Logger())
 			r.Use(gin.Recovery())
 			rpcHandler := &handler.RpcHandler{}
+
 			r.POST("/rpc", rpcHandler.Create)
 
 			payNotifyHandler := &handler.PayNotifyHandler{}
-			//TODO: /pay/notify/wcpay/:channel 对channel的校验？
-			// r.POST("/pay/notify/wcpay/:channel", payNotifyHandler.Wcpay)
 			r.POST("/pay/notify/:channel", payNotifyHandler.Notify)
 
 			r.GET("/health", func(c *gin.Context) {
