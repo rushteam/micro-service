@@ -31,6 +31,7 @@ func main() {
 		micro.Action(func(c *cli.Context) {
 			r.Use(gin.Logger())
 			r.Use(gin.Recovery())
+			r.Static("/assets", "./assets")
 			rpcHandler := &handler.RpcHandler{}
 			r.POST("/rpc", rpcHandler.Handler)
 			payNotifyHandler := &handler.PayNotifyHandler{}
@@ -38,6 +39,9 @@ func main() {
 			r.GET("/health", func(c *gin.Context) {
 				c.String(200, "")
 			})
+			wcpayHandler := &handler.WcpayHandler{}
+			r.GET("/pay/wcpay/jsapi", wcpayHandler.Jsapi)
+
 			// var services []interface{}
 			// for i, srv := range services {
 			// 	r.Handle(srv.Method, srv, Path, handler.RPC)
