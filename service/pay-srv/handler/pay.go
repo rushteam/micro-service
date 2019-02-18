@@ -76,6 +76,23 @@ func validateCreateReq(req *pay_srv.CreateReq) error {
 	return nil
 }
 
+//MakeJsapiProxy ..
+func MakeJsapiProxy(p wxpay.Payment) string {
+	//http://127.0.0.1:8089/pay/wcpay/jsapi
+	// var domian = "pay.xixihi.com/pay/wcpay/jsapi"
+	var domian = "127.0.0.1:8089/pay/wcpay/jsapi"
+	return fmt.Sprintf(
+		"//%s?app_id=%s&time_stamp=%s&nonce_str=%s&package=%s&sign_type=%s&pay_sign=%s",
+		domian,
+		p.AppID,
+		p.TimeStamp,
+		p.NonceStr,
+		p.Package,
+		p.SignType,
+		p.PaySign,
+	)
+}
+
 //Create ..
 func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pay_srv.PayRsp) error {
 	// fmt.Println(s.Service.Server().Options().Registry.GetService("go.micro.srv.pay_srv"))
@@ -221,6 +238,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 				return errors.BadRequest("PayService.Create", "pay channel jsapi err, "+err.Error())
 			}
 			payField.FieldStr = string(paymentBytes)
+			payField.PayUrl = MakeJsapiProxy(payment)
 		}
 		rsp.PayField = payField
 	} else if tradeModel.Provider == TradeAlipay {
