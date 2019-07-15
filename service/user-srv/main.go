@@ -1,15 +1,15 @@
 package main
 
 import (
+	"fmt"
 	"log"
-
-	"github.com/mlboy/micro-service/common/db"
-	"github.com/mlboy/micro-service/service/user-srv/model"
+	"time"
 
 	"github.com/micro/cli"
 	micro "github.com/micro/go-micro"
-	"github.com/mlboy/micro-service/common/pb/user_srv"
-	"github.com/mlboy/micro-service/service/user-srv/handler"
+	"github.com/mlboy/micro-service/common/micro/wrap"
+	// "github.com/mlboy/micro-service/service/pay-srv/config"
+	"github.com/micro/go-micro/config"
 )
 
 var (
@@ -21,26 +21,43 @@ var (
 
 func main() {
 	service := micro.NewService(
+		micro.RegisterTTL(time.Second*15),
+		micro.RegisterInterval(time.Second*5),
 		micro.Name(SERVICE_NAME),
 		micro.Version(SERVICE_VERSION),
 		micro.Flags(
 			cli.StringFlag{
-				Name:   "app_db",
-				EnvVar: "MS_USER_SRV_DB",
-				Usage:  "Db config for mysql",
-				Value:  "root:dream@tcp(127.0.0.1:3306)/rushteam",
-				// Value: "root:dream@tcp(mysql:3306)/rushteam",
+				Name:   "config_path",
+				EnvVar: "CONFIG_PATH",
+				Usage:  "The config PATH e.g ../config/config.yaml",
+				Value:  "./config.yaml",
 			},
 		),
+		micro.WrapHandler(wrap.Access),
 	)
 	// var ctx = context.TODO()
 	service.Init(
 		micro.Action(func(c *cli.Context) {
-			dbConf := c.String("app_db")
-			dbSource := dbConf + "?" + "parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"
-			pool := db.InitDb("mysql", dbSource, true)
-			model.Init(pool)
-			user_srv.RegisterUserServiceHandler(service.Server(), new(handler.UserService))
+			conf := config.NewConfig()
+			config.LoadFile("./config.yaml")
+
+			fmt.Printf("%v", conf.Get("db_configs"))
+			// configFile := c.String("config_path")
+			// err := config.App.Load(configFile)
+			// if err != nil {
+			// 	log.Fatal(err)
+			// }
+			// dbConf, err := config.App.Db.Default()
+			// if err != nil {
+			// 	log.Fatal(err)
+			// }
+			// db, err := sql.Open(dbConf.DbType, dbConf.Nodes[0])
+			// if err != nil {
+			// 	log.Fatal(err)
+			// }
+			// orm.InitDefaultDb(db)
+
+			// user_srv.RegisterUserServiceHandler(service.Server(), new(handler.UserService))
 			// user_srv.RegisterUserServiceHandler(service.Server(), handler.NewUserServiceHandler(ctx))
 		}),
 	)
