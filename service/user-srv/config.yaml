@@ -1,5 +1,0 @@
-db_configs:
-  default:
-    db_type: "mysql"
-    nodes:
-      - "root:hoo2019!@tcp(mariadb:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"
