@@ -4,8 +4,6 @@ import (
 	"math/rand"
 	"strconv"
 	"time"
-
-	"github.com/gbrlsnchs/jwt/v2"
 )
 
 var _secret = "861b1508cb81764b65fa90e460dbf1c1"

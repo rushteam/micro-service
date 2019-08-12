@@ -3,15 +3,11 @@ package handler
 import (
 	"context"
 	"regexp"
-	"strconv"
-
-	"github.com/mlboy/micro-service/service/user-srv/session"
 
 	"github.com/micro/go-log"
 	"github.com/micro/go-micro/errors"
 	"github.com/mlboy/micro-service/common/pb/user_srv"
 	"github.com/mlboy/micro-service/common/utils"
-	"github.com/mlboy/micro-service/service/user-srv/model"
 	// "go.uber.org/zap"
 )
 
@@ -35,7 +31,7 @@ func (s *UserService) Login(ctx context.Context, req *user_srv.LoginReq, rsp *us
 	if req.Platform == "" {
 		return errors.BadRequest("UserService.Login", "Platform参数不能为空")
 	}
-	loginModel := &model.LoginModel{}
+	// loginModel := &model.LoginModel{}
 	if utils.SliceIndexOf(req.Platform, localLoginList) >= 0 { //账号登陆
 		if req.Platform == "phone" {
 			if !validatePhone(req.Login) {
@@ -46,19 +42,19 @@ func (s *UserService) Login(ctx context.Context, req *user_srv.LoginReq, rsp *us
 			// 	return errors.BadRequest("UserService.Login", "密码不得小于6位")
 			// }
 			//test --md5--> 098f6bcd4621d373cade4e832627b4f6
-			login, err := loginModel.LoginByPassword(req.Platform, req.Login, req.Password)
-			if err != nil {
-				return errors.BadRequest("UserService.Login", "用户名或密码错误")
-			}
-			rsp.Uid = login.UID
+			// login, err := loginModel.LoginByPassword(req.Platform, req.Login, req.Password)
+			// if err != nil {
+			// 	return errors.BadRequest("UserService.Login", "用户名或密码错误")
+			// }
+			// rsp.Uid = login.UID
 			//gen token
-			subject := strconv.FormatInt(login.UID, 10)
-			token := session.New("user-srv", subject, "")
-			jwt, err := session.Encode("", token)
-			if err != nil {
-				return errors.BadRequest("UserService.Login", "登录异常,请请联系客服")
-			}
-			rsp.Jwt = jwt
+			// subject := strconv.FormatInt(login.UID, 10)
+			// token := session.New("user-srv", subject, "")
+			// jwt, err := session.Encode("", token)
+			// if err != nil {
+			// 	return errors.BadRequest("UserService.Login", "登录异常,请请联系客服")
+			// }
+			// rsp.Jwt = jwt
 		} else {
 			return errors.BadRequest("UserService.Login", "未知登陆方式")
 		}
