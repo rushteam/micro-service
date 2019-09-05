@@ -7,8 +7,8 @@ import (
 	"github.com/micro/cli"
 	micro "github.com/micro/go-micro"
 	"github.com/mlboy/micro-service/common/micro/wrap"
-	"github.com/mlboy/micro-service/common/pb/user_srv"
 	"github.com/mlboy/micro-service/service/user-srv/handler"
+	"upper.io/db.v3/mysql"
 )
 
 var (
@@ -43,13 +43,14 @@ func main() {
 			// config.LoadFile(configFile)
 			// fmt.Printf("%+v", conf.Get("db_configs"))
 			// settings, _ := mysql.ParseURL("root:hoo2019!@tcp(mariadb:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s")
-			// settings, _ := mysql.ParseURL("root:dream@tcp(127.0.0.1:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s")
-			// sess, err := mysql.Open(settings)
-			// if err != nil {
-			// 	log.Fatalf("db.Open(): %q\n", err)
-			// }
+			settings, _ := mysql.ParseURL("root:dream@tcp(127.0.0.1:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s")
+			sess, err := mysql.Open(settings)
+			if err != nil {
+				log.Fatalf("db.Open(): %q\n", err)
+			}
 			// defer sess.Close()
-			user_srv.RegisterUserServiceHandler(service.Server(), &handler.UserService{})
+			handler.RegisterUserServiceHandler(service, sess)
+			// user_srv.RegisterUserServiceHandler(service.Server(), handler.NewUserService())
 		}),
 	)
 	if err := service.Run(); err != nil {

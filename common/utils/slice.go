@@ -18,6 +18,5 @@ func SliceIndexOf(val interface{}, slice interface{}) int {
 			return i
 		}
 	}
-
 	return -1
 }

@@ -1,70 +1,60 @@
 package session
 
 import (
-	"math/rand"
-	"strconv"
 	"time"
+
+	jwt "github.com/gbrlsnchs/jwt/v3"
 )
 
 var _secret = "861b1508cb81764b65fa90e460dbf1c1"
 
 //Token ..
 type Token struct {
-	jwt.JWT
+	jwt.Payload
 }
 
 //Encode ..
-func Encode(secret string, claims *Token) (string, error) {
+func Encode(claims *Token, secret string) (string, error) {
 	if secret == "" {
 		secret = _secret
 	}
-	hs256 := jwt.NewHS256(secret)
-	claims.SetAlgorithm(hs256)
-	rand.Seed(time.Now().UnixNano())
-	claims.SetKeyID(strconv.Itoa(rand.Intn(10000)))
-	payload, err := jwt.Marshal(claims)
-	if err != nil {
-		return "", err
-	}
-	token, err := hs256.Sign(payload)
-	if err != nil {
-		return "", err
-	}
-	return string(token), nil
+	hs := jwt.NewHS256([]byte(secret))
+	token, err := jwt.Sign(claims, hs)
+	return string(token), err
 }
 
 //Decode ..
-func Decode(secret string, token string) (Token, error) {
+func Decode(token, secret string) (Token, error) {
 	if secret == "" {
 		secret = _secret
 	}
 	var claims Token
-	hs256 := jwt.NewHS256(secret)
-	payload, sig, err := jwt.Parse(token)
-	if err != nil {
-		return claims, err
-	}
-	if err = hs256.Verify(payload, sig); err != nil {
-		return claims, err
-	}
-	if err = jwt.Unmarshal(payload, &claims); err != nil {
-		return claims, err
-	}
-	return claims, nil
+	hs := jwt.NewHS256([]byte(secret))
+	_, err := jwt.Verify([]byte(token), hs, &claims)
+	return claims, err
 }
 
-//New ...
-func New(Issuer, Subject, Audience string) *Token {
+/*
+New ...
+	iss(Issuser)：代表这个JWT的签发主体；
+	sub(Subject)：代表这个JWT的主体，即它的所有人；
+	aud(Audience)：代表这个JWT的接收对象；
+	exp(Expiration time)：是一个时间戳，代表这个JWT的过期时间；
+	nbf(Not Before)：是一个时间戳，代表这个JWT生效的开始时间，意味着在这个时间之前验证JWT是会失败的；
+	iat(Issued at)：是一个时间戳，代表这个JWT的签发时间；
+	jti(JWT ID)：是JWT的唯一标识
+*/
+func New(Issuer, Subject string, Audience string) *Token {
 	now := time.Now()
 	claims := &Token{
-		jwt.JWT{
+		Payload: jwt.Payload{
 			Issuer:         Issuer,
 			Subject:        Subject,
-			Audience:       Audience,
-			ExpirationTime: now.Add(time.Hour * 24 * 7).Unix(),
-			NotBefore:      now.Add(time.Minute * 30).Unix(),
-			IssuedAt:       now.Unix(),
-			ID:             "",
+			Audience:       jwt.Audience{Audience},
+			ExpirationTime: jwt.NumericDate(now.Add(time.Hour * 24 * 7)),
+			NotBefore:      jwt.NumericDate(now),
+			IssuedAt:       jwt.NumericDate(now),
+			JWTID:          "",
 		},
 	}
 	return claims

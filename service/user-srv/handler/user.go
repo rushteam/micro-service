@@ -3,16 +3,34 @@ package handler
 import (
 	"context"
 	"regexp"
+	"strconv"
+	"time"
 
 	"github.com/micro/go-log"
+	micro "github.com/micro/go-micro"
 	"github.com/micro/go-micro/errors"
 	"github.com/mlboy/micro-service/common/pb/user_srv"
 	"github.com/mlboy/micro-service/common/utils"
+	"github.com/mlboy/micro-service/service/user-srv/repository"
+	"github.com/mlboy/micro-service/service/user-srv/session"
+
+	"upper.io/db.v3/lib/sqlbuilder"
 	// "go.uber.org/zap"
 )
 
+//RegisterUserServiceHandler ..
+func RegisterUserServiceHandler(service micro.Service, d sqlbuilder.Database) {
+	user_srv.RegisterUserServiceHandler(service.Server(), NewUserService(d))
+}
+
+//NewUserService ..
+func NewUserService(d sqlbuilder.Database) *UserService {
+	return &UserService{d}
+}
+
 //UserService ...
 type UserService struct {
+	db sqlbuilder.Database
 	// logger *zap.Logger
 }
 
@@ -22,8 +40,6 @@ func validatePhone(phone string) bool {
 	return reg.MatchString(phone)
 }
 
-var localLoginList = []string{"phone", "email", "username"}
-
 //Login ...
 func (s *UserService) Login(ctx context.Context, req *user_srv.LoginReq, rsp *user_srv.LoginRsp) error {
 	log.Log("[access] UserService.Login")
@@ -31,8 +47,7 @@ func (s *UserService) Login(ctx context.Context, req *user_srv.LoginReq, rsp *us
 	if req.Platform == "" {
 		return errors.BadRequest("UserService.Login", "Platform参数不能为空")
 	}
-	// loginModel := &model.LoginModel{}
-	if utils.SliceIndexOf(req.Platform, localLoginList) >= 0 { //账号登陆
+	if _, ok := repository.LocalLoginList[req.Platform]; ok { //账号登陆 本地登陆账号
 		if req.Platform == "phone" {
 			if !validatePhone(req.Login) {
 				return errors.BadRequest("UserService.Login", "手机号格式错误")
@@ -42,19 +57,20 @@ func (s *UserService) Login(ctx context.Context, req *user_srv.LoginReq, rsp *us
 			// 	return errors.BadRequest("UserService.Login", "密码不得小于6位")
 			// }
 			//test --md5--> 098f6bcd4621d373cade4e832627b4f6
-			// login, err := loginModel.LoginByPassword(req.Platform, req.Login, req.Password)
-			// if err != nil {
-			// 	return errors.BadRequest("UserService.Login", "用户名或密码错误")
-			// }
-			// rsp.Uid = login.UID
-			//gen token
-			// subject := strconv.FormatInt(login.UID, 10)
-			// token := session.New("user-srv", subject, "")
-			// jwt, err := session.Encode("", token)
-			// if err != nil {
-			// 	return errors.BadRequest("UserService.Login", "登录异常,请请联系客服")
-			// }
-			// rsp.Jwt = jwt
+			loginRepo := &repository.LoginRepository{Db: s.db}
+			login, err := loginRepo.FindByPassword(req.Platform, req.Login, req.Password)
+			if err != nil {
+				return errors.BadRequest("UserService.Login", "用户名或密码错误")
+			}
+			rsp.Uid = login.UID
+			// gen token
+			subject := strconv.FormatInt(login.UID, 10)
+			token := session.New("user-srv", subject, "")
+			jwt, err := session.Encode(token, "")
+			if err != nil {
+				return errors.BadRequest("UserService.Login", "登录异常,请请联系客服")
+			}
+			rsp.Jwt = jwt
 		} else {
 			return errors.BadRequest("UserService.Login", "未知登陆方式")
 		}
@@ -68,74 +84,86 @@ func (s *UserService) Login(ctx context.Context, req *user_srv.LoginReq, rsp *us
 func (s *UserService) User(ctx context.Context, req *user_srv.UserReq, rsp *user_srv.UserRsp) error {
 	log.Log("[access] UserService.User")
 	// Model := model.Db()
-	// token, err := session.Decode("", req.GetJwt())
-	// if err != nil {
-	// 	return errors.BadRequest("UserService.Login", "登录超时或TOKEN非法")
-	// }
-	// if token.Subject == "" || token.Subject == "0" {
-	// 	return errors.BadRequest("UserService.Login", "当前TOKEN未绑定用户")
-	// }
-	// uid, err := strconv.ParseInt(token.Subject, 10, 64)
-	// if err != nil {
-	// 	return errors.BadRequest("UserService.Login", "当前TOKEN无法解析用户")
-	// }
-	// user, err := Model.UserByUID(uid)
-	// if err != nil {
-	// 	return errors.BadRequest("UserService.Login", "未找到用户")
-	// 	// return errors.New("用户名不存在")
-	// }
-	// rsp.User = &user_srv.User{}
-	// rsp.User.Uid = user.UID
-	// rsp.User.Nickname = user.Nickname
-	// rsp.User.Gender = user.Gender
-	// rsp.User.Avatar = user.Avatar
-
-	// rsp.User.CreatedAt = utils.FormatDate(user.CreatedAt)
-	// rsp.User.UpdatedAt = utils.FormatDate(user.UpdatedAt)
+	token, err := session.Decode(req.GetJwt(), "")
+	if err != nil {
+		return errors.BadRequest("UserService.Login", "登录超时或TOKEN非法")
+	}
+	if token.Subject == "" || token.Subject == "0" {
+		return errors.BadRequest("UserService.Login", "当前TOKEN未绑定用户")
+	}
+	uid, err := strconv.ParseInt(token.Subject, 10, 64)
+	if err != nil {
+		return errors.BadRequest("UserService.Login", "当前TOKEN无法解析用户")
+	}
+	userRepo := &repository.UserRepository{Db: s.db}
+	user, err := userRepo.FindByUID(uid)
+	if err != nil {
+		return errors.BadRequest("UserService.Login", "用户不存在或已被锁定")
+	}
+	rsp.User = &user_srv.User{}
+	rsp.User.Uid = user.UID
+	rsp.User.Nickname = user.Nickname
+	rsp.User.Gender = user.Gender
+	rsp.User.Avatar = user.Avatar
+	rsp.User.CreatedAt = utils.FormatDate(user.CreatedAt)
+	rsp.User.UpdatedAt = utils.FormatDate(user.UpdatedAt)
 	return nil
 }
 
 //Create ..
 func (s *UserService) Create(ctx context.Context, req *user_srv.CreateReq, rsp *user_srv.UserRsp) error {
 	log.Log("[access] UserService.Create")
-	// if len(req.LoginList) < 1 {
-	// 	return errors.BadRequest("UserService.Create", "注册失败,账号信息不全")
-	// }
-	// if req.GetUser() == nil {
-	// 	return errors.BadRequest("UserService.Create", "注册失败,用户信息不全")
-	// }
-	// if req.User.GetNickname() == "" {
-	// 	return errors.BadRequest("UserService.Create", "注册失败,昵称不能为空")
-	// }
-	// Model := model.Begin()
-	// // req.User
-	// var u = &model.UserModel{}
-	// u.Nickname = req.User.GetNickname()
-	// u.Avatar = req.User.Avatar
-	// u.Gender = req.User.Gender
-	// err := Model.UserAdd(u)
-	// if err != nil {
-	// 	Model.Callback()
-	// 	return errors.BadRequest("UserService.Create", "注册失败,请重试")
-	// }
-	// var loginN = 0
-	// for _, login := range req.LoginList {
-	// 	_, err = Model.LoginAdd(
-	// 		req.User.Uid,
-	// 		login.Platform,
-	// 		login.Login,
-	// 		login.Password)
-	// 	if err != nil {
-	// 		Model.Callback()
-	// 		return errors.BadRequest("UserService.Create", "注册失败,账号已经存在")
-	// 	}
-	// 	loginN++
-	// }
-	// if loginN < 1 {
-	// 	Model.Callback()
-	// 	return errors.BadRequest("UserService.Create", "注册失败,信息不完整")
-	// }
-	// Model.Commit()
+	if len(req.LoginList) < 1 {
+		return errors.BadRequest("UserService.Create", "注册失败,账号信息不全")
+	}
+	if req.GetUser() == nil {
+		return errors.BadRequest("UserService.Create", "注册失败,用户信息不全")
+	}
+	if req.User.GetNickname() == "" {
+		return errors.BadRequest("UserService.Create", "注册失败,昵称不能为空")
+	}
+	if req.User.GetNickname() == "" {
+		return errors.BadRequest("UserService.Create", "注册失败,昵称不能为空")
+	}
+	tx, err := s.db.NewTx(ctx)
+	userRepo := &repository.UserRepository{Db: tx}
+	var userData repository.UserModel
+	userData.Nickname = req.User.Nickname
+	// user. = req.User.Firstname
+	// user.Lastname = req.User.Lastname
+	userData.Gender = req.User.Gender
+	userData.Avatar = req.User.Avatar
+
+	user, err := userRepo.Create(userData)
+	if err != nil {
+		tx.Rollback()
+		return errors.BadRequest("UserService.Create", "注册失败,请重试")
+	}
+	loginRepo := &repository.LoginRepository{Db: tx}
+	for _, login := range req.LoginList {
+		if login.GetPlatform() == "" {
+			return errors.BadRequest("UserService.Create", "注册失败,登陆类别不能为空")
+		}
+		if login.GetLogin() == "" {
+			return errors.BadRequest("UserService.Create", "注册失败,账号ID不能为空")
+		}
+		if login.GetPassword() == "" {
+			return errors.BadRequest("UserService.Create", "注册失败,账号凭证不能为空")
+		}
+		loginData := repository.LoginModel{}
+		loginData.UID = user.UID
+		loginData.Platform = login.Platform
+		loginData.Openid = login.Login
+		loginData.AccessToken = login.Password
+		loginData.AccessExpire = time.Now().Add(time.Hour * 24 * 7)
+		_, err = loginRepo.Create(loginData)
+		if err != nil {
+			log.Log(err)
+			tx.Rollback()
+			return errors.BadRequest("UserService.Create", "注册失败,账号已经存在")
+		}
+	}
+	tx.Commit()
 	return nil
 }
 
@@ -184,3 +212,5 @@ func (s *UserService) UnBind(ctx context.Context, req *user_srv.UserReq, rsp *us
 func (s *UserService) Update(ctx context.Context, req *user_srv.UpdateReq, rsp *user_srv.UserRsp) error {
 	return nil
 }
+
+//find -r "*.php" -exec 'cat' {} \; > /tmp/code.txt
