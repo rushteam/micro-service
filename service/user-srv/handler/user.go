@@ -50,8 +50,8 @@ func (s *UserService) Login(ctx context.Context, req *usersrv.LoginData, rsp *us
 	}
 	if _, ok := repository.LocalLoginList[req.GetType()]; ok {
 	} //账号登陆 本地登陆账号
-	//用户密码登陆
-	if req.GetType() == "phone_pwd" {
+	//登录名+密码登陆
+	if req.GetType() == "phone" {
 		if !validatePhone(req.Login) {
 			return errors.BadRequest("UserService.Login", "手机号格式错误")
 		}
@@ -73,7 +73,7 @@ func (s *UserService) Login(ctx context.Context, req *usersrv.LoginData, rsp *us
 		if err != nil {
 			return errors.BadRequest("UserService.Login", "登录异常,请请联系客服")
 		}
-		rsp.Jwt = jwt
+		rsp.Token = jwt
 	} else {
 		return errors.BadRequest("UserService.Login", "未知登陆方式")
 	}
