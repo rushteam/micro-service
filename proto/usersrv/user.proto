@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package usersrv;
+
+service UserService {
+    //密码登陆/验证码登陆/第三方权限登陆
+    rpc Login(LoginData) returns (SessionData) {}
+    //创建用户
+    rpc Register(RegisterData) returns (SessionData) {}
+    //绑定用户
+    rpc Bind(BindData) returns (UserData) {}
+    // //解绑用户
+    rpc Unbind(UnbindData) returns (UserData) {}
+    //用户信息
+    rpc User(SessionData) returns (UserData) {}
+    //更新用户信息
+    rpc Update(UpdateData) returns (UserData) {}
+}
+
+message LoginData {
+    string type = 1; //qq/wx/weibo/username_pwd/phone_pwd/email_pwd/phone_sms/
+    string login = 2; //openid/phone/email/username
+    string password = 3;//access_token/pasword/captcha
+    map<string,string> fileds = 4;
+}
+message SessionData{
+    string token = 1;
+    string uid = 2;
+}
+//user
+message UserData {
+    int64 uid = 1;
+    string nickname = 2;
+    string firstname = 3;
+    string lastname = 4;
+    string gender = 5;
+    string avatar = 6;
+    string updated_at = 7;
+    string created_at = 8;
+}
+
+//register user
+message RegisterData {
+    UserData user =1;
+    // repeated LoginReq login_list = 1;
+    LoginData login = 2;
+   
+}
+message BindData {
+    string token = 1;
+    LoginData login = 2;
+}
+message UnbindData {
+    string token = 1;
+    string type = 2;
+}
+message UpdateData {
+    string token = 1;
+    map<string,string> fileds = 2;
+}
