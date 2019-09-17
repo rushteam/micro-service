@@ -20,13 +20,7 @@ import (
 
 //RegisterUserServiceHandler ..
 func RegisterUserServiceHandler(service micro.Service, d sqlbuilder.Database) {
-	// usersrv.RegisterUserServiceHandler(service.Server(), NewUserService(d))
-	usersrv.RegisterUserServiceHandler(service.Server(), NewUserService(d))
-}
-
-//NewUserService ..
-func NewUserService(d sqlbuilder.Database) *UserService {
-	return &UserService{d}
+	usersrv.RegisterUserServiceHandler(service.Server(), &UserService{d})
 }
 
 //UserService ...
@@ -45,23 +39,22 @@ func validatePhone(phone string) bool {
 func (s *UserService) Login(ctx context.Context, req *usersrv.LoginReq, rsp *usersrv.AuthRsp) error {
 	log.Log("[access] UserService.Login")
 	//phone or email or username
-	if req.GetType() == "" {
+	if req.GetPlatform() == "" {
 		return errors.BadRequest("UserService.Login", "type参数不能为空")
 	}
-	if _, ok := repository.LocalLoginList[req.GetType()]; ok {
-	} //账号登陆 本地登陆账号
+	// if _, ok := repository.LocalLoginList[req.GetPlatform()]; ok {
+	// } //账号登陆 本地登陆账号
 	//登录名+密码登陆
-	if req.GetType() == "phone" {
-		if !validatePhone(req.Login) {
+	if req.GetPlatform() == "phone" {
+		if !validatePhone(req.GetLoginname()) {
 			return errors.BadRequest("UserService.Login", "手机号格式错误")
 		}
 		//密码位数不在登陆时候验证，而是在设置时候验证
 		// if len(req.Password) < 6 { //密码不得小于6位
 		// 	return errors.BadRequest("UserService.Login", "密码不得小于6位")
 		// }
-		//test --md5--> 098f6bcd4621d373cade4e832627b4f6
 		loginRepo := &repository.LoginRepository{Db: s.db}
-		login, err := loginRepo.FindByPassword(req.Type, req.Login, req.Password)
+		login, err := loginRepo.FindByPassword(req.GetPlatform(), req.GetLoginname(), req.GetPassword())
 		if err != nil {
 			return errors.BadRequest("UserService.Login", "用户名或密码错误")
 		}
@@ -220,8 +213,8 @@ func (s *UserService) Bind(ctx context.Context, req *usersrv.BindReq, rsp *users
 	return nil
 }
 
-//UnBind ...
-func (s *UserService) UnBind(ctx context.Context, req *usersrv.UserReq, rsp *usersrv.UserRsp) error {
+//Unbind ...
+func (s *UserService) Unbind(ctx context.Context, req *usersrv.UnbindReq, rsp *usersrv.UserRsp) error {
 	return nil
 }
 
