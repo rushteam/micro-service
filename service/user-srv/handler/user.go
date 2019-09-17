@@ -81,62 +81,62 @@ func (s *UserService) Login(ctx context.Context, req *usersrv.LoginData, rsp *us
 }
 
 //Register ..
-func (s *UserService) Register(ctx context.Context, req *usersrv.RegisterData, rsp *usersrv.UserData) error {
-	log.Log("[access] UserService.Create")
-	if len(req.LoginList) < 1 {
-		return errors.BadRequest("UserService.Create", "注册失败,账号信息不全")
-	}
-	if req.GetUser() == nil {
-		return errors.BadRequest("UserService.Create", "注册失败,用户信息不全")
-	}
-	//注册新用户逻辑
-	if req.User.GetNickname() == "" {
-		return errors.BadRequest("UserService.Create", "注册失败,昵称不能为空")
-	}
-	if req.User.GetNickname() == "" {
-		return errors.BadRequest("UserService.Create", "注册失败,昵称不能为空")
-	}
-	var userData repository.UserModel
-	tx, err := s.db.NewTx(ctx)
-	userRepo := &repository.UserRepository{Db: tx}
-	userData.Nickname = req.User.Nickname
-	// user. = req.User.Firstname
-	// user.Lastname = req.User.Lastname
-	userData.Gender = req.User.Gender
-	userData.Avatar = req.User.Avatar
-	user, err := userRepo.Create(userData)
-	if err != nil {
-		tx.Rollback()
-		log.Log("创建新用户失败" + err.Error())
-		return errors.BadRequest("UserService.Create", "注册失败,请重试")
-	}
-	loginRepo := &repository.LoginRepository{Db: tx}
-	for _, login := range req.LoginList {
-		if login.GetPlatform() == "" {
-			return errors.BadRequest("UserService.Create", "注册失败,登陆类别不能为空")
-		}
-		if login.GetLogin() == "" {
-			return errors.BadRequest("UserService.Create", "注册失败,账号ID不能为空")
-		}
-		if login.GetPassword() == "" {
-			return errors.BadRequest("UserService.Create", "注册失败,账号凭证不能为空")
-		}
-		loginData := repository.LoginModel{}
-		loginData.UID = user.UID
-		loginData.Platform = login.Platform
-		loginData.Openid = login.Login
-		loginData.AccessToken = login.Password
-		loginData.AccessExpire = time.Now().Add(time.Hour * 24 * 7)
-		_, err = loginRepo.Create(loginData)
-		if err != nil {
-			log.Log("login数据创建失败" + err.Error())
-			tx.Rollback()
-			return errors.BadRequest("UserService.Create", "注册失败,账号已经存在")
-		}
-	}
-	tx.Commit()
-	return nil
-}
+// func (s *UserService) Register(ctx context.Context, req *usersrv.RegisterData, rsp *usersrv.UserData) error {
+// 	log.Log("[access] UserService.Create")
+// 	if len(req.LoginList) < 1 {
+// 		return errors.BadRequest("UserService.Create", "注册失败,账号信息不全")
+// 	}
+// 	if req.GetUser() == nil {
+// 		return errors.BadRequest("UserService.Create", "注册失败,用户信息不全")
+// 	}
+// 	//注册新用户逻辑
+// 	if req.User.GetNickname() == "" {
+// 		return errors.BadRequest("UserService.Create", "注册失败,昵称不能为空")
+// 	}
+// 	if req.User.GetNickname() == "" {
+// 		return errors.BadRequest("UserService.Create", "注册失败,昵称不能为空")
+// 	}
+// 	var userData repository.UserModel
+// 	tx, err := s.db.NewTx(ctx)
+// 	userRepo := &repository.UserRepository{Db: tx}
+// 	userData.Nickname = req.User.Nickname
+// 	// user. = req.User.Firstname
+// 	// user.Lastname = req.User.Lastname
+// 	userData.Gender = req.User.Gender
+// 	userData.Avatar = req.User.Avatar
+// 	user, err := userRepo.Create(userData)
+// 	if err != nil {
+// 		tx.Rollback()
+// 		log.Log("创建新用户失败" + err.Error())
+// 		return errors.BadRequest("UserService.Create", "注册失败,请重试")
+// 	}
+// 	loginRepo := &repository.LoginRepository{Db: tx}
+// 	for _, login := range req.LoginList {
+// 		if login.GetPlatform() == "" {
+// 			return errors.BadRequest("UserService.Create", "注册失败,登陆类别不能为空")
+// 		}
+// 		if login.GetLogin() == "" {
+// 			return errors.BadRequest("UserService.Create", "注册失败,账号ID不能为空")
+// 		}
+// 		if login.GetPassword() == "" {
+// 			return errors.BadRequest("UserService.Create", "注册失败,账号凭证不能为空")
+// 		}
+// 		loginData := repository.LoginModel{}
+// 		loginData.UID = user.UID
+// 		loginData.Platform = login.Platform
+// 		loginData.Openid = login.Login
+// 		loginData.AccessToken = login.Password
+// 		loginData.AccessExpire = time.Now().Add(time.Hour * 24 * 7)
+// 		_, err = loginRepo.Create(loginData)
+// 		if err != nil {
+// 			log.Log("login数据创建失败" + err.Error())
+// 			tx.Rollback()
+// 			return errors.BadRequest("UserService.Create", "注册失败,账号已经存在")
+// 		}
+// 	}
+// 	tx.Commit()
+// 	return nil
+// }
 
 //User ..
 func (s *UserService) User(ctx context.Context, req *user_srv.UserReq, rsp *user_srv.UserRsp) error {
