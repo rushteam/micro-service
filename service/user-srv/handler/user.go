@@ -42,7 +42,7 @@ func validatePhone(phone string) bool {
 }
 
 //Login ...
-func (s *UserService) Login(ctx context.Context, req *usersrv.LoginData, rsp *usersrv.SessionData) error {
+func (s *UserService) Login(ctx context.Context, req *usersrv.LoginReq, rsp *usersrv.AuthRsp) error {
 	log.Log("[access] UserService.Login")
 	//phone or email or username
 	if req.GetType() == "" {
@@ -139,7 +139,7 @@ func (s *UserService) Login(ctx context.Context, req *usersrv.LoginData, rsp *us
 // }
 
 //User ..
-func (s *UserService) User(ctx context.Context, req *user_srv.UserReq, rsp *user_srv.UserRsp) error {
+func (s *UserService) User(ctx context.Context, req *usersrv.UserRsp, rsp *usersrv.UserRsp) error {
 	log.Log("[access] UserService.User")
 	// Model := model.Db()
 	token, err := session.Decode(req.GetJwt(), "")

@@ -27,7 +27,20 @@ message AuthRsp{
     string token = 1;
     int64 uid = 2;
 }
+message UserReq{
+    int64 uid = 1;
+}
 //user
+message UerRsp {
+    int64 uid = 1;
+    string nickname = 2;
+    string firstname = 3;
+    string lastname = 4;
+    string gender = 5;
+    string avatar = 6;
+    string updated_at = 7;
+    string created_at = 8;
+}
 message UserRsp {
     int64 uid = 1;
     string nickname = 2;

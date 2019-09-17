@@ -10,6 +10,8 @@ It is generated from these files:
 It has these top-level messages:
 	LoginReq
 	AuthRsp
+	UserReq
+	UerRsp
 	UserRsp
 	BindReq
 	UnbindReq
