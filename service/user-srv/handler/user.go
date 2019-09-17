@@ -20,7 +20,7 @@ import (
 
 //RegisterUserServiceHandler ..
 func RegisterUserServiceHandler(service micro.Service, d sqlbuilder.Database) {
-	usersrv.RegisterUserServiceHandler(service.Server(), &UserService{d})
+	usersrv.RegisterUserServiceHandler(service.Server(), &UserService{db: d})
 }
 
 //UserService ...
