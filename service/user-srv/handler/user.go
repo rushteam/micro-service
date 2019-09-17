@@ -142,7 +142,7 @@ func (s *UserService) Login(ctx context.Context, req *usersrv.LoginReq, rsp *use
 func (s *UserService) User(ctx context.Context, req *usersrv.UserRsp, rsp *usersrv.UserRsp) error {
 	log.Log("[access] UserService.User")
 	// Model := model.Db()
-	token, err := session.Decode(req.GetJwt(), "")
+	token, err := session.Decode(req.GetUid(), "")
 	if err != nil {
 		return errors.BadRequest("UserService.Login", "登录超时或TOKEN非法")
 	}

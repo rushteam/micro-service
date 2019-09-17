@@ -28,7 +28,7 @@ message AuthRsp{
     int64 uid = 2;
 }
 message UserReq{
-    int64 uid = 1;
+    string token = 1;
 }
 //user
 message UerRsp {
