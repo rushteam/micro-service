@@ -12,14 +12,14 @@ service UserService {
     // //解绑用户
     rpc Unbind(UnbindReq) returns (UserRsp) {}
     //用户信息
-    rpc User(AuthRsp) returns (UserRsp) {}
+    rpc User(UserReq) returns (UserRsp) {}
     //更新用户信息
     rpc Update(UpdateReq) returns (UserRsp) {}
 }
 
 message LoginReq {
-    string type = 1; //qq/wx/weibo/username_pwd/phone_pwd/email_pwd/phone_sms/
-    string login = 2; //openid/phone/email/username
+    string platform = 1; //qq/wx/weibo/username_pwd/phone_pwd/email_pwd/phone_sms/
+    string loginname = 2; //openid/phone/email/username
     string password = 3;//access_token/pasword/captcha
     map<string,string> fileds = 4;
 }

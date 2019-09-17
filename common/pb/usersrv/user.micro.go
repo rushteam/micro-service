@@ -57,7 +57,7 @@ type UserService interface {
 	// //解绑用户
 	Unbind(ctx context.Context, in *UnbindReq, opts ...client.CallOption) (*UserRsp, error)
 	// 用户信息
-	User(ctx context.Context, in *AuthRsp, opts ...client.CallOption) (*UserRsp, error)
+	User(ctx context.Context, in *UserReq, opts ...client.CallOption) (*UserRsp, error)
 	// 更新用户信息
 	Update(ctx context.Context, in *UpdateReq, opts ...client.CallOption) (*UserRsp, error)
 }
@@ -110,7 +110,7 @@ func (c *userService) Unbind(ctx context.Context, in *UnbindReq, opts ...client.
 	return out, nil
 }
 
-func (c *userService) User(ctx context.Context, in *AuthRsp, opts ...client.CallOption) (*UserRsp, error) {
+func (c *userService) User(ctx context.Context, in *UserReq, opts ...client.CallOption) (*UserRsp, error) {
 	req := c.c.NewRequest(c.name, "UserService.User", in)
 	out := new(UserRsp)
 	err := c.c.Call(ctx, req, out, opts...)
@@ -142,7 +142,7 @@ type UserServiceHandler interface {
 	// //解绑用户
 	Unbind(context.Context, *UnbindReq, *UserRsp) error
 	// 用户信息
-	User(context.Context, *AuthRsp, *UserRsp) error
+	User(context.Context, *UserReq, *UserRsp) error
 	// 更新用户信息
 	Update(context.Context, *UpdateReq, *UserRsp) error
 }
@@ -152,7 +152,7 @@ func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts .
 		Login(ctx context.Context, in *LoginReq, out *AuthRsp) error
 		Bind(ctx context.Context, in *BindReq, out *UserRsp) error
 		Unbind(ctx context.Context, in *UnbindReq, out *UserRsp) error
-		User(ctx context.Context, in *AuthRsp, out *UserRsp) error
+		User(ctx context.Context, in *UserReq, out *UserRsp) error
 		Update(ctx context.Context, in *UpdateReq, out *UserRsp) error
 	}
 	type UserService struct {
@@ -178,7 +178,7 @@ func (h *userServiceHandler) Unbind(ctx context.Context, in *UnbindReq, out *Use
 	return h.UserServiceHandler.Unbind(ctx, in, out)
 }
 
-func (h *userServiceHandler) User(ctx context.Context, in *AuthRsp, out *UserRsp) error {
+func (h *userServiceHandler) User(ctx context.Context, in *UserReq, out *UserRsp) error {
 	return h.UserServiceHandler.User(ctx, in, out)
 }
 

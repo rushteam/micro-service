@@ -139,10 +139,10 @@ func (s *UserService) Login(ctx context.Context, req *usersrv.LoginReq, rsp *use
 // }
 
 //User ..
-func (s *UserService) User(ctx context.Context, req *usersrv.UserRsp, rsp *usersrv.UserRsp) error {
+func (s *UserService) User(ctx context.Context, req *usersrv.UserReq, rsp *usersrv.UserRsp) error {
 	log.Log("[access] UserService.User")
 	// Model := model.Db()
-	token, err := session.Decode(req.GetUid(), "")
+	token, err := session.Decode(req.GetToken(), "")
 	if err != nil {
 		return errors.BadRequest("UserService.Login", "登录超时或TOKEN非法")
 	}
@@ -158,95 +158,75 @@ func (s *UserService) User(ctx context.Context, req *usersrv.UserRsp, rsp *users
 	if err != nil {
 		return errors.BadRequest("UserService.Login", "用户不存在或已被锁定")
 	}
-	rsp.User = &usersrv.UserData{}
-	rsp.User.Uid = user.UID
-	rsp.User.Nickname = user.Nickname
-	rsp.User.Gender = user.Gender
-	rsp.User.Avatar = user.Avatar
-	rsp.User.CreatedAt = utils.FormatDate(user.CreatedAt)
-	rsp.User.UpdatedAt = utils.FormatDate(user.UpdatedAt)
+	rsp.Uid = user.UID
+	rsp.Nickname = user.Nickname
+	rsp.Gender = user.Gender
+	rsp.Avatar = user.Avatar
+	rsp.CreatedAt = utils.FormatDate(user.CreatedAt)
+	rsp.UpdatedAt = utils.FormatDate(user.UpdatedAt)
 	return nil
 }
 
 //Bind ...
-func (s *UserService) Bind(ctx context.Context, req *user_srv.CreateReq, rsp *user_srv.UserRsp) error {
+func (s *UserService) Bind(ctx context.Context, req *usersrv.BindReq, rsp *usersrv.UserRsp) error {
 	log.Log("[access] UserService.Bind")
-	if req.GetToken() == nil {
+	if req.GetToken() == "" {
 		return errors.BadRequest("UserService.Create", "绑定失败,当前状态未登录")
 	}
-	if len(req.LoginList) < 1 {
-		return errors.BadRequest("UserService.Create", "绑定失败,账号信息不全")
+	if req.GetLogin() == nil {
+		return errors.BadRequest("UserService.Create", "绑定失败,缺少登陆信息")
 	}
-
-	var userData repository.UserModel
+	token, err := session.Decode(req.GetToken(), "")
+	if err != nil {
+		return errors.BadRequest("UserService.Login", "登录超时或TOKEN非法")
+	}
+	if token.Subject == "" || token.Subject == "0" {
+		return errors.BadRequest("UserService.Login", "当前TOKEN未绑定用户")
+	}
+	uid, err := strconv.ParseInt(token.Subject, 10, 64)
+	if err != nil {
+		return errors.BadRequest("UserService.Login", "当前TOKEN无法解析用户")
+	}
 	tx, err := s.db.NewTx(ctx)
-	if req.User.GetUid() != 0 {
-		//注册新用户逻辑
-		if req.User.GetNickname() == "" {
-			return errors.BadRequest("UserService.Create", "注册失败,昵称不能为空")
-		}
-		if req.User.GetNickname() == "" {
-			return errors.BadRequest("UserService.Create", "注册失败,昵称不能为空")
-		}
-		userRepo := &repository.UserRepository{Db: tx}
-		userData.Nickname = req.User.Nickname
-		// user. = req.User.Firstname
-		// user.Lastname = req.User.Lastname
-		userData.Gender = req.User.Gender
-		userData.Avatar = req.User.Avatar
-		user, err := userRepo.Create(userData)
-		if err != nil {
-			tx.Rollback()
-			log.Log("创建新用户失败" + err.Error())
-			return errors.BadRequest("UserService.Create", "注册失败,请重试")
-		}
-		userData.UID = user.UID
-	} else {
-		//绑定用户逻辑
-		userRepo := &repository.UserRepository{Db: tx}
-		user, err := userRepo.FindByUID(req.User.GetUid())
-		if err != nil {
-			tx.Rollback()
-			log.Log("未找到当前用户" + err.Error())
-		}
-		userData.UID = user.UID
+	//绑定用户逻辑
+	userRepo := &repository.UserRepository{Db: tx}
+	user, err := userRepo.FindByUID(uid)
+	if err != nil {
+		log.Log("未找到当前用户" + err.Error())
 	}
 	loginRepo := &repository.LoginRepository{Db: tx}
-	for _, login := range req.LoginList {
-		if login.GetPlatform() == "" {
-			return errors.BadRequest("UserService.Create", "注册失败,登陆类别不能为空")
-		}
-		if login.GetLogin() == "" {
-			return errors.BadRequest("UserService.Create", "注册失败,账号ID不能为空")
-		}
-		if login.GetPassword() == "" {
-			return errors.BadRequest("UserService.Create", "注册失败,账号凭证不能为空")
-		}
-		loginData := repository.LoginModel{}
-		loginData.UID = userData.UID
-		loginData.Platform = login.Platform
-		loginData.Openid = login.Login
-		loginData.AccessToken = login.Password
-		loginData.AccessExpire = time.Now().Add(time.Hour * 24 * 7)
-		_, err = loginRepo.Create(loginData)
-		if err != nil {
-			log.Log("login数据创建失败" + err.Error())
-			tx.Rollback()
-			return errors.BadRequest("UserService.Create", "注册失败,账号已经存在")
-		}
+	if req.GetLogin().GetPlatform() == "" {
+		return errors.BadRequest("UserService.Create", "注册失败,登陆类别不能为空")
+	}
+	if req.GetLogin().GetLoginname() == "" {
+		return errors.BadRequest("UserService.Create", "注册失败,账号ID不能为空")
+	}
+	if req.GetLogin().GetPassword() == "" {
+		return errors.BadRequest("UserService.Create", "注册失败,账号凭证不能为空")
+	}
+	loginData := repository.LoginModel{}
+	loginData.UID = user.UID
+	loginData.Platform = req.GetLogin().GetPlatform()
+	loginData.Openid = req.GetLogin().GetLoginname()
+	loginData.AccessToken = req.GetLogin().GetPassword()
+	loginData.AccessExpire = time.Now().Add(time.Hour * 24 * 7 * 2)
+	_, err = loginRepo.Create(loginData)
+	if err != nil {
+		log.Log("login数据创建失败" + err.Error())
+		tx.Rollback()
+		return errors.BadRequest("UserService.Create", "注册失败,账号已经存在")
 	}
 	tx.Commit()
-	return nil
 	return nil
 }
 
 //UnBind ...
-func (s *UserService) UnBind(ctx context.Context, req *user_srv.UserReq, rsp *user_srv.UserRsp) error {
+func (s *UserService) UnBind(ctx context.Context, req *usersrv.UserReq, rsp *usersrv.UserRsp) error {
 	return nil
 }
 
 //Update ...
-func (s *UserService) Update(ctx context.Context, req *user_srv.UpdateReq, rsp *user_srv.UserRsp) error {
+func (s *UserService) Update(ctx context.Context, req *usersrv.UpdateReq, rsp *usersrv.UserRsp) error {
 	return nil
 }
 
