@@ -8,13 +8,12 @@ It is generated from these files:
 	usersrv/user.proto
 
 It has these top-level messages:
-	LoginData
-	SessionData
-	UserData
-	RegisterData
-	BindData
-	UnbindData
-	UpdateData
+	LoginReq
+	AuthRsp
+	UserRsp
+	BindReq
+	UnbindReq
+	UpdateReq
 */
 package usersrv
 
@@ -48,17 +47,17 @@ var _ server.Option
 
 type UserService interface {
 	// 密码登陆/验证码登陆/第三方权限登陆
-	Login(ctx context.Context, in *LoginData, opts ...client.CallOption) (*SessionData, error)
+	Login(ctx context.Context, in *LoginReq, opts ...client.CallOption) (*AuthRsp, error)
 	// 创建用户
-	Register(ctx context.Context, in *RegisterData, opts ...client.CallOption) (*SessionData, error)
+	// rpc Register(RegisterReq) returns (AuthRsp) {}
 	// 绑定用户
-	Bind(ctx context.Context, in *BindData, opts ...client.CallOption) (*UserData, error)
+	Bind(ctx context.Context, in *BindReq, opts ...client.CallOption) (*UserRsp, error)
 	// //解绑用户
-	Unbind(ctx context.Context, in *UnbindData, opts ...client.CallOption) (*UserData, error)
+	Unbind(ctx context.Context, in *UnbindReq, opts ...client.CallOption) (*UserRsp, error)
 	// 用户信息
-	User(ctx context.Context, in *SessionData, opts ...client.CallOption) (*UserData, error)
+	User(ctx context.Context, in *AuthRsp, opts ...client.CallOption) (*UserRsp, error)
 	// 更新用户信息
-	Update(ctx context.Context, in *UpdateData, opts ...client.CallOption) (*UserData, error)
+	Update(ctx context.Context, in *UpdateReq, opts ...client.CallOption) (*UserRsp, error)
 }
 
 type userService struct {
@@ -79,9 +78,9 @@ func NewUserService(name string, c client.Client) UserService {
 	}
 }
 
-func (c *userService) Login(ctx context.Context, in *LoginData, opts ...client.CallOption) (*SessionData, error) {
+func (c *userService) Login(ctx context.Context, in *LoginReq, opts ...client.CallOption) (*AuthRsp, error) {
 	req := c.c.NewRequest(c.name, "UserService.Login", in)
-	out := new(SessionData)
+	out := new(AuthRsp)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -89,19 +88,9 @@ func (c *userService) Login(ctx context.Context, in *LoginData, opts ...client.C
 	return out, nil
 }
 
-func (c *userService) Register(ctx context.Context, in *RegisterData, opts ...client.CallOption) (*SessionData, error) {
-	req := c.c.NewRequest(c.name, "UserService.Register", in)
-	out := new(SessionData)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userService) Bind(ctx context.Context, in *BindData, opts ...client.CallOption) (*UserData, error) {
+func (c *userService) Bind(ctx context.Context, in *BindReq, opts ...client.CallOption) (*UserRsp, error) {
 	req := c.c.NewRequest(c.name, "UserService.Bind", in)
-	out := new(UserData)
+	out := new(UserRsp)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -109,9 +98,9 @@ func (c *userService) Bind(ctx context.Context, in *BindData, opts ...client.Cal
 	return out, nil
 }
 
-func (c *userService) Unbind(ctx context.Context, in *UnbindData, opts ...client.CallOption) (*UserData, error) {
+func (c *userService) Unbind(ctx context.Context, in *UnbindReq, opts ...client.CallOption) (*UserRsp, error) {
 	req := c.c.NewRequest(c.name, "UserService.Unbind", in)
-	out := new(UserData)
+	out := new(UserRsp)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -119,9 +108,9 @@ func (c *userService) Unbind(ctx context.Context, in *UnbindData, opts ...client
 	return out, nil
 }
 
-func (c *userService) User(ctx context.Context, in *SessionData, opts ...client.CallOption) (*UserData, error) {
+func (c *userService) User(ctx context.Context, in *AuthRsp, opts ...client.CallOption) (*UserRsp, error) {
 	req := c.c.NewRequest(c.name, "UserService.User", in)
-	out := new(UserData)
+	out := new(UserRsp)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -129,9 +118,9 @@ func (c *userService) User(ctx context.Context, in *SessionData, opts ...client.
 	return out, nil
 }
 
-func (c *userService) Update(ctx context.Context, in *UpdateData, opts ...client.CallOption) (*UserData, error) {
+func (c *userService) Update(ctx context.Context, in *UpdateReq, opts ...client.CallOption) (*UserRsp, error) {
 	req := c.c.NewRequest(c.name, "UserService.Update", in)
-	out := new(UserData)
+	out := new(UserRsp)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -143,27 +132,26 @@ func (c *userService) Update(ctx context.Context, in *UpdateData, opts ...client
 
 type UserServiceHandler interface {
 	// 密码登陆/验证码登陆/第三方权限登陆
-	Login(context.Context, *LoginData, *SessionData) error
+	Login(context.Context, *LoginReq, *AuthRsp) error
 	// 创建用户
-	Register(context.Context, *RegisterData, *SessionData) error
+	// rpc Register(RegisterReq) returns (AuthRsp) {}
 	// 绑定用户
-	Bind(context.Context, *BindData, *UserData) error
+	Bind(context.Context, *BindReq, *UserRsp) error
 	// //解绑用户
-	Unbind(context.Context, *UnbindData, *UserData) error
+	Unbind(context.Context, *UnbindReq, *UserRsp) error
 	// 用户信息
-	User(context.Context, *SessionData, *UserData) error
+	User(context.Context, *AuthRsp, *UserRsp) error
 	// 更新用户信息
-	Update(context.Context, *UpdateData, *UserData) error
+	Update(context.Context, *UpdateReq, *UserRsp) error
 }
 
 func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts ...server.HandlerOption) {
 	type userService interface {
-		Login(ctx context.Context, in *LoginData, out *SessionData) error
-		Register(ctx context.Context, in *RegisterData, out *SessionData) error
-		Bind(ctx context.Context, in *BindData, out *UserData) error
-		Unbind(ctx context.Context, in *UnbindData, out *UserData) error
-		User(ctx context.Context, in *SessionData, out *UserData) error
-		Update(ctx context.Context, in *UpdateData, out *UserData) error
+		Login(ctx context.Context, in *LoginReq, out *AuthRsp) error
+		Bind(ctx context.Context, in *BindReq, out *UserRsp) error
+		Unbind(ctx context.Context, in *UnbindReq, out *UserRsp) error
+		User(ctx context.Context, in *AuthRsp, out *UserRsp) error
+		Update(ctx context.Context, in *UpdateReq, out *UserRsp) error
 	}
 	type UserService struct {
 		userService
@@ -176,26 +164,22 @@ type userServiceHandler struct {
 	UserServiceHandler
 }
 
-func (h *userServiceHandler) Login(ctx context.Context, in *LoginData, out *SessionData) error {
+func (h *userServiceHandler) Login(ctx context.Context, in *LoginReq, out *AuthRsp) error {
 	return h.UserServiceHandler.Login(ctx, in, out)
 }
 
-func (h *userServiceHandler) Register(ctx context.Context, in *RegisterData, out *SessionData) error {
-	return h.UserServiceHandler.Register(ctx, in, out)
-}
-
-func (h *userServiceHandler) Bind(ctx context.Context, in *BindData, out *UserData) error {
+func (h *userServiceHandler) Bind(ctx context.Context, in *BindReq, out *UserRsp) error {
 	return h.UserServiceHandler.Bind(ctx, in, out)
 }
 
-func (h *userServiceHandler) Unbind(ctx context.Context, in *UnbindData, out *UserData) error {
+func (h *userServiceHandler) Unbind(ctx context.Context, in *UnbindReq, out *UserRsp) error {
 	return h.UserServiceHandler.Unbind(ctx, in, out)
 }
 
-func (h *userServiceHandler) User(ctx context.Context, in *SessionData, out *UserData) error {
+func (h *userServiceHandler) User(ctx context.Context, in *AuthRsp, out *UserRsp) error {
 	return h.UserServiceHandler.User(ctx, in, out)
 }
 
-func (h *userServiceHandler) Update(ctx context.Context, in *UpdateData, out *UserData) error {
+func (h *userServiceHandler) Update(ctx context.Context, in *UpdateReq, out *UserRsp) error {
 	return h.UserServiceHandler.Update(ctx, in, out)
 }

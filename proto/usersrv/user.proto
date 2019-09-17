@@ -4,31 +4,31 @@ package usersrv;
 
 service UserService {
     //密码登陆/验证码登陆/第三方权限登陆
-    rpc Login(LoginData) returns (SessionData) {}
+    rpc Login(LoginReq) returns (AuthRsp) {}
     //创建用户
-    rpc Register(RegisterData) returns (SessionData) {}
+    // rpc Register(RegisterReq) returns (AuthRsp) {}
     //绑定用户
-    rpc Bind(BindData) returns (UserData) {}
+    rpc Bind(BindReq) returns (UserRsp) {}
     // //解绑用户
-    rpc Unbind(UnbindData) returns (UserData) {}
+    rpc Unbind(UnbindReq) returns (UserRsp) {}
     //用户信息
-    rpc User(SessionData) returns (UserData) {}
+    rpc User(AuthRsp) returns (UserRsp) {}
     //更新用户信息
-    rpc Update(UpdateData) returns (UserData) {}
+    rpc Update(UpdateReq) returns (UserRsp) {}
 }
 
-message LoginData {
+message LoginReq {
     string type = 1; //qq/wx/weibo/username_pwd/phone_pwd/email_pwd/phone_sms/
     string login = 2; //openid/phone/email/username
     string password = 3;//access_token/pasword/captcha
     map<string,string> fileds = 4;
 }
-message SessionData{
+message AuthRsp{
     string token = 1;
-    string uid = 2;
+    int64 uid = 2;
 }
 //user
-message UserData {
+message UserRsp {
     int64 uid = 1;
     string nickname = 2;
     string firstname = 3;
@@ -39,22 +39,25 @@ message UserData {
     string created_at = 8;
 }
 
-//register user
-message RegisterData {
-    UserData user =1;
-    // repeated LoginReq login_list = 1;
-    LoginData login = 2;
-   
-}
-message BindData {
+// //register user
+// message RegisterReq {
+//     LoginReq login = 1;
+//     string nickname = 2;
+//     string firstname = 3;
+//     string lastname = 4;
+//     string gender = 5;
+//     string avatar = 6;
+//     // repeated LoginReq login_list = 1;
+// }
+message BindReq {
     string token = 1;
-    LoginData login = 2;
+    LoginReq login = 2;
 }
-message UnbindData {
+message UnbindReq {
     string token = 1;
     string type = 2;
 }
-message UpdateData {
+message UpdateReq {
     string token = 1;
     map<string,string> fileds = 2;
 }
