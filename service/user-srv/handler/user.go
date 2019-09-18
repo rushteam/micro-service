@@ -53,10 +53,40 @@ func (s *UserService) LoginByPassword(ctx context.Context, req *usersrv.LoginByP
 	// 	return errors.BadRequest("UserService.Login", "密码不得小于6位")
 	// }
 	if !validatePhone(req.GetLoginname()) {
-		return errors.BadRequest("UserService.Login", "手机号格式错误")
+		return errors.BadRequest("UserService.LoginByPassword", "手机号格式错误")
 	}
 	loginRepo := &repository.LoginRepository{Db: s.db}
-	login, err := loginRepo.FindByPassword("password", req.GetLoginname(), req.GetPassword())
+	login, err := loginRepo.FindByPassword("phone", req.GetLoginname(), req.GetPassword())
+	if err != nil {
+		return errors.BadRequest("UserService.LoginByPassword", "用户名或密码错误")
+	}
+	rsp.Uid = login.UID
+	// gen token
+	subject := strconv.FormatInt(login.UID, 10)
+	token := session.New("user-srv", subject, "")
+	jwt, err := session.Encode(token, "")
+	if err != nil {
+		return errors.BadRequest("UserService.LoginByPassword", "登录异常,请请联系客服")
+	}
+	rsp.Token = jwt
+	return nil
+}
+
+//LoginByOAuth ...
+func (s *UserService) LoginByOAuth(ctx context.Context, req *usersrv.LoginByOAuthReq, rsp *usersrv.AuthRsp) error {
+	log.Log("[access] UserService.LoginByOAuth")
+	//phone or email or username
+	if req.GetPlatform() == "" {
+		return errors.BadRequest("UserService.LoginByOAuth", "platform参数不能为空")
+	}
+	if req.GetOppenid() == "" {
+		return errors.BadRequest("UserService.LoginByOAuth", "openid参数不能为空")
+	}
+	if req.GetAccessToken() == "" {
+		return errors.BadRequest("UserService.LoginByOAuth", "access_token参数不能为空")
+	}
+	loginRepo := &repository.LoginRepository{Db: s.db}
+	login, err := loginRepo.FindByPassword("wx", req.GetOppenid(), req.GetAccessToken())
 	if err != nil {
 		return errors.BadRequest("UserService.Login", "用户名或密码错误")
 	}
@@ -69,12 +99,6 @@ func (s *UserService) LoginByPassword(ctx context.Context, req *usersrv.LoginByP
 		return errors.BadRequest("UserService.Login", "登录异常,请请联系客服")
 	}
 	rsp.Token = jwt
-	return nil
-}
-
-//LoginByOAuth ...
-func (s *UserService) LoginByOAuth(ctx context.Context, req *usersrv.LoginByOAuthReq, rsp *usersrv.AuthRsp) error {
-	log.Log("[access] UserService.LoginByOAuth")
 	return nil
 }
 

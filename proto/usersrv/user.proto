@@ -37,7 +37,7 @@ message LoginByCaptchaReq {
 }
 message LoginByOAuthReq {
     string platform = 1; //qq/wx/weibo
-    string oppenid = 2; //openid
+    string openid = 2; //openid
     string access_token = 3;//access_token
     map<string,string> fileds = 4;
 }
