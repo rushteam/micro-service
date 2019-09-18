@@ -29,7 +29,7 @@ http://127.0.0.1:9080/oauth2/token?client_id=1234&client_secret=test&grant_type=
             
         第三方注册
     用户资料
-        micro  --registry=consul call go.micro.srv.user_srv UserService.User '{"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ1c2VyLXNydiIsInN1YiI6IjEiLCJhdWQiOiIiLCJleHAiOjE1NjcxMTU0NTksIm5iZiI6MTU2NjUxMDY1OSwiaWF0IjoxNTY2NTEwNjU5fQ._lhsGb1Wlgh_GGTRnI4JVLqwFJIonZZ6WPhtLirzopo"}'
+        micro --registry=consul call go.micro.srv.user_srv UserService.User '{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ1c2VyLXNydiIsInN1YiI6IjEiLCJhdWQiOiIiLCJleHAiOjE1NjkzNjYxMDksIm5iZiI6MTU2ODc2MTMwOSwiaWF0IjoxNTY4NzYxMzA5fQ.aw064Bo6yc-2UYNUK1cYlJTIc8eB6tZBjm1K16OxEoo"}'
     用户修改资料
     用户修改密码
 

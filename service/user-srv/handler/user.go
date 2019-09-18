@@ -35,12 +35,12 @@ func validatePhone(phone string) bool {
 	return reg.MatchString(phone)
 }
 
-//Login ...
-func (s *UserService) Login(ctx context.Context, req *usersrv.LoginReq, rsp *usersrv.AuthRsp) error {
+//LoginByPassword ...
+func (s *UserService) LoginByPassword(ctx context.Context, req *usersrv.LoginByPasswordReq, rsp *usersrv.AuthRsp) error {
 	log.Log("[access] UserService.Login")
 	//phone or email or username
 	if req.GetPlatform() == "" {
-		return errors.BadRequest("UserService.Login", "type参数不能为空")
+		return errors.BadRequest("UserService.Login", "plattform参数不能为空")
 	}
 	// if _, ok := repository.LocalLoginList[req.GetPlatform()]; ok {
 	// } //账号登陆 本地登陆账号

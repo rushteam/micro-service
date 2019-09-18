@@ -3,8 +3,12 @@ syntax = "proto3";
 package usersrv;
 
 service UserService {
-    //密码登陆/验证码登陆/第三方权限登陆
-    rpc Login(LoginReq) returns (AuthRsp) {}
+    //手机号密码登陆
+    rpc LoginByPassword(LoginByPasswordReq) returns (AuthRsp) {}
+    //短信验证码登陆
+    rpc LoginByCaptcha(LoginByCaptchaReq) returns (AuthRsp) {}
+    //第三方授权登陆
+    rpc LoginByOAuth(LoginByOAuthReq) returns (AuthRsp) {}
     //创建用户
     // rpc Register(RegisterReq) returns (AuthRsp) {}
     //绑定用户
@@ -17,12 +21,27 @@ service UserService {
     rpc Update(UpdateReq) returns (UserRsp) {}
 }
 
-message LoginReq {
-    string platform = 1; //qq/wx/weibo/username_pwd/phone_pwd/email_pwd/phone_sms/
-    string loginname = 2; //openid/phone/email/username
-    string password = 3;//access_token/pasword/captcha
+// message LoginReq {
+//     string platform = 1; //qq/wx/weibo/username_pwd/phone_pwd/email_pwd/phone_sms/
+//     string loginname = 2; //openid/phone/email/username
+//     string password = 3;//access_token/pasword/captcha
+// }
+message LoginByPasswordReq {
+    string loginname = 1;
+    string password = 2;
+}
+message LoginByCaptchaReq {
+    string loginname = 1; //登陆名
+    string captcha = 2; //验证码
+    int64 captcha_id = 3;//验证码编号
+}
+message LoginByOAuthReq {
+    string platform = 1; //qq/wx/weibo
+    string oppenid = 2; //openid
+    string access_token = 3;//access_token
     map<string,string> fileds = 4;
 }
+
 message AuthRsp{
     string token = 1;
     int64 uid = 2;
@@ -64,7 +83,7 @@ message UserRsp {
 // }
 message BindReq {
     string token = 1;
-    LoginReq login = 2;
+    // LoginReq login = 2;
 }
 message UnbindReq {
     string token = 1;

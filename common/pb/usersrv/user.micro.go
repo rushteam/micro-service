@@ -8,7 +8,9 @@ It is generated from these files:
 	usersrv/user.proto
 
 It has these top-level messages:
-	LoginReq
+	LoginByPasswordReq
+	LoginByCaptchaReq
+	LoginByOAuthReq
 	AuthRsp
 	UserReq
 	UerRsp
@@ -48,8 +50,12 @@ var _ server.Option
 // Client API for UserService service
 
 type UserService interface {
-	// 密码登陆/验证码登陆/第三方权限登陆
-	Login(ctx context.Context, in *LoginReq, opts ...client.CallOption) (*AuthRsp, error)
+	// 手机号密码登陆
+	LoginByPassword(ctx context.Context, in *LoginByPasswordReq, opts ...client.CallOption) (*AuthRsp, error)
+	// 短信验证码登陆
+	LoginByCaptcha(ctx context.Context, in *LoginByCaptchaReq, opts ...client.CallOption) (*AuthRsp, error)
+	// 第三方授权登陆
+	LoginByOAuth(ctx context.Context, in *LoginByOAuthReq, opts ...client.CallOption) (*AuthRsp, error)
 	// 创建用户
 	// rpc Register(RegisterReq) returns (AuthRsp) {}
 	// 绑定用户
@@ -80,8 +86,28 @@ func NewUserService(name string, c client.Client) UserService {
 	}
 }
 
-func (c *userService) Login(ctx context.Context, in *LoginReq, opts ...client.CallOption) (*AuthRsp, error) {
-	req := c.c.NewRequest(c.name, "UserService.Login", in)
+func (c *userService) LoginByPassword(ctx context.Context, in *LoginByPasswordReq, opts ...client.CallOption) (*AuthRsp, error) {
+	req := c.c.NewRequest(c.name, "UserService.LoginByPassword", in)
+	out := new(AuthRsp)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) LoginByCaptcha(ctx context.Context, in *LoginByCaptchaReq, opts ...client.CallOption) (*AuthRsp, error) {
+	req := c.c.NewRequest(c.name, "UserService.LoginByCaptcha", in)
+	out := new(AuthRsp)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) LoginByOAuth(ctx context.Context, in *LoginByOAuthReq, opts ...client.CallOption) (*AuthRsp, error) {
+	req := c.c.NewRequest(c.name, "UserService.LoginByOAuth", in)
 	out := new(AuthRsp)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
@@ -133,8 +159,12 @@ func (c *userService) Update(ctx context.Context, in *UpdateReq, opts ...client.
 // Server API for UserService service
 
 type UserServiceHandler interface {
-	// 密码登陆/验证码登陆/第三方权限登陆
-	Login(context.Context, *LoginReq, *AuthRsp) error
+	// 手机号密码登陆
+	LoginByPassword(context.Context, *LoginByPasswordReq, *AuthRsp) error
+	// 短信验证码登陆
+	LoginByCaptcha(context.Context, *LoginByCaptchaReq, *AuthRsp) error
+	// 第三方授权登陆
+	LoginByOAuth(context.Context, *LoginByOAuthReq, *AuthRsp) error
 	// 创建用户
 	// rpc Register(RegisterReq) returns (AuthRsp) {}
 	// 绑定用户
@@ -149,7 +179,9 @@ type UserServiceHandler interface {
 
 func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts ...server.HandlerOption) {
 	type userService interface {
-		Login(ctx context.Context, in *LoginReq, out *AuthRsp) error
+		LoginByPassword(ctx context.Context, in *LoginByPasswordReq, out *AuthRsp) error
+		LoginByCaptcha(ctx context.Context, in *LoginByCaptchaReq, out *AuthRsp) error
+		LoginByOAuth(ctx context.Context, in *LoginByOAuthReq, out *AuthRsp) error
 		Bind(ctx context.Context, in *BindReq, out *UserRsp) error
 		Unbind(ctx context.Context, in *UnbindReq, out *UserRsp) error
 		User(ctx context.Context, in *UserReq, out *UserRsp) error
@@ -166,8 +198,16 @@ type userServiceHandler struct {
 	UserServiceHandler
 }
 
-func (h *userServiceHandler) Login(ctx context.Context, in *LoginReq, out *AuthRsp) error {
-	return h.UserServiceHandler.Login(ctx, in, out)
+func (h *userServiceHandler) LoginByPassword(ctx context.Context, in *LoginByPasswordReq, out *AuthRsp) error {
+	return h.UserServiceHandler.LoginByPassword(ctx, in, out)
+}
+
+func (h *userServiceHandler) LoginByCaptcha(ctx context.Context, in *LoginByCaptchaReq, out *AuthRsp) error {
+	return h.UserServiceHandler.LoginByCaptcha(ctx, in, out)
+}
+
+func (h *userServiceHandler) LoginByOAuth(ctx context.Context, in *LoginByOAuthReq, out *AuthRsp) error {
+	return h.UserServiceHandler.LoginByOAuth(ctx, in, out)
 }
 
 func (h *userServiceHandler) Bind(ctx context.Context, in *BindReq, out *UserRsp) error {
