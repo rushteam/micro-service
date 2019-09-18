@@ -79,14 +79,14 @@ func (s *UserService) LoginByOAuth(ctx context.Context, req *usersrv.LoginByOAut
 	if req.GetPlatform() == "" {
 		return errors.BadRequest("UserService.LoginByOAuth", "platform参数不能为空")
 	}
-	if req.GetOppenid() == "" {
+	if req.GetOpenid() == "" {
 		return errors.BadRequest("UserService.LoginByOAuth", "openid参数不能为空")
 	}
 	if req.GetAccessToken() == "" {
 		return errors.BadRequest("UserService.LoginByOAuth", "access_token参数不能为空")
 	}
 	loginRepo := &repository.LoginRepository{Db: s.db}
-	login, err := loginRepo.FindByPassword("wx", req.GetOppenid(), req.GetAccessToken())
+	login, err := loginRepo.FindByPassword("wx", req.GetOpenid(), req.GetAccessToken())
 	if err != nil {
 		return errors.BadRequest("UserService.Login", "用户名或密码错误")
 	}
