@@ -4,7 +4,6 @@ import (
 	"context"
 	"regexp"
 	"strconv"
-	"time"
 
 	"github.com/micro/go-log"
 	micro "github.com/micro/go-micro"
@@ -37,39 +36,51 @@ func validatePhone(phone string) bool {
 
 //LoginByPassword ...
 func (s *UserService) LoginByPassword(ctx context.Context, req *usersrv.LoginByPasswordReq, rsp *usersrv.AuthRsp) error {
-	log.Log("[access] UserService.Login")
+	log.Log("[access] UserService.LoginByPassword")
 	//phone or email or username
-	if req.GetPlatform() == "" {
-		return errors.BadRequest("UserService.Login", "plattform参数不能为空")
+	// if req.GetPlatform() == "" {
+	// 	return errors.BadRequest("UserService.Login", "plattform参数不能为空")
+	// }
+	// // if _, ok := repository.LocalLoginList[req.GetPlatform()]; ok {
+	// // } //账号登陆 本地登陆账号
+	// //登录名+密码登陆
+	// if req.GetPlatform() == "phone" {
+	// 		} else {
+	// 	return errors.BadRequest("UserService.Login", "未知登陆方式")
+	// }
+	//密码位数不在登陆时候验证，而是在设置时候验证
+	// if len(req.Password) < 6 { //密码不得小于6位
+	// 	return errors.BadRequest("UserService.Login", "密码不得小于6位")
+	// }
+	if !validatePhone(req.GetLoginname()) {
+		return errors.BadRequest("UserService.Login", "手机号格式错误")
 	}
-	// if _, ok := repository.LocalLoginList[req.GetPlatform()]; ok {
-	// } //账号登陆 本地登陆账号
-	//登录名+密码登陆
-	if req.GetPlatform() == "phone" {
-		if !validatePhone(req.GetLoginname()) {
-			return errors.BadRequest("UserService.Login", "手机号格式错误")
-		}
-		//密码位数不在登陆时候验证，而是在设置时候验证
-		// if len(req.Password) < 6 { //密码不得小于6位
-		// 	return errors.BadRequest("UserService.Login", "密码不得小于6位")
-		// }
-		loginRepo := &repository.LoginRepository{Db: s.db}
-		login, err := loginRepo.FindByPassword(req.GetPlatform(), req.GetLoginname(), req.GetPassword())
-		if err != nil {
-			return errors.BadRequest("UserService.Login", "用户名或密码错误")
-		}
-		rsp.Uid = login.UID
-		// gen token
-		subject := strconv.FormatInt(login.UID, 10)
-		token := session.New("user-srv", subject, "")
-		jwt, err := session.Encode(token, "")
-		if err != nil {
-			return errors.BadRequest("UserService.Login", "登录异常,请请联系客服")
-		}
-		rsp.Token = jwt
-	} else {
-		return errors.BadRequest("UserService.Login", "未知登陆方式")
+	loginRepo := &repository.LoginRepository{Db: s.db}
+	login, err := loginRepo.FindByPassword("password", req.GetLoginname(), req.GetPassword())
+	if err != nil {
+		return errors.BadRequest("UserService.Login", "用户名或密码错误")
 	}
+	rsp.Uid = login.UID
+	// gen token
+	subject := strconv.FormatInt(login.UID, 10)
+	token := session.New("user-srv", subject, "")
+	jwt, err := session.Encode(token, "")
+	if err != nil {
+		return errors.BadRequest("UserService.Login", "登录异常,请请联系客服")
+	}
+	rsp.Token = jwt
+	return nil
+}
+
+//LoginByOAuth ...
+func (s *UserService) LoginByOAuth(ctx context.Context, req *usersrv.LoginByOAuthReq, rsp *usersrv.AuthRsp) error {
+	log.Log("[access] UserService.LoginByOAuth")
+	return nil
+}
+
+//LoginByCaptcha ...
+func (s *UserService) LoginByCaptcha(ctx context.Context, req *usersrv.LoginByCaptchaReq, rsp *usersrv.AuthRsp) error {
+	log.Log("[access] UserService.LoginByCaptcha")
 	return nil
 }
 
@@ -166,50 +177,50 @@ func (s *UserService) Bind(ctx context.Context, req *usersrv.BindReq, rsp *users
 	if req.GetToken() == "" {
 		return errors.BadRequest("UserService.Create", "绑定失败,当前状态未登录")
 	}
-	if req.GetLogin() == nil {
-		return errors.BadRequest("UserService.Create", "绑定失败,缺少登陆信息")
-	}
-	token, err := session.Decode(req.GetToken(), "")
-	if err != nil {
-		return errors.BadRequest("UserService.Login", "登录超时或TOKEN非法")
-	}
-	if token.Subject == "" || token.Subject == "0" {
-		return errors.BadRequest("UserService.Login", "当前TOKEN未绑定用户")
-	}
-	uid, err := strconv.ParseInt(token.Subject, 10, 64)
-	if err != nil {
-		return errors.BadRequest("UserService.Login", "当前TOKEN无法解析用户")
-	}
-	tx, err := s.db.NewTx(ctx)
-	//绑定用户逻辑
-	userRepo := &repository.UserRepository{Db: tx}
-	user, err := userRepo.FindByUID(uid)
-	if err != nil {
-		log.Log("未找到当前用户" + err.Error())
-	}
-	loginRepo := &repository.LoginRepository{Db: tx}
-	if req.GetLogin().GetPlatform() == "" {
-		return errors.BadRequest("UserService.Create", "注册失败,登陆类别不能为空")
-	}
-	if req.GetLogin().GetLoginname() == "" {
-		return errors.BadRequest("UserService.Create", "注册失败,账号ID不能为空")
-	}
-	if req.GetLogin().GetPassword() == "" {
-		return errors.BadRequest("UserService.Create", "注册失败,账号凭证不能为空")
-	}
-	loginData := repository.LoginModel{}
-	loginData.UID = user.UID
-	loginData.Platform = req.GetLogin().GetPlatform()
-	loginData.Openid = req.GetLogin().GetLoginname()
-	loginData.AccessToken = req.GetLogin().GetPassword()
-	loginData.AccessExpire = time.Now().Add(time.Hour * 24 * 7 * 2)
-	_, err = loginRepo.Create(loginData)
-	if err != nil {
-		log.Log("login数据创建失败" + err.Error())
-		tx.Rollback()
-		return errors.BadRequest("UserService.Create", "注册失败,账号已经存在")
-	}
-	tx.Commit()
+	// if req.GetLogin() == nil {
+	// 	return errors.BadRequest("UserService.Create", "绑定失败,缺少登陆信息")
+	// }
+	// token, err := session.Decode(req.GetToken(), "")
+	// if err != nil {
+	// 	return errors.BadRequest("UserService.Login", "登录超时或TOKEN非法")
+	// }
+	// if token.Subject == "" || token.Subject == "0" {
+	// 	return errors.BadRequest("UserService.Login", "当前TOKEN未绑定用户")
+	// }
+	// uid, err := strconv.ParseInt(token.Subject, 10, 64)
+	// if err != nil {
+	// 	return errors.BadRequest("UserService.Login", "当前TOKEN无法解析用户")
+	// }
+	// tx, err := s.db.NewTx(ctx)
+	// //绑定用户逻辑
+	// userRepo := &repository.UserRepository{Db: tx}
+	// user, err := userRepo.FindByUID(uid)
+	// if err != nil {
+	// 	log.Log("未找到当前用户" + err.Error())
+	// }
+	// loginRepo := &repository.LoginRepository{Db: tx}
+	// if req.GetLogin().GetPlatform() == "" {
+	// 	return errors.BadRequest("UserService.Create", "注册失败,登陆类别不能为空")
+	// }
+	// if req.GetLogin().GetLoginname() == "" {
+	// 	return errors.BadRequest("UserService.Create", "注册失败,账号ID不能为空")
+	// }
+	// if req.GetLogin().GetPassword() == "" {
+	// 	return errors.BadRequest("UserService.Create", "注册失败,账号凭证不能为空")
+	// }
+	// loginData := repository.LoginModel{}
+	// loginData.UID = user.UID
+	// loginData.Platform = req.GetLogin().GetPlatform()
+	// loginData.Openid = req.GetLogin().GetLoginname()
+	// loginData.AccessToken = req.GetLogin().GetPassword()
+	// loginData.AccessExpire = time.Now().Add(time.Hour * 24 * 7 * 2)
+	// _, err = loginRepo.Create(loginData)
+	// if err != nil {
+	// 	log.Log("login数据创建失败" + err.Error())
+	// 	tx.Rollback()
+	// 	return errors.BadRequest("UserService.Create", "注册失败,账号已经存在")
+	// }
+	// tx.Commit()
 	return nil
 }
 
