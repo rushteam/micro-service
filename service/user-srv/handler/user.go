@@ -86,7 +86,7 @@ func (s *UserService) LoginByOAuth(ctx context.Context, req *usersrv.LoginByOAut
 		return errors.BadRequest("UserService.LoginByOAuth", "access_token参数不能为空")
 	}
 	loginRepo := &repository.LoginRepository{Db: s.db}
-	login, err := loginRepo.FindByPassword("wx", req.GetOpenid(), req.GetAccessToken())
+	login, err := loginRepo.FindByPassword("wechat_union_id", req.GetOpenid(), req.GetAccessToken())
 	if err != nil {
 		return errors.BadRequest("UserService.Login", "用户名或密码错误")
 	}
