@@ -83,8 +83,8 @@ func (s *UserService) LoginByOAuth(ctx context.Context, req *usersrv.LoginByOAut
 	if req.GetAppid() == "" {
 		return errors.BadRequest("UserService.LoginByOAuth", "appid参数不能为空")
 	}
-	if req.GetPlatform() == "" {
-		return errors.BadRequest("UserService.LoginByOAuth", "platform参数不能为空")
+	if req.GetSercet() == "" {
+		return errors.BadRequest("UserService.LoginByOAuth", "sercet参数不能为空")
 	}
 	if req.GetCode() == "" {
 		return errors.BadRequest("UserService.LoginByOAuth", "code参数不能为空")
@@ -98,7 +98,7 @@ func (s *UserService) LoginByOAuth(ctx context.Context, req *usersrv.LoginByOAut
 	if req.GetPlatform() == "wx" {
 		//通过code 获取信息
 		//accesstoken
-		at, err := wxsdk.GetAuthAccessToken(ctx, req.getAppid(), req.GetSercet(), req.GetCode())
+		at, err := wxsdk.GetAuthAccessToken(ctx, req.GetAppid(), req.GetSercet(), req.GetCode())
 		if err != nil {
 			return errors.BadRequest("UserService.LoginByOAuth", "通过code请求三方失败")
 		}
