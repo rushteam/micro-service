@@ -80,7 +80,7 @@ func (s *UserService) LoginByOAuth(ctx context.Context, req *usersrv.LoginByOAut
 	if req.GetPlatform() == "" {
 		return errors.BadRequest("UserService.LoginByOAuth", "platform参数不能为空")
 	}
-	if req.GetAppID() == "" {
+	if req.GetAppid() == "" {
 		return errors.BadRequest("UserService.LoginByOAuth", "appid参数不能为空")
 	}
 	if req.GetPlatform() == "" {
@@ -89,28 +89,36 @@ func (s *UserService) LoginByOAuth(ctx context.Context, req *usersrv.LoginByOAut
 	if req.GetCode() == "" {
 		return errors.BadRequest("UserService.LoginByOAuth", "code参数不能为空")
 	}
-	//通过code 获取信息
-	at, err := wxsdk.GetAuthAccessToken(ctx, req.GetAppID(), req.GetSercet(), req.GetCode())
 	// if req.GetOpenid() == "" {
 	// 	return errors.BadRequest("UserService.LoginByOAuth", "openid参数不能为空")
 	// }
 	// if req.GetAccessToken() == "" {
 	// 	return errors.BadRequest("UserService.LoginByOAuth", "access_token参数不能为空")
 	// }
-	loginRepo := &repository.LoginRepository{Db: s.db}
-	login, err := loginRepo.FindByPassword("wechat_union_id", req.GetOpenid(), req.GetAccessToken())
-	if err != nil {
-		return errors.BadRequest("UserService.Login", "用户名或密码错误")
+	if req.GetPlatform() == "wx" {
+		//通过code 获取信息
+		//accesstoken
+		at, err := wxsdk.GetAuthAccessToken(ctx, req.getAppid(), req.GetSercet(), req.GetCode())
+		if err != nil {
+			return errors.BadRequest("UserService.LoginByOAuth", "通过code请求三方失败")
+		}
+		//userinfo
+		ui, err := wxsdk.GetUserinfo(ctx, at.AccessToken, at.OpenID)
+		loginRepo := &repository.LoginRepository{Db: s.db}
+		login, err := loginRepo.FindByPassword("wechat_union_id", at.OpenID, at.AccessToken)
+		if err != nil {
+			return errors.BadRequest("UserService.Login", "用户名或密码错误")
+		}
+		rsp.Uid = login.UID
+		// gen token
+		subject := strconv.FormatInt(login.UID, 10)
+		token := session.New("user-srv", subject, "")
+		jwt, err := session.Encode(token, "")
+		if err != nil {
+			return errors.BadRequest("UserService.Login", "登录异常,请请联系客服")
+		}
+		rsp.Token = jwt
 	}
-	rsp.Uid = login.UID
-	// gen token
-	subject := strconv.FormatInt(login.UID, 10)
-	token := session.New("user-srv", subject, "")
-	jwt, err := session.Encode(token, "")
-	if err != nil {
-		return errors.BadRequest("UserService.Login", "登录异常,请请联系客服")
-	}
-	rsp.Token = jwt
 	return nil
 }
 
