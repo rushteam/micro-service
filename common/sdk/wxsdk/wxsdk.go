@@ -1,11 +1,12 @@
 package wxsdk
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 )
 
-var baseURL = "https://api.weixin.qq.com"
+const baseURL = "https://api.weixin.qq.com"
 
 //AccessToken ..
 type AccessToken struct {
@@ -27,17 +28,25 @@ func GetToken(appID string, secret string) (AccessToken, error) {
 	return accessToken, err
 }
 
+//ErrInfo ..
+type ErrInfo struct {
+	ErrCode int64  `json:"errcode"`
+	ErrMsg  string `json:"errmsg"`
+}
+
 //AuthAccessToken ...
 type AuthAccessToken struct {
+	*ErrInfo
 	AccessToken  string `json:"access_token"`
 	ExpiresIn    int64  `json:"expires_in"`
 	RefreshToken string `json:"refresh_token"`
 	OpenID       string `json:"openid"`
 	Scope        string `json:"scope"`
+	Unionid      string `json:"unionid"`
 }
 
 //GetAuthAccessToken ..
-func GetAuthAccessToken(appID, secret, code string) (AuthAccessToken, error) {
+func GetAuthAccessToken(ctx context.Context, appID, secret, code string) (AuthAccessToken, error) {
 	var accessToken AuthAccessToken
 	url := fmt.Sprintf(
 		"%s/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=%s",
@@ -51,7 +60,7 @@ func GetAuthAccessToken(appID, secret, code string) (AuthAccessToken, error) {
 }
 
 //AuthRefreshToken ...
-func AuthRefreshToken(appID, refreshToken string) (AuthAccessToken, error) {
+func AuthRefreshToken(ctx context.Context, appID, refreshToken string) (AuthAccessToken, error) {
 	var accessToken AuthAccessToken
 	url := fmt.Sprintf(
 		"%s/sns/oauth2/refresh_token?appid=%s&refresh_token=%s&grant_type=%s",
@@ -66,19 +75,21 @@ func AuthRefreshToken(appID, refreshToken string) (AuthAccessToken, error) {
 
 //Userinfo ..
 type Userinfo struct {
+	*ErrInfo
 	OpenID     string   `json:"openid"`
 	Nickname   string   `json:"nickname"`
 	Sex        string   `json:"sex"`
 	Province   string   `json:"province"`
 	City       string   `json:"city"`
 	Country    string   `json:"country"`
-	Headimgurl string   `json:"headimgurl"`
+	HeadImgURL string   `json:"headimgurl"`
 	Privilege  []string `json:"privilege"`
 	Unionid    string   `json:"unionid"`
+	Language   string   `json:"language"`
 }
 
 //GetUserinfo ..
-func GetUserinfo(accessToken, openID string) (Userinfo, error) {
+func GetUserinfo(ctx context.Context, accessToken, openID string) (Userinfo, error) {
 	var userinfo Userinfo
 	url := fmt.Sprintf(
 		"%s/sns/userinfo?access_token=%s&openid=%s&lang=%s",

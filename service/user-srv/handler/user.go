@@ -9,6 +9,7 @@ import (
 	micro "github.com/micro/go-micro"
 	"github.com/micro/go-micro/errors"
 	"github.com/mlboy/micro-service/common/pb/usersrv"
+	"github.com/mlboy/micro-service/common/sdk/wxsdk"
 	"github.com/mlboy/micro-service/common/utils"
 	"github.com/mlboy/micro-service/service/user-srv/repository"
 	"github.com/mlboy/micro-service/service/user-srv/session"
@@ -79,12 +80,23 @@ func (s *UserService) LoginByOAuth(ctx context.Context, req *usersrv.LoginByOAut
 	if req.GetPlatform() == "" {
 		return errors.BadRequest("UserService.LoginByOAuth", "platform参数不能为空")
 	}
-	if req.GetOpenid() == "" {
-		return errors.BadRequest("UserService.LoginByOAuth", "openid参数不能为空")
+	if req.GetAppID() == "" {
+		return errors.BadRequest("UserService.LoginByOAuth", "appid参数不能为空")
 	}
-	if req.GetAccessToken() == "" {
-		return errors.BadRequest("UserService.LoginByOAuth", "access_token参数不能为空")
+	if req.GetPlatform() == "" {
+		return errors.BadRequest("UserService.LoginByOAuth", "platform参数不能为空")
 	}
+	if req.GetCode() == "" {
+		return errors.BadRequest("UserService.LoginByOAuth", "code参数不能为空")
+	}
+	//通过code 获取信息
+	at, err := wxsdk.GetAuthAccessToken(ctx, req.GetAppID(), req.GetSercet(), req.GetCode())
+	// if req.GetOpenid() == "" {
+	// 	return errors.BadRequest("UserService.LoginByOAuth", "openid参数不能为空")
+	// }
+	// if req.GetAccessToken() == "" {
+	// 	return errors.BadRequest("UserService.LoginByOAuth", "access_token参数不能为空")
+	// }
 	loginRepo := &repository.LoginRepository{Db: s.db}
 	login, err := loginRepo.FindByPassword("wechat_union_id", req.GetOpenid(), req.GetAccessToken())
 	if err != nil {

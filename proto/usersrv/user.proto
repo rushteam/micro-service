@@ -37,10 +37,12 @@ message LoginByCaptchaReq {
 }
 message LoginByOAuthReq {
     string platform = 1; //qq/wx/weibo
-    string code = 2;
+    string appid = 2; //openid
+    string sercet = 3;
+    string code = 4;
+    map<string,string> fileds = 5;
     // string openid = 2; //openid
     // string access_token = 3;//access_token
-    map<string,string> fileds = 4;
 }
 
 message AuthRsp{
