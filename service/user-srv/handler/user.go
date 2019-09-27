@@ -107,13 +107,13 @@ func (s *UserService) LoginByOAuth(ctx context.Context, req *usersrv.LoginByOAut
 		login, err := loginRepo.FindByPassword("wx_open_id", ui.OpenID, at.AccessToken)
 		// login, err := loginRepo.FindByPassword("wx_union_id", ui.OpenID, at.AccessToken)
 		if err != nil {
-			return errors.BadRequest("UserService.Login", "用户名或密码错误")
+			return errors.BadRequest("UserService.LoginByOAuth", "用户名或密码错误")
 		}
 		rsp.Uid = login.UID
 		// gen token
 		jwt, err := GenToken(login.UID)
 		if err != nil {
-			return errors.BadRequest("UserService.Login", "登录异常,请请联系客服")
+			return errors.BadRequest("UserService.LoginByOAuth", "登录异常,请请联系客服")
 		}
 		rsp.Token = jwt
 	}
