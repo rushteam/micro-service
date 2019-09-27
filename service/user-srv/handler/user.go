@@ -104,8 +104,8 @@ func (s *UserService) LoginByOAuth(ctx context.Context, req *usersrv.LoginByOAut
 		//userinfo
 		ui, err := wxsdk.GetUserinfo(ctx, at.AccessToken, at.OpenID)
 		loginRepo := &repository.LoginRepository{Db: s.db}
-		login, err := loginRepo.FindByPassword("wx_open_id", ui.OpenID, at.AccessToken)
-		// login, err := loginRepo.FindByPassword("wx_union_id", ui.OpenID, at.AccessToken)
+		// login, err := loginRepo.FindByPassword("wx_open_id", ui.OpenID, at.AccessToken)
+		login, err := loginRepo.FindByPassword("wx_union_id", ui.OpenID, at.AccessToken)
 		if err != nil {
 			return errors.BadRequest("UserService.LoginByOAuth", "用户名或密码错误")
 		}
