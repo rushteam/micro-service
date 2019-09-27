@@ -98,6 +98,7 @@ func (s *UserService) LoginByOAuth(ctx context.Context, req *usersrv.LoginByOAut
 		//accesstoken
 		at, err := wxsdk.GetAuthAccessToken(ctx, req.GetAppid(), req.GetSercet(), req.GetCode())
 		if err != nil {
+			log.Logf(err.Error())
 			return errors.BadRequest("UserService.LoginByOAuth", "请求第三方失败获取access_token失败")
 		}
 		//userinfo
