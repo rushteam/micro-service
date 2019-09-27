@@ -107,6 +107,7 @@ func (s *UserService) LoginByOAuth(ctx context.Context, req *usersrv.LoginByOAut
 		// login, err := loginRepo.FindByPassword("wx_open_id", ui.OpenID, at.AccessToken)
 		login, err := loginRepo.FindByPassword("wx_union_id", ui.OpenID, at.AccessToken)
 		if err != nil {
+			log.Logf(err.Error())
 			return errors.BadRequest("UserService.LoginByOAuth", "用户名或密码错误")
 		}
 		rsp.Uid = login.UID
