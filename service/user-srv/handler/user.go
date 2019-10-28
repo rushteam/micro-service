@@ -59,7 +59,7 @@ func (s *UserService) LoginByPassword(ctx context.Context, req *usersrv.LoginByP
 	loginRepo := &repository.LoginRepository{Db: s.db}
 	login, err := loginRepo.FindByPassword("phone", req.GetLoginname(), req.GetPassword())
 	if err != nil {
-		return errors.BadRequest("UserService.LoginByPassword", "用户名或密码错误")
+		return errors.BadRequest("UserService.LoginByPassword", "账号或密码错误")
 	}
 	rsp.Uid = login.UID
 	// gen token
