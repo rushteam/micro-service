@@ -124,6 +124,31 @@ func (s *UserService) LoginByOAuth(ctx context.Context, req *usersrv.LoginByOAut
 		}
 		rsp.Token = jwt
 	}
+	if req.GetPlatform() == "wxa" {
+		//通过code 获取信息
+		at, err := wxsdk.GetCode2Session(ctx, req.GetAppid(), req.GetSercet(), req.GetCode())
+		if err != nil {
+			log.Logf(err.Error())
+			return errors.BadRequest("UserService.LoginByOAuth", "请求第三方失败获取access_token失败")
+		}
+		//userinfo
+		ui, err := wxsdk.GetUserinfo(ctx, at.AccessToken, at.OpenID)
+		loginRepo := &repository.LoginRepository{Db: s.db}
+		// login, err := loginRepo.FindByPassword("wx_open_id", ui.OpenID, at.AccessToken)
+		login, err := loginRepo.FindByPassword("wx_union_id", ui.OpenID, at.AccessToken)
+		if err != nil {
+			log.Logf(err.Error())
+			return errors.BadRequest("UserService.LoginByOAuth", "用户名或密码错误")
+		}
+		rsp.Uid = login.UID
+		// gen token
+		jwt, err := GenToken(login.UID)
+		if err != nil {
+			return errors.BadRequest("UserService.LoginByOAuth", "登录异常,请请联系客服")
+		}
+		rsp.Token = jwt
+	}
+
 	return nil
 }
 
