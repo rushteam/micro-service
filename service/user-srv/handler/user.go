@@ -35,7 +35,7 @@ func validatePhone(phone string) bool {
 	return reg.MatchString(phone)
 }
 
-//LoginByPassword ...
+//LoginByPassword 手机号+密码
 func (s *UserService) LoginByPassword(ctx context.Context, req *usersrv.LoginByPasswordReq, rsp *usersrv.AuthRsp) error {
 	log.Log("[access] UserService.LoginByPassword")
 	//phone or email or username
@@ -71,7 +71,7 @@ func (s *UserService) LoginByPassword(ctx context.Context, req *usersrv.LoginByP
 	return nil
 }
 
-//LoginByOAuth ...
+//LoginByOAuth oauth2 code登陆
 func (s *UserService) LoginByOAuth(ctx context.Context, req *usersrv.LoginByOAuthReq, rsp *usersrv.AuthRsp) error {
 	log.Log("[access] UserService.LoginByOAuth")
 	//phone or email or username
@@ -104,12 +104,18 @@ func (s *UserService) LoginByOAuth(ctx context.Context, req *usersrv.LoginByOAut
 		//userinfo
 		ui, err := wxsdk.GetUserinfo(ctx, at.AccessToken, at.OpenID)
 		loginRepo := &repository.LoginRepository{Db: s.db}
-		// login, err := loginRepo.FindByPassword("wx_open_id", ui.OpenID, at.AccessToken)
-		login, err := loginRepo.FindByPassword("wx_union_id", ui.OpenID, at.AccessToken)
+		var login *repository.LoginModel
+		if ui.Unionid == "" {
+			login, err = loginRepo.FindByPassword("wx_open_id", ui.OpenID, at.AccessToken)
+		} else {
+			login, err = loginRepo.FindByPassword("wx_union_id", ui.Unionid, at.AccessToken)
+		}
 		if err != nil {
 			log.Logf(err.Error())
-			return errors.BadRequest("UserService.LoginByOAuth", "用户名或密码错误")
+			return errors.BadRequest("UserService.LoginByOAuth", "当前用户未注册")
 		}
+		//自动注册逻辑
+
 		rsp.Uid = login.UID
 		// gen token
 		jwt, err := GenToken(login.UID)
@@ -121,7 +127,7 @@ func (s *UserService) LoginByOAuth(ctx context.Context, req *usersrv.LoginByOAut
 	return nil
 }
 
-//LoginByCaptcha ...
+//LoginByCaptcha 手机号+验证码
 func (s *UserService) LoginByCaptcha(ctx context.Context, req *usersrv.LoginByCaptchaReq, rsp *usersrv.AuthRsp) error {
 	log.Log("[access] UserService.LoginByCaptcha")
 	return nil
@@ -185,7 +191,7 @@ func (s *UserService) LoginByCaptcha(ctx context.Context, req *usersrv.LoginByCa
 // 	return nil
 // }
 
-//User ..
+//User 获取用户信息
 func (s *UserService) User(ctx context.Context, req *usersrv.UserReq, rsp *usersrv.UserRsp) error {
 	log.Log("[access] UserService.User")
 	// Model := model.Db()
@@ -267,12 +273,12 @@ func (s *UserService) Bind(ctx context.Context, req *usersrv.BindReq, rsp *users
 	return nil
 }
 
-//Unbind ...
+//Unbind 解绑手机号
 func (s *UserService) Unbind(ctx context.Context, req *usersrv.UnbindReq, rsp *usersrv.UserRsp) error {
 	return nil
 }
 
-//Update ...
+//Update 更新字段
 func (s *UserService) Update(ctx context.Context, req *usersrv.UpdateReq, rsp *usersrv.UserRsp) error {
 	return nil
 }

@@ -24,10 +24,11 @@ http://127.0.0.1:9080/oauth2/token?client_id=1234&client_secret=test&grant_type=
             micro --registry=consul call go.micro.srv.user_srv UserService.LoginByPassword '{"loginname":"18310497688","password":"test"}'
         第三方登陆
             micro --registry=consul call go.micro.srv.user_srv UserService.LoginByOAuth '{"openid":"test","password":"test","platform":"wx"}'
+
+            micro --registry=consul call go.micro.srv.user_srv UserService.LoginByOAuth '{"appid":"test","sercet":"test","code":"test","platform":"wx"}'
     用户注册
         手机号注册
             micro  --registry=consul call go.micro.srv.user_srv UserService.Login '{"login_list":[{"platform":"phone","login":"18310497699","password":"test"}],"user":{"nickname":"测试"}}'
-            
         第三方注册
     用户资料
         micro --registry=consul call go.micro.srv.user_srv UserService.User '{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ1c2VyLXNydiIsInN1YiI6IjEiLCJhdWQiOiIiLCJleHAiOjE1NjkzNjYxMDksIm5iZiI6MTU2ODc2MTMwOSwiaWF0IjoxNTY4NzYxMzA5fQ.aw064Bo6yc-2UYNUK1cYlJTIc8eB6tZBjm1K16OxEoo"}'

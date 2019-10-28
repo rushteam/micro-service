@@ -4,9 +4,9 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"errors"
-	"fmt"
 	"time"
-	//"upper.io/db.v3"
+
+	"upper.io/db.v3"
 )
 
 var (
@@ -48,9 +48,9 @@ func (repo LoginRepository) FindByPassword(platform, openid, password string) (*
 	}, db.Cond{
 		"openid": openid,
 	})
-	fmt.Println(res)
+	// fmt.Println(res)
 	err := res.One(&login)
-	fmt.Println(login, err)
+	// fmt.Println(login, err)
 	if login.AccessToken != password {
 		return nil, ErrPassword
 	}
