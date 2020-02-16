@@ -76,6 +76,23 @@ func GetAuthAccessToken(ctx context.Context, appID, secret, code string) (*AuthA
 	return &accessToken, err
 }
 
+//GetCode2Session 需要修改
+func GetCode2Session(ctx context.Context, appID, secret, code string) (*AuthAccessToken, error) {
+	var accessToken AuthAccessToken
+	url := fmt.Sprintf(
+		"%s/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=%s",
+		baseURL, appID, secret, code, "authorization_code")
+	body, err := GetURL(url)
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(body, &accessToken)
+	if accessToken.ErrInfo.ErrCode != 0 {
+		return nil, accessToken.ErrInfo
+	}
+	return &accessToken, err
+}
+
 //AuthRefreshToken ...
 func AuthRefreshToken(ctx context.Context, appID, refreshToken string) (*AuthAccessToken, error) {
 	var accessToken AuthAccessToken

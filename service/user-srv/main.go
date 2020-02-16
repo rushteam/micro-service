@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/micro/cli"
-	micro "github.com/micro/go-micro"
+	micro "github.com/micro/go-micro/v2"
 	"github.com/mlboy/micro-service/common/micro/wrap"
 	"github.com/mlboy/micro-service/service/user-srv/handler"
 	"upper.io/db.v3/mysql"
