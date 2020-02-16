@@ -5,12 +5,12 @@ import (
 	errs "errors"
 	"strconv"
 
-	"github.com/mlboy/micro-service/common/utils/snowflake"
+	"github.com/rushteam/micro-service/common/utils/snowflake"
 
 	"github.com/micro/go-micro/errors"
-	// "github.com/mlboy/micro-service/common/utils"
-	"github.com/mlboy/micro-service/common/pb/order_srv"
-	"github.com/mlboy/micro-service/service/order-srv/model"
+	// "github.com/rushteam/micro-service/common/utils"
+	"github.com/rushteam/micro-service/common/pb/order_srv"
+	"github.com/rushteam/micro-service/service/order-srv/model"
 	"github.com/micro/go-log"
 	micro "github.com/micro/go-micro"
 	// "go.uber.org/zap"

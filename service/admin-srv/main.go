@@ -6,8 +6,8 @@ import (
 
 	"github.com/micro/cli"
 	micro "github.com/micro/go-micro"
-	"github.com/mlboy/micro-service/common/pb/wx_token"
-	"github.com/mlboy/micro-service/service/admin-srv/handler"
+	"github.com/rushteam/micro-service/common/pb/wx_token"
+	"github.com/rushteam/micro-service/service/admin-srv/handler"
 )
 
 var (

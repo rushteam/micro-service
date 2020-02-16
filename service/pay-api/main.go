@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/micro/cli"
 	micro "github.com/micro/go-web"
-	"github.com/mlboy/micro-service/service/pay-api/handler"
+	"github.com/rushteam/micro-service/service/pay-api/handler"
 )
 
 var (

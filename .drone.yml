@@ -3,7 +3,7 @@ name: default
 
 workspace:
   base: /go
-  path: src/github.com/mlboy/micro-service
+  path: src/github.com/rushteam/micro-service
 
 steps:
   - name: build

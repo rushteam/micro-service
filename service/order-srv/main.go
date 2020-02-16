@@ -5,14 +5,14 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/mlboy/micro-service/common/micro/wrap"
+	"github.com/rushteam/micro-service/common/micro/wrap"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/micro/cli"
 	micro "github.com/micro/go-micro"
 	"github.com/mlboy/godb/orm"
-	"github.com/mlboy/micro-service/common/pb/order_srv"
-	"github.com/mlboy/micro-service/service/order-srv/handler"
+	"github.com/rushteam/micro-service/common/pb/order_srv"
+	"github.com/rushteam/micro-service/service/order-srv/handler"
 	// "github.com/micro/go-micro/registry"
 )
 
