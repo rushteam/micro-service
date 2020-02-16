@@ -1,4 +1,4 @@
-module github.com/mlboy/micro-service
+module github.com/rushteam/micro-service
 
 go 1.13
 
