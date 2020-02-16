@@ -4,7 +4,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/micro/cli"
+	"github.com/micro/cli/v2"
 	micro "github.com/micro/go-micro/v2"
 	"github.com/mlboy/micro-service/common/micro/wrap"
 	"github.com/mlboy/micro-service/service/user-srv/handler"
@@ -37,12 +37,6 @@ func main() {
 	// var ctx = context.TODO()
 	service.Init(
 		micro.Action(func(c *cli.Context) {
-			//upper.io/db.v3/
-			// configFile := c.String("config_path")
-			// conf := config.NewConfig()
-			// config.LoadFile(configFile)
-			// fmt.Printf("%+v", conf.Get("db_configs"))
-			// settings, _ := mysql.ParseURL("root:hoo2019!@tcp(mariadb:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s")
 			settings, _ := mysql.ParseURL("root:dream@tcp(127.0.0.1:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s")
 			sess, err := mysql.Open(settings)
 			if err != nil {
