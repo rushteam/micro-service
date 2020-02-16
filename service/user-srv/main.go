@@ -6,8 +6,8 @@ import (
 
 	"github.com/micro/cli/v2"
 	micro "github.com/micro/go-micro/v2"
-	"github.com/mlboy/micro-service/common/micro/wrap"
-	"github.com/mlboy/micro-service/service/user-srv/handler"
+	"github.com/rushteam/micro-service/common/micro/wrap"
+	"github.com/rushteam/micro-service/service/user-srv/handler"
 	"upper.io/db.v3/mysql"
 )
 
