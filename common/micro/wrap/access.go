@@ -5,7 +5,7 @@ import (
 	"time"
 
 	log "github.com/micro/go-log"
-	"github.com/micro/go-micro/v2/server"
+	server "github.com/micro/go-micro/v2/server"
 )
 
 //Access is a middleware to log request/responses.
