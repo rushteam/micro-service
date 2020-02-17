@@ -4,7 +4,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/micro/cli/v2"
+	cli "github.com/micro/cli/v2"
 	micro "github.com/micro/go-micro/v2"
 	"github.com/rushteam/micro-service/common/micro/wrap"
 	"github.com/rushteam/micro-service/service/user-srv/handler"
@@ -26,10 +26,10 @@ func main() {
 		micro.Version(SERVICE_VERSION),
 		micro.Flags(
 			cli.StringFlag{
-				Name:   "config_path",
-				EnvVar: "CONFIG_PATH",
-				Usage:  "The config PATH e.g ../application.yml",
-				Value:  "./application.yml",
+				Name:    "config_path",
+				EnvVars: "CONFIG_PATH",
+				Usage:   "The config PATH e.g ../application.yml",
+				Value:   "./application.yml",
 			},
 		),
 		micro.WrapHandler(wrap.Access),
