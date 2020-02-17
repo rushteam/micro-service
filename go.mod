@@ -22,10 +22,8 @@ require (
 	github.com/hashicorp/vault v1.3.2 // indirect
 	github.com/hashicorp/yamux v0.0.0-20190923154419-df201c70410d // indirect
 	github.com/jinzhu/gorm v1.9.12
-	github.com/micro/cli v0.0.0-20181223203424-1b0c9793c300
 	github.com/micro/cli/v2 v2.1.2-0.20200203150404-894195727d9c
 	github.com/micro/go-log v0.1.0
-	github.com/micro/go-micro v0.23.0
 	github.com/micro/go-micro/v2 v2.1.0
 	github.com/micro/go-web v1.0.0
 	github.com/mlboy/godb v0.0.0-20200214053743-345d01700a52
