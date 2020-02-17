@@ -26,6 +26,7 @@ require (
 	github.com/micro/go-log v0.1.0
 	github.com/micro/go-micro/v2 v2.1.0
 	github.com/micro/go-web v1.0.0
+	github.com/micro/protoc-gen-micro/v2 v2.0.0 // indirect
 	github.com/mlboy/godb v0.0.0-20200214053743-345d01700a52
 	github.com/pborman/uuid v1.2.0
 	github.com/shirou/gopsutil v2.20.1+incompatible // indirect
