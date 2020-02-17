@@ -4,7 +4,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/micro/cli/v2"
+	cli "github.com/micro/cli/v2"
 	"github.com/micro/go-micro/v2"
 	"github.com/rushteam/micro-service/common/micro/wrap"
 	"github.com/rushteam/micro-service/service/user-srv/handler"
