@@ -18,6 +18,7 @@ require (
 	github.com/micro/micro/v2 v2.0.0 // indirect
 	github.com/mlboy/godb v0.0.0-20200214053743-345d01700a52
 	github.com/pborman/uuid v1.2.0
+	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22 // indirect
 	gopkg.in/yaml.v2 v2.2.8
 	upper.io/db.v3 v3.6.3+incompatible
 )

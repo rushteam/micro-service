@@ -11,11 +11,9 @@ import (
 	"github.com/go-log/log"
 
 	"github.com/micro/go-micro/v2/client"
-	"github.com/micro/go-micro/v2/cmd"
+	"github.com/micro/go-micro/v2/config/cmd"
 	"github.com/micro/go-micro/v2/errors"
 	"github.com/micro/go-micro/v2/metadata"
-
-	// "github.com/micro/micro/internal/helper"
 
 	"github.com/gin-gonic/gin"
 )
