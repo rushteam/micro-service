@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/micro/cli"
+	"github.com/micro/cli/v2"
 	micro "github.com/micro/go-web/v2"
 	"github.com/rushteam/micro-service/service/pay-api/handler"
 )

@@ -8,12 +8,11 @@ import (
 	"github.com/rushteam/micro-service/common/micro/wrap"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/micro/cli"
+	"github.com/micro/cli/v2"
 	micro "github.com/micro/go-micro/v2"
 	"github.com/mlboy/godb/orm"
 	"github.com/rushteam/micro-service/common/pb/order_srv"
 	"github.com/rushteam/micro-service/service/order-srv/handler"
-	// "github.com/micro/go-micro/registry"
 )
 
 var (

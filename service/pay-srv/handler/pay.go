@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/micro/go-micro/metadata"
+	"github.com/micro/go-micro/v2/metadata"
 
 	"github.com/go-sql-driver/mysql"
 

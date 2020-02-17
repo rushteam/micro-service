@@ -4,12 +4,10 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/micro/cli"
+	"github.com/gin-gonic/gin"
+	"github.com/micro/cli/v2"
 	"github.com/micro/go-log"
 	micro "github.com/micro/go-web"
-
-	// micro "github.com/micro/go-micro"
-	"github.com/gin-gonic/gin"
 )
 
 var (

@@ -10,10 +10,10 @@ import (
 
 	"github.com/go-log/log"
 
-	"github.com/micro/go-micro/client"
-	"github.com/micro/go-micro/cmd"
-	"github.com/micro/go-micro/errors"
-	"github.com/micro/go-micro/metadata"
+	"github.com/micro/go-micro/v2/client"
+	"github.com/micro/go-micro/v2/cmd"
+	"github.com/micro/go-micro/v2/errors"
+	"github.com/micro/go-micro/v2/metadata"
 
 	// "github.com/micro/micro/internal/helper"
 
