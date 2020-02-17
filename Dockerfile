@@ -1,4 +1,4 @@
-FROM golang:1.11-alpine as builder
+FROM golang:1.13-alpine as builder
 
  #WORKDIR /go/src/micro-service
 
@@ -24,7 +24,7 @@ RUN go build -v -o /go/bin/micro-pay-notify-web -mod=vendor -gcflags '-N -l' ./s
 #     -gcflags '-N -l' \
 #     ./service/user-srv/main.go
 
-FROM golang:1.11-alpine
+FROM golang:1.13-alpine
 
 COPY --from=builder /go/bin/ /usr/bin/
 

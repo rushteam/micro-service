@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/micro/cli/v2"
-	micro "github.com/micro/go-web/v2"
+	micro "github.com/micro/go-micro/v2/web"
 	"github.com/rushteam/micro-service/service/pay-api/handler"
 )
 
