@@ -7,12 +7,12 @@ import (
 
 	"github.com/rushteam/micro-service/common/utils/snowflake"
 
-	"github.com/micro/go-micro/errors"
+	"github.com/micro/go-micro/v2/errors"
 	// "github.com/rushteam/micro-service/common/utils"
+	"github.com/micro/go-log"
+	micro "github.com/micro/go-micro/v2"
 	"github.com/rushteam/micro-service/common/pb/order_srv"
 	"github.com/rushteam/micro-service/service/order-srv/model"
-	"github.com/micro/go-log"
-	micro "github.com/micro/go-micro"
 	// "go.uber.org/zap"
 )
 
@@ -63,7 +63,7 @@ func calOrder(req *order_srv.CreateReq) error {
 	// skuList := &model.SkuModelList{}
 	// orm.Model(skuList).Where(skuIds).Find()
 	skuModel := model.SkuModel{}
-	skuList,err := skuModel.GetSkuListBySkuIds(skuIds)
+	skuList, err := skuModel.GetSkuListBySkuIds(skuIds)
 
 	// Model := model.Db()
 	// skuList, err := Model.GetSkuListBySkuIds(skuIds)
@@ -188,7 +188,7 @@ func (s *OrderService) Order(ctx context.Context, req *order_srv.QueryReq, rsp *
 	}
 	// orderNo
 	order := model.OrderModel{}
-	err :=order.GetOrderByOrderNo(orderNo)
+	err := order.GetOrderByOrderNo(orderNo)
 	// Model := model.Db()
 	// order, err := Model.GetOrderByOrderNo(orderNo)
 	if err != nil {

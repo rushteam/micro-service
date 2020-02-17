@@ -15,8 +15,8 @@ import (
 	// "github.com/rushteam/micro-service/common/db"
 	"github.com/rushteam/micro-service/common/micro/wrap"
 
-	"github.com/micro/cli"
-	micro "github.com/micro/go-micro"
+	"github.com/micro/cli/v2"
+	micro "github.com/micro/go-micro/v2"
 	"github.com/rushteam/micro-service/service/pay-srv/handler"
 	// "github.com/micro/go-micro/registry"
 )

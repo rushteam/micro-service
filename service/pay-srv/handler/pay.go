@@ -19,7 +19,7 @@ import (
 
 	"github.com/mlboy/godb/orm"
 
-	"github.com/micro/go-micro/errors"
+	"github.com/micro/go-micro/v2/errors"
 	"github.com/rushteam/micro-service/common/sdk/wxsdk/wxpay"
 	"github.com/rushteam/micro-service/common/utils"
 	"github.com/rushteam/micro-service/service/pay-srv/config"
@@ -27,7 +27,7 @@ import (
 	"github.com/rushteam/micro-service/service/pay-srv/queue"
 
 	log "github.com/micro/go-log"
-	micro "github.com/micro/go-micro"
+	micro "github.com/micro/go-micro/v2"
 	"github.com/rushteam/micro-service/common/pb/pay_srv"
 	// "go.uber.org/zap"
 )

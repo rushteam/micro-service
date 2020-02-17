@@ -7,7 +7,7 @@ import (
 
 	"github.com/micro/go-log"
 	micro "github.com/micro/go-micro/v2"
-	"github.com/micro/go-micro/errors"
+	"github.com/micro/go-micro/v2/errors"
 	"github.com/rushteam/micro-service/common/pb/usersrv"
 	"github.com/rushteam/micro-service/common/sdk/wxsdk"
 	"github.com/rushteam/micro-service/common/utils"
