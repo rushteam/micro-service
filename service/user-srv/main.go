@@ -36,7 +36,7 @@ func main() {
 	)
 	// var ctx = context.TODO()
 	service.Init(
-		micro.Action(func(c *cli.Context) {
+		micro.Action(func(c *cli.Context) error {
 			settings, _ := mysql.ParseURL("root:dream@tcp(127.0.0.1:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s")
 			sess, err := mysql.Open(settings)
 			if err != nil {
@@ -45,6 +45,7 @@ func main() {
 			// defer sess.Close()
 			handler.RegisterUserServiceHandler(service, sess)
 			// user_srv.RegisterUserServiceHandler(service.Server(), handler.NewUserService())
+			return nil
 		}),
 	)
 	if err := service.Run(); err != nil {
