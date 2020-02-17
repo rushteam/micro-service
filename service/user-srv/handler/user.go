@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/micro/go-log"
-	micro "github.com/micro/go-micro"
+	micro "github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/errors"
 	"github.com/rushteam/micro-service/common/pb/usersrv"
 	"github.com/rushteam/micro-service/common/sdk/wxsdk"
