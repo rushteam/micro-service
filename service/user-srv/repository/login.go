@@ -48,9 +48,7 @@ func (repo LoginRepository) FindByPassword(platform, openid, password string) (*
 	}, db.Cond{
 		"openid": openid,
 	})
-	// fmt.Println(res)
 	err := res.One(&login)
-	// fmt.Println(login, err)
 	if login.AccessToken != password {
 		return nil, ErrPassword
 	}

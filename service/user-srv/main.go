@@ -13,7 +13,7 @@ import (
 
 var (
 	//SERVICE_NAME service's name
-	SERVICE_NAME = "go.micro.srv.user_srv"
+	SERVICE_NAME = "go.micro.srv.usersrv"
 	//SERVICE_VERSION service's version
 	SERVICE_VERSION = "latest"
 )
@@ -44,7 +44,6 @@ func main() {
 			}
 			// defer sess.Close()
 			handler.RegisterUserServiceHandler(service, sess)
-			// user_srv.RegisterUserServiceHandler(service.Server(), handler.NewUserService())
 			return nil
 		}),
 	)
