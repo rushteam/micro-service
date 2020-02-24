@@ -4,9 +4,10 @@ package usersrv;
 
 service UserService {
     //手机号密码登陆
-    rpc Signup(SignupReq) returns (AuthRsp) {}
+    rpc Singin(SigninReq) returns (AuthRsp) {}
+    rpc Singup(SignupReq) returns (AuthRsp) {}
     //短信验证码登陆
-    rpc SignupByCaptcha(SignupByCaptchaReq) returns (AuthRsp) {}
+    rpc SigninByCaptcha(SigninByCaptchaReq) returns (AuthRsp) {}
     //第三方授权登陆
     // rpc LoginByOAuth(LoginByOAuthReq) returns (AuthRsp) {}
     // //创建用户
@@ -28,12 +29,21 @@ message AuthRsp{
 }
 
 //手机号+密码登陆
-message SignupReq {
+message SigninReq {
     string loginname = 1;
     string password = 2;
 }
+
+//SignupReq 普通注册
+message SignupReq {
+    string nickname = 1;
+    string firstname = 2;
+    string lastname = 3;
+    string gender = 4;
+    string avatar = 5;
+}
 //手机号+验证码登陆
-message SignupByCaptchaReq {
+message SigninByCaptchaReq {
     string loginname = 1; //登陆名
     string captcha = 2; //验证码
     int64 captcha_id = 3;//验证码编号
