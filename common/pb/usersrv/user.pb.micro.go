@@ -35,7 +35,7 @@ var _ server.Option
 
 type UserService interface {
 	//手机号密码登陆
-	LoginByPassword(ctx context.Context, in *LoginByPasswordReq, opts ...client.CallOption) (*AuthRsp, error)
+	Signup(ctx context.Context, in *SignupReq, opts ...client.CallOption) (*AuthRsp, error)
 	//短信验证码登陆
 	LoginByCaptcha(ctx context.Context, in *LoginByCaptchaReq, opts ...client.CallOption) (*AuthRsp, error)
 	//第三方授权登陆
@@ -64,8 +64,8 @@ func NewUserService(name string, c client.Client) UserService {
 	}
 }
 
-func (c *userService) LoginByPassword(ctx context.Context, in *LoginByPasswordReq, opts ...client.CallOption) (*AuthRsp, error) {
-	req := c.c.NewRequest(c.name, "UserService.LoginByPassword", in)
+func (c *userService) Signup(ctx context.Context, in *SignupReq, opts ...client.CallOption) (*AuthRsp, error) {
+	req := c.c.NewRequest(c.name, "UserService.Signup", in)
 	out := new(AuthRsp)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
@@ -148,7 +148,7 @@ func (c *userService) Update(ctx context.Context, in *UpdateReq, opts ...client.
 
 type UserServiceHandler interface {
 	//手机号密码登陆
-	LoginByPassword(context.Context, *LoginByPasswordReq, *AuthRsp) error
+	Signup(context.Context, *SignupReq, *AuthRsp) error
 	//短信验证码登陆
 	LoginByCaptcha(context.Context, *LoginByCaptchaReq, *AuthRsp) error
 	//第三方授权登陆
@@ -167,7 +167,7 @@ type UserServiceHandler interface {
 
 func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts ...server.HandlerOption) error {
 	type userService interface {
-		LoginByPassword(ctx context.Context, in *LoginByPasswordReq, out *AuthRsp) error
+		Signup(ctx context.Context, in *SignupReq, out *AuthRsp) error
 		LoginByCaptcha(ctx context.Context, in *LoginByCaptchaReq, out *AuthRsp) error
 		LoginByOAuth(ctx context.Context, in *LoginByOAuthReq, out *AuthRsp) error
 		Register(ctx context.Context, in *RegisterReq, out *AuthRsp) error
@@ -187,8 +187,8 @@ type userServiceHandler struct {
 	UserServiceHandler
 }
 
-func (h *userServiceHandler) LoginByPassword(ctx context.Context, in *LoginByPasswordReq, out *AuthRsp) error {
-	return h.UserServiceHandler.LoginByPassword(ctx, in, out)
+func (h *userServiceHandler) Signup(ctx context.Context, in *SignupReq, out *AuthRsp) error {
+	return h.UserServiceHandler.Signup(ctx, in, out)
 }
 
 func (h *userServiceHandler) LoginByCaptcha(ctx context.Context, in *LoginByCaptchaReq, out *AuthRsp) error {
