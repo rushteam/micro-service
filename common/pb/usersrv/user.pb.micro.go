@@ -37,19 +37,7 @@ type UserService interface {
 	//手机号密码登陆
 	Signup(ctx context.Context, in *SignupReq, opts ...client.CallOption) (*AuthRsp, error)
 	//短信验证码登陆
-	LoginByCaptcha(ctx context.Context, in *LoginByCaptchaReq, opts ...client.CallOption) (*AuthRsp, error)
-	//第三方授权登陆
-	LoginByOAuth(ctx context.Context, in *LoginByOAuthReq, opts ...client.CallOption) (*AuthRsp, error)
-	//创建用户
-	Register(ctx context.Context, in *RegisterReq, opts ...client.CallOption) (*AuthRsp, error)
-	//绑定用户
-	Bind(ctx context.Context, in *BindReq, opts ...client.CallOption) (*UserRsp, error)
-	// //解绑用户
-	Unbind(ctx context.Context, in *UnbindReq, opts ...client.CallOption) (*UserRsp, error)
-	//用户信息
-	User(ctx context.Context, in *UserReq, opts ...client.CallOption) (*UserRsp, error)
-	//更新用户信息
-	Update(ctx context.Context, in *UpdateReq, opts ...client.CallOption) (*UserRsp, error)
+	SignupByCaptcha(ctx context.Context, in *SignupByCaptchaReq, opts ...client.CallOption) (*AuthRsp, error)
 }
 
 type userService struct {
@@ -74,69 +62,9 @@ func (c *userService) Signup(ctx context.Context, in *SignupReq, opts ...client.
 	return out, nil
 }
 
-func (c *userService) LoginByCaptcha(ctx context.Context, in *LoginByCaptchaReq, opts ...client.CallOption) (*AuthRsp, error) {
-	req := c.c.NewRequest(c.name, "UserService.LoginByCaptcha", in)
+func (c *userService) SignupByCaptcha(ctx context.Context, in *SignupByCaptchaReq, opts ...client.CallOption) (*AuthRsp, error) {
+	req := c.c.NewRequest(c.name, "UserService.SignupByCaptcha", in)
 	out := new(AuthRsp)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userService) LoginByOAuth(ctx context.Context, in *LoginByOAuthReq, opts ...client.CallOption) (*AuthRsp, error) {
-	req := c.c.NewRequest(c.name, "UserService.LoginByOAuth", in)
-	out := new(AuthRsp)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userService) Register(ctx context.Context, in *RegisterReq, opts ...client.CallOption) (*AuthRsp, error) {
-	req := c.c.NewRequest(c.name, "UserService.Register", in)
-	out := new(AuthRsp)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userService) Bind(ctx context.Context, in *BindReq, opts ...client.CallOption) (*UserRsp, error) {
-	req := c.c.NewRequest(c.name, "UserService.Bind", in)
-	out := new(UserRsp)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userService) Unbind(ctx context.Context, in *UnbindReq, opts ...client.CallOption) (*UserRsp, error) {
-	req := c.c.NewRequest(c.name, "UserService.Unbind", in)
-	out := new(UserRsp)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userService) User(ctx context.Context, in *UserReq, opts ...client.CallOption) (*UserRsp, error) {
-	req := c.c.NewRequest(c.name, "UserService.User", in)
-	out := new(UserRsp)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userService) Update(ctx context.Context, in *UpdateReq, opts ...client.CallOption) (*UserRsp, error) {
-	req := c.c.NewRequest(c.name, "UserService.Update", in)
-	out := new(UserRsp)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -150,31 +78,13 @@ type UserServiceHandler interface {
 	//手机号密码登陆
 	Signup(context.Context, *SignupReq, *AuthRsp) error
 	//短信验证码登陆
-	LoginByCaptcha(context.Context, *LoginByCaptchaReq, *AuthRsp) error
-	//第三方授权登陆
-	LoginByOAuth(context.Context, *LoginByOAuthReq, *AuthRsp) error
-	//创建用户
-	Register(context.Context, *RegisterReq, *AuthRsp) error
-	//绑定用户
-	Bind(context.Context, *BindReq, *UserRsp) error
-	// //解绑用户
-	Unbind(context.Context, *UnbindReq, *UserRsp) error
-	//用户信息
-	User(context.Context, *UserReq, *UserRsp) error
-	//更新用户信息
-	Update(context.Context, *UpdateReq, *UserRsp) error
+	SignupByCaptcha(context.Context, *SignupByCaptchaReq, *AuthRsp) error
 }
 
 func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts ...server.HandlerOption) error {
 	type userService interface {
 		Signup(ctx context.Context, in *SignupReq, out *AuthRsp) error
-		LoginByCaptcha(ctx context.Context, in *LoginByCaptchaReq, out *AuthRsp) error
-		LoginByOAuth(ctx context.Context, in *LoginByOAuthReq, out *AuthRsp) error
-		Register(ctx context.Context, in *RegisterReq, out *AuthRsp) error
-		Bind(ctx context.Context, in *BindReq, out *UserRsp) error
-		Unbind(ctx context.Context, in *UnbindReq, out *UserRsp) error
-		User(ctx context.Context, in *UserReq, out *UserRsp) error
-		Update(ctx context.Context, in *UpdateReq, out *UserRsp) error
+		SignupByCaptcha(ctx context.Context, in *SignupByCaptchaReq, out *AuthRsp) error
 	}
 	type UserService struct {
 		userService
@@ -191,30 +101,6 @@ func (h *userServiceHandler) Signup(ctx context.Context, in *SignupReq, out *Aut
 	return h.UserServiceHandler.Signup(ctx, in, out)
 }
 
-func (h *userServiceHandler) LoginByCaptcha(ctx context.Context, in *LoginByCaptchaReq, out *AuthRsp) error {
-	return h.UserServiceHandler.LoginByCaptcha(ctx, in, out)
-}
-
-func (h *userServiceHandler) LoginByOAuth(ctx context.Context, in *LoginByOAuthReq, out *AuthRsp) error {
-	return h.UserServiceHandler.LoginByOAuth(ctx, in, out)
-}
-
-func (h *userServiceHandler) Register(ctx context.Context, in *RegisterReq, out *AuthRsp) error {
-	return h.UserServiceHandler.Register(ctx, in, out)
-}
-
-func (h *userServiceHandler) Bind(ctx context.Context, in *BindReq, out *UserRsp) error {
-	return h.UserServiceHandler.Bind(ctx, in, out)
-}
-
-func (h *userServiceHandler) Unbind(ctx context.Context, in *UnbindReq, out *UserRsp) error {
-	return h.UserServiceHandler.Unbind(ctx, in, out)
-}
-
-func (h *userServiceHandler) User(ctx context.Context, in *UserReq, out *UserRsp) error {
-	return h.UserServiceHandler.User(ctx, in, out)
-}
-
-func (h *userServiceHandler) Update(ctx context.Context, in *UpdateReq, out *UserRsp) error {
-	return h.UserServiceHandler.Update(ctx, in, out)
+func (h *userServiceHandler) SignupByCaptcha(ctx context.Context, in *SignupByCaptchaReq, out *AuthRsp) error {
+	return h.UserServiceHandler.SignupByCaptcha(ctx, in, out)
 }

@@ -66,9 +66,9 @@ func (s *UserService) Signup(ctx context.Context, req *usersrv.SignupReq, rsp *u
 	return nil
 }
 
-//LoginByCaptcha 手机号+验证码
-func (s *UserService) LoginByCaptcha(ctx context.Context, req *usersrv.LoginByCaptchaReq, rsp *usersrv.AuthRsp) error {
-	log.Log("[access] UserService.LoginByCaptcha")
+//SignupByCaptcha 手机号+验证码
+func (s *UserService) SignupByCaptcha(ctx context.Context, req *usersrv.SignupByCaptchaReq, rsp *usersrv.AuthRsp) error {
+	log.Log("[access] UserService.SignupByCaptcha")
 	return nil
 }
 

@@ -6,19 +6,25 @@ service UserService {
     //手机号密码登陆
     rpc Signup(SignupReq) returns (AuthRsp) {}
     //短信验证码登陆
-    rpc LoginByCaptcha(LoginByCaptchaReq) returns (AuthRsp) {}
+    rpc SignupByCaptcha(SignupByCaptchaReq) returns (AuthRsp) {}
     //第三方授权登陆
-    rpc LoginByOAuth(LoginByOAuthReq) returns (AuthRsp) {}
-    //创建用户
-    rpc Register(RegisterReq) returns (AuthRsp) {}
-    //绑定用户
-    rpc Bind(BindReq) returns (UserRsp) {}
-    // //解绑用户
-    rpc Unbind(UnbindReq) returns (UserRsp) {}
-    //用户信息
-    rpc User(UserReq) returns (UserRsp) {}
-    //更新用户信息
-    rpc Update(UpdateReq) returns (UserRsp) {}
+    // rpc LoginByOAuth(LoginByOAuthReq) returns (AuthRsp) {}
+    // //创建用户
+    // rpc Register(RegisterReq) returns (AuthRsp) {}
+    // //绑定用户
+    // rpc Bind(BindReq) returns (UserRsp) {}
+    // // //解绑用户
+    // rpc Unbind(UnbindReq) returns (UserRsp) {}
+    // //用户信息
+    // rpc User(UserReq) returns (UserRsp) {}
+    // //更新用户信息
+    // rpc Update(UpdateReq) returns (UserRsp) {}
+}
+//权限信息
+message AuthRsp{
+    string token = 1;
+    int64 uid = 2;
+    map<string,string> fileds = 3;
 }
 
 //手机号+密码登陆
@@ -27,74 +33,69 @@ message SignupReq {
     string password = 2;
 }
 //手机号+验证码登陆
-message LoginByCaptchaReq {
+message SignupByCaptchaReq {
     string loginname = 1; //登陆名
     string captcha = 2; //验证码
     int64 captcha_id = 3;//验证码编号
 }
-//第三方授权登陆
-message LoginByOAuthReq {
-    string platform = 1; //qq/wx/weibo
-    string appid = 2; //openid
-    string sercet = 3;
-    string code = 4;
-    map<string,string> fileds = 5;
-    // string openid = 2; //openid
-    // string access_token = 3;//access_token
-}
-//权限信息
-message AuthRsp{
-    string token = 1;
-    int64 uid = 2;
-    map<string,string> fileds = 3;
-}
-//通过token请求用户信息
-message UserReq{
-    string token = 1;
-}
-//user
-message UerRsp {
-    int64 uid = 1;
-    map<string,string> fileds = 2;
-    // string updated_at = 3;
-    // string created_at = 4;
-    // string nickname = 2;
-    // string firstname = 3;
-    // string lastname = 4;
-    // string gender = 5;
-    // string avatar = 6;
-}
-message UserRsp {
-    int64 uid = 1;
-    map<string,string> fileds = 2;
-    // string nickname = 2;
-    // string firstname = 3;
-    // string lastname = 4;
-    // string gender = 5;
-    // string avatar = 6;
-    // string updated_at = 7;
-    // string created_at = 8;
-}
+// //第三方授权登陆
+// message LoginByOAuthReq {
+//     string platform = 1; //qq/wx/weibo
+//     string appid = 2; //openid
+//     string sercet = 3;
+//     string code = 4;
+//     map<string,string> fileds = 5;
+//     // string openid = 2; //openid
+//     // string access_token = 3;//access_token
+// }
 
-//register user
-message RegisterReq {
-    // string nickname = 1;
-    // string firstname = 2;
-    // string lastname = 3;
-    // string gender = 4;
-    // string avatar = 5;
-    // LoginByPasswordReq loginByPassword =6;
-    // repeated LoginReq login_list = 1;
-}
-message BindReq {
-    string token = 1;
-    // LoginReq login = 2;
-}
-message UnbindReq {
-    string token = 1;
-    string type = 2;
-}
-message UpdateReq {
-    string token = 1;
-    map<string,string> fileds = 2;
-}
+// //通过token请求用户信息
+// message UserReq{
+//     string token = 1;
+// }
+// //user
+// message UerRsp {
+//     int64 uid = 1;
+//     map<string,string> fileds = 2;
+//     // string updated_at = 3;
+//     // string created_at = 4;
+//     // string nickname = 2;
+//     // string firstname = 3;
+//     // string lastname = 4;
+//     // string gender = 5;
+//     // string avatar = 6;
+// }
+// message UserRsp {
+//     int64 uid = 1;
+//     map<string,string> fileds = 2;
+//     // string nickname = 2;
+//     // string firstname = 3;
+//     // string lastname = 4;
+//     // string gender = 5;
+//     // string avatar = 6;
+//     // string updated_at = 7;
+//     // string created_at = 8;
+// }
+
+// //register user
+// message RegisterReq {
+//     // string nickname = 1;
+//     // string firstname = 2;
+//     // string lastname = 3;
+//     // string gender = 4;
+//     // string avatar = 5;
+//     // LoginByPasswordReq loginByPassword =6;
+//     // repeated LoginReq login_list = 1;
+// }
+// message BindReq {
+//     string token = 1;
+//     // LoginReq login = 2;
+// }
+// message UnbindReq {
+//     string token = 1;
+//     string type = 2;
+// }
+// message UpdateReq {
+//     string token = 1;
+//     map<string,string> fileds = 2;
+// }
