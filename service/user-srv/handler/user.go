@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strconv"
 
-	micro "github.com/micro/go-micro/v2"
+	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/errors"
 	"github.com/micro/go-micro/v2/util/log"
 	"github.com/rushteam/micro-service/common/pb/usersrv"
