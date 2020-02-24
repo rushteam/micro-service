@@ -5,14 +5,14 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/micro/go-log"
-	micro "github.com/micro/go-micro"
-	"github.com/micro/go-micro/errors"
-	"github.com/mlboy/micro-service/common/pb/usersrv"
-	"github.com/mlboy/micro-service/common/sdk/wxsdk"
-	"github.com/mlboy/micro-service/common/utils"
-	"github.com/mlboy/micro-service/service/user-srv/repository"
-	"github.com/mlboy/micro-service/service/user-srv/session"
+	micro "github.com/micro/go-micro/v2"
+	"github.com/micro/go-micro/v2/errors"
+	"github.com/micro/go-micro/v2/util/log"
+	"github.com/rushteam/micro-service/common/pb/usersrv"
+	"github.com/rushteam/micro-service/common/sdk/wxsdk"
+	"github.com/rushteam/micro-service/common/utils"
+	"github.com/rushteam/micro-service/service/user-srv/repository"
+	"github.com/rushteam/micro-service/service/user-srv/session"
 
 	"upper.io/db.v3/lib/sqlbuilder"
 	// "go.uber.org/zap"
@@ -29,6 +29,7 @@ type UserService struct {
 	// logger *zap.Logger
 }
 
+//验证手机号
 func validatePhone(phone string) bool {
 	var regular = "^(((13[0-9])|(14[579])|(15([0-3]|[5-9]))|(16[6])|(17[0135678])|(18[0-9])|(19[89]))\\d{8})$"
 	reg := regexp.MustCompile(regular)
@@ -38,21 +39,7 @@ func validatePhone(phone string) bool {
 //LoginByPassword 手机号+密码
 func (s *UserService) LoginByPassword(ctx context.Context, req *usersrv.LoginByPasswordReq, rsp *usersrv.AuthRsp) error {
 	log.Log("[access] UserService.LoginByPassword")
-	//phone or email or username
-	// if req.GetPlatform() == "" {
-	// 	return errors.BadRequest("UserService.Login", "plattform参数不能为空")
-	// }
-	// // if _, ok := repository.LocalLoginList[req.GetPlatform()]; ok {
-	// // } //账号登陆 本地登陆账号
-	// //登录名+密码登陆
-	// if req.GetPlatform() == "phone" {
-	// 		} else {
-	// 	return errors.BadRequest("UserService.Login", "未知登陆方式")
-	// }
 	//密码位数不在登陆时候验证，而是在设置时候验证
-	// if len(req.Password) < 6 { //密码不得小于6位
-	// 	return errors.BadRequest("UserService.Login", "密码不得小于6位")
-	// }
 	if !validatePhone(req.GetLoginname()) {
 		return errors.BadRequest("UserService.LoginByPassword", "手机号格式错误")
 	}
@@ -115,7 +102,6 @@ func (s *UserService) LoginByOAuth(ctx context.Context, req *usersrv.LoginByOAut
 			return errors.BadRequest("UserService.LoginByOAuth", "当前用户未注册")
 		}
 		//自动注册逻辑
-
 		rsp.Uid = login.UID
 		// gen token
 		jwt, err := GenToken(login.UID)
@@ -134,11 +120,15 @@ func (s *UserService) LoginByOAuth(ctx context.Context, req *usersrv.LoginByOAut
 		//userinfo
 		ui, err := wxsdk.GetUserinfo(ctx, at.AccessToken, at.OpenID)
 		loginRepo := &repository.LoginRepository{Db: s.db}
-		// login, err := loginRepo.FindByPassword("wx_open_id", ui.OpenID, at.AccessToken)
-		login, err := loginRepo.FindByPassword("wx_union_id", ui.OpenID, at.AccessToken)
+		var login *repository.LoginModel
+		if ui.Unionid == "" {
+			login, err = loginRepo.FindByPassword("wx_open_id", ui.OpenID, at.AccessToken)
+		} else {
+			login, err = loginRepo.FindByPassword("wx_union_id", ui.Unionid, at.AccessToken)
+		}
 		if err != nil {
 			log.Logf(err.Error())
-			return errors.BadRequest("UserService.LoginByOAuth", "用户名或密码错误")
+			return errors.BadRequest("UserService.LoginByOAuth", "当前用户未注册")
 		}
 		rsp.Uid = login.UID
 		// gen token
@@ -148,7 +138,6 @@ func (s *UserService) LoginByOAuth(ctx context.Context, req *usersrv.LoginByOAut
 		}
 		rsp.Token = jwt
 	}
-
 	return nil
 }
 
@@ -315,5 +304,3 @@ func GenToken(uid int64) (string, error) {
 	jwt, err := session.Encode(token, "")
 	return jwt, err
 }
-
-//find -r "*.php" -exec 'cat' {} \; > /tmp/code.txt

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	micro "github.com/micro/go-micro"
+	"github.com/micro/go-micro/v2"
 )
 
 var (

@@ -9,26 +9,26 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/micro/go-micro/metadata"
+	"github.com/micro/go-micro/v2/metadata"
 
 	"github.com/go-sql-driver/mysql"
 
-	"github.com/mlboy/micro-service/common/utils/snowflake"
+	"github.com/rushteam/micro-service/common/utils/snowflake"
 
 	"github.com/pborman/uuid"
 
 	"github.com/mlboy/godb/orm"
 
-	"github.com/micro/go-micro/errors"
-	"github.com/mlboy/micro-service/common/sdk/wxsdk/wxpay"
-	"github.com/mlboy/micro-service/common/utils"
-	"github.com/mlboy/micro-service/service/pay-srv/config"
-	"github.com/mlboy/micro-service/service/pay-srv/model"
-	"github.com/mlboy/micro-service/service/pay-srv/queue"
+	"github.com/micro/go-micro/v2/errors"
+	"github.com/rushteam/micro-service/common/sdk/wxsdk/wxpay"
+	"github.com/rushteam/micro-service/common/utils"
+	"github.com/rushteam/micro-service/service/pay-srv/config"
+	"github.com/rushteam/micro-service/service/pay-srv/model"
+	"github.com/rushteam/micro-service/service/pay-srv/queue"
 
 	log "github.com/micro/go-log"
-	micro "github.com/micro/go-micro"
-	"github.com/mlboy/micro-service/common/pb/pay_srv"
+	micro "github.com/micro/go-micro/v2"
+	"github.com/rushteam/micro-service/common/pb/pay_srv"
 	// "go.uber.org/zap"
 )
 

@@ -5,9 +5,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/micro/cli"
-	micro "github.com/micro/go-web"
-	"github.com/mlboy/micro-service/service/pay-api/handler"
+	"github.com/micro/cli/v2"
+	micro "github.com/micro/go-micro/v2/web"
+	"github.com/rushteam/micro-service/service/pay-api/handler"
 )
 
 var (

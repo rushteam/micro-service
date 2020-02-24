@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"github.com/micro/go-micro/client"
-	"github.com/mlboy/micro-service/common/pb/pay_srv"
+	"github.com/micro/go-micro/v2/client"
+	"github.com/rushteam/micro-service/common/pb/pay_srv"
 
 	"github.com/gin-gonic/gin"
 )

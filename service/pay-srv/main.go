@@ -8,17 +8,16 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 
 	"github.com/mlboy/godb/orm"
-	"github.com/mlboy/micro-service/common/pb/pay_srv"
-	"github.com/mlboy/micro-service/service/pay-srv/config"
-	"github.com/mlboy/micro-service/service/pay-srv/queue"
+	"github.com/rushteam/micro-service/common/pb/pay_srv"
+	"github.com/rushteam/micro-service/service/pay-srv/config"
+	"github.com/rushteam/micro-service/service/pay-srv/queue"
 
-	// "github.com/mlboy/micro-service/common/db"
-	"github.com/mlboy/micro-service/common/micro/wrap"
+	// "github.com/rushteam/micro-service/common/db"
+	"github.com/rushteam/micro-service/common/micro/wrap"
 
-	"github.com/micro/cli"
-	micro "github.com/micro/go-micro"
-	"github.com/mlboy/micro-service/service/pay-srv/handler"
-	// "github.com/micro/go-micro/registry"
+	"github.com/micro/cli/v2"
+	"github.com/micro/go-micro/v2"
+	"github.com/rushteam/micro-service/service/pay-srv/handler"
 )
 
 var (

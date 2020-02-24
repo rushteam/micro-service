@@ -7,12 +7,12 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/mlboy/micro-service/service/pay-srv/model"
+	"github.com/rushteam/micro-service/service/pay-srv/model"
 
 	log "github.com/micro/go-log"
 	"github.com/mlboy/godb/orm"
 
-	"github.com/mlboy/micro-service/common/pb/pay_srv"
+	"github.com/rushteam/micro-service/common/pb/pay_srv"
 	// "github.com/go-log/log"
 )
 

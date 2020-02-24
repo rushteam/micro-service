@@ -4,16 +4,16 @@ import (
 	"log"
 	"time"
 
-	"github.com/micro/cli"
-	micro "github.com/micro/go-micro"
-	"github.com/mlboy/micro-service/common/micro/wrap"
-	"github.com/mlboy/micro-service/service/user-srv/handler"
+	"github.com/micro/cli/v2"
+	"github.com/micro/go-micro/v2"
+	"github.com/rushteam/micro-service/common/micro/wrap"
+	"github.com/rushteam/micro-service/service/user-srv/handler"
 	"upper.io/db.v3/mysql"
 )
 
 var (
 	//SERVICE_NAME service's name
-	SERVICE_NAME = "go.micro.srv.user_srv"
+	SERVICE_NAME = "go.micro.srv.usersrv"
 	//SERVICE_VERSION service's version
 	SERVICE_VERSION = "latest"
 )
@@ -25,24 +25,18 @@ func main() {
 		micro.Name(SERVICE_NAME),
 		micro.Version(SERVICE_VERSION),
 		micro.Flags(
-			cli.StringFlag{
-				Name:   "config_path",
-				EnvVar: "CONFIG_PATH",
-				Usage:  "The config PATH e.g ../application.yml",
-				Value:  "./application.yml",
+			&cli.StringFlag{
+				Name:    "config_path",
+				EnvVars: []string{"CONFIG_PATH"},
+				Usage:   "The config PATH e.g ../application.yml",
+				Value:   "./application.yml",
 			},
 		),
 		micro.WrapHandler(wrap.Access),
 	)
 	// var ctx = context.TODO()
 	service.Init(
-		micro.Action(func(c *cli.Context) {
-			//upper.io/db.v3/
-			// configFile := c.String("config_path")
-			// conf := config.NewConfig()
-			// config.LoadFile(configFile)
-			// fmt.Printf("%+v", conf.Get("db_configs"))
-			// settings, _ := mysql.ParseURL("root:hoo2019!@tcp(mariadb:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s")
+		micro.Action(func(c *cli.Context) error {
 			settings, _ := mysql.ParseURL("root:dream@tcp(127.0.0.1:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s")
 			sess, err := mysql.Open(settings)
 			if err != nil {
@@ -50,7 +44,7 @@ func main() {
 			}
 			// defer sess.Close()
 			handler.RegisterUserServiceHandler(service, sess)
-			// user_srv.RegisterUserServiceHandler(service.Server(), handler.NewUserService())
+			return nil
 		}),
 	)
 	if err := service.Run(); err != nil {
