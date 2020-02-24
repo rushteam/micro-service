@@ -41,7 +41,7 @@ type UserService interface {
 	//第三方授权登陆
 	LoginByOAuth(ctx context.Context, in *LoginByOAuthReq, opts ...client.CallOption) (*AuthRsp, error)
 	//创建用户
-	// rpc Register(RegisterReq) returns (AuthRsp) {}
+	Register(ctx context.Context, in *RegisterReq, opts ...client.CallOption) (*AuthRsp, error)
 	//绑定用户
 	Bind(ctx context.Context, in *BindReq, opts ...client.CallOption) (*UserRsp, error)
 	// //解绑用户
@@ -86,6 +86,16 @@ func (c *userService) LoginByCaptcha(ctx context.Context, in *LoginByCaptchaReq,
 
 func (c *userService) LoginByOAuth(ctx context.Context, in *LoginByOAuthReq, opts ...client.CallOption) (*AuthRsp, error) {
 	req := c.c.NewRequest(c.name, "UserService.LoginByOAuth", in)
+	out := new(AuthRsp)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) Register(ctx context.Context, in *RegisterReq, opts ...client.CallOption) (*AuthRsp, error) {
+	req := c.c.NewRequest(c.name, "UserService.Register", in)
 	out := new(AuthRsp)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
@@ -144,7 +154,7 @@ type UserServiceHandler interface {
 	//第三方授权登陆
 	LoginByOAuth(context.Context, *LoginByOAuthReq, *AuthRsp) error
 	//创建用户
-	// rpc Register(RegisterReq) returns (AuthRsp) {}
+	Register(context.Context, *RegisterReq, *AuthRsp) error
 	//绑定用户
 	Bind(context.Context, *BindReq, *UserRsp) error
 	// //解绑用户
@@ -160,6 +170,7 @@ func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts .
 		LoginByPassword(ctx context.Context, in *LoginByPasswordReq, out *AuthRsp) error
 		LoginByCaptcha(ctx context.Context, in *LoginByCaptchaReq, out *AuthRsp) error
 		LoginByOAuth(ctx context.Context, in *LoginByOAuthReq, out *AuthRsp) error
+		Register(ctx context.Context, in *RegisterReq, out *AuthRsp) error
 		Bind(ctx context.Context, in *BindReq, out *UserRsp) error
 		Unbind(ctx context.Context, in *UnbindReq, out *UserRsp) error
 		User(ctx context.Context, in *UserReq, out *UserRsp) error
@@ -186,6 +197,10 @@ func (h *userServiceHandler) LoginByCaptcha(ctx context.Context, in *LoginByCapt
 
 func (h *userServiceHandler) LoginByOAuth(ctx context.Context, in *LoginByOAuthReq, out *AuthRsp) error {
 	return h.UserServiceHandler.LoginByOAuth(ctx, in, out)
+}
+
+func (h *userServiceHandler) Register(ctx context.Context, in *RegisterReq, out *AuthRsp) error {
+	return h.UserServiceHandler.Register(ctx, in, out)
 }
 
 func (h *userServiceHandler) Bind(ctx context.Context, in *BindReq, out *UserRsp) error {

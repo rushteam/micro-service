@@ -44,6 +44,7 @@ func GenToken(uid int64) (string, error) {
 	return jwt, err
 }
 
+
 //LoginByPassword 手机号+密码
 func (s *UserService) LoginByPassword(ctx context.Context, req *usersrv.LoginByPasswordReq, rsp *usersrv.AuthRsp) error {
 	log.Log("[access] UserService.LoginByPassword")
