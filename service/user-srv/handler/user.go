@@ -44,24 +44,23 @@ func GenToken(uid int64) (string, error) {
 	return jwt, err
 }
 
-
-//LoginByPassword 手机号+密码
-func (s *UserService) LoginByPassword(ctx context.Context, req *usersrv.LoginByPasswordReq, rsp *usersrv.AuthRsp) error {
-	log.Log("[access] UserService.LoginByPassword")
+//Signup 手机号+密码
+func (s *UserService) Signup(ctx context.Context, req *usersrv.SignupReq, rsp *usersrv.AuthRsp) error {
+	log.Log("[access] UserService.Signup")
 	//密码位数不在登陆时候验证，而是在设置时候验证
 	if !validatePhone(req.GetLoginname()) {
-		return errors.BadRequest("UserService.LoginByPassword", "手机号格式错误")
+		return errors.BadRequest("UserService.Signup", "手机号格式错误")
 	}
 	loginRepo := &repository.LoginRepository{Db: s.db}
 	login, err := loginRepo.FindByPassword("phone", req.GetLoginname(), req.GetPassword())
 	if err != nil {
-		return errors.BadRequest("UserService.LoginByPassword", "账号或密码错误")
+		return errors.BadRequest("UserService.Signup", "账号或密码错误")
 	}
 	rsp.Uid = login.UID
 	// gen token
 	jwt, err := GenToken(login.UID)
 	if err != nil {
-		return errors.BadRequest("UserService.LoginByPassword", "登录异常,请请联系客服")
+		return errors.BadRequest("UserService.Signup", "登录异常,请请联系客服")
 	}
 	rsp.Token = jwt
 	return nil
@@ -76,61 +75,60 @@ func (s *UserService) LoginByCaptcha(ctx context.Context, req *usersrv.LoginByCa
 //Register ..
 func (s *UserService) Register(ctx context.Context, req *usersrv.RegisterData, rsp *usersrv.UserData) error {
 	log.Log("[access] UserService.Create")
-	req.
-// 	if len(req.LoginList) < 1 {
-// 		return errors.BadRequest("UserService.Create", "注册失败,账号信息不全")
-// 	}
-// 	if req.GetUser() == nil {
-// 		return errors.BadRequest("UserService.Create", "注册失败,用户信息不全")
-// 	}
-// 	//注册新用户逻辑
-// 	if req.User.GetNickname() == "" {
-// 		return errors.BadRequest("UserService.Create", "注册失败,昵称不能为空")
-// 	}
-// 	if req.User.GetNickname() == "" {
-// 		return errors.BadRequest("UserService.Create", "注册失败,昵称不能为空")
-// 	}
-// 	var userData repository.UserModel
-// 	tx, err := s.db.NewTx(ctx)
-// 	userRepo := &repository.UserRepository{Db: tx}
-// 	userData.Nickname = req.User.Nickname
-// 	// user. = req.User.Firstname
-// 	// user.Lastname = req.User.Lastname
-// 	userData.Gender = req.User.Gender
-// 	userData.Avatar = req.User.Avatar
-// 	user, err := userRepo.Create(userData)
-// 	if err != nil {
-// 		tx.Rollback()
-// 		log.Log("创建新用户失败" + err.Error())
-// 		return errors.BadRequest("UserService.Create", "注册失败,请重试")
-// 	}
-// 	loginRepo := &repository.LoginRepository{Db: tx}
-// 	for _, login := range req.LoginList {
-// 		if login.GetPlatform() == "" {
-// 			return errors.BadRequest("UserService.Create", "注册失败,登陆类别不能为空")
-// 		}
-// 		if login.GetLogin() == "" {
-// 			return errors.BadRequest("UserService.Create", "注册失败,账号ID不能为空")
-// 		}
-// 		if login.GetPassword() == "" {
-// 			return errors.BadRequest("UserService.Create", "注册失败,账号凭证不能为空")
-// 		}
-// 		loginData := repository.LoginModel{}
-// 		loginData.UID = user.UID
-// 		loginData.Platform = login.Platform
-// 		loginData.Openid = login.Login
-// 		loginData.AccessToken = login.Password
-// 		loginData.AccessExpire = time.Now().Add(time.Hour * 24 * 7)
-// 		_, err = loginRepo.Create(loginData)
-// 		if err != nil {
-// 			log.Log("login数据创建失败" + err.Error())
-// 			tx.Rollback()
-// 			return errors.BadRequest("UserService.Create", "注册失败,账号已经存在")
-// 		}
-// 	}
-// 	tx.Commit()
-// 	return nil
-// }
+	// 	if len(req.LoginList) < 1 {
+	// 		return errors.BadRequest("UserService.Create", "注册失败,账号信息不全")
+	// 	}
+	// 	if req.GetUser() == nil {
+	// 		return errors.BadRequest("UserService.Create", "注册失败,用户信息不全")
+	// 	}
+	// 	//注册新用户逻辑
+	// 	if req.User.GetNickname() == "" {
+	// 		return errors.BadRequest("UserService.Create", "注册失败,昵称不能为空")
+	// 	}
+	// 	if req.User.GetNickname() == "" {
+	// 		return errors.BadRequest("UserService.Create", "注册失败,昵称不能为空")
+	// 	}
+	// 	var userData repository.UserModel
+	// 	tx, err := s.db.NewTx(ctx)
+	// 	userRepo := &repository.UserRepository{Db: tx}
+	// 	userData.Nickname = req.User.Nickname
+	// 	// user. = req.User.Firstname
+	// 	// user.Lastname = req.User.Lastname
+	// 	userData.Gender = req.User.Gender
+	// 	userData.Avatar = req.User.Avatar
+	// 	user, err := userRepo.Create(userData)
+	// 	if err != nil {
+	// 		tx.Rollback()
+	// 		log.Log("创建新用户失败" + err.Error())
+	// 		return errors.BadRequest("UserService.Create", "注册失败,请重试")
+	// 	}
+	// 	loginRepo := &repository.LoginRepository{Db: tx}
+	// 	for _, login := range req.LoginList {
+	// 		if login.GetPlatform() == "" {
+	// 			return errors.BadRequest("UserService.Create", "注册失败,登陆类别不能为空")
+	// 		}
+	// 		if login.GetLogin() == "" {
+	// 			return errors.BadRequest("UserService.Create", "注册失败,账号ID不能为空")
+	// 		}
+	// 		if login.GetPassword() == "" {
+	// 			return errors.BadRequest("UserService.Create", "注册失败,账号凭证不能为空")
+	// 		}
+	// 		loginData := repository.LoginModel{}
+	// 		loginData.UID = user.UID
+	// 		loginData.Platform = login.Platform
+	// 		loginData.Openid = login.Login
+	// 		loginData.AccessToken = login.Password
+	// 		loginData.AccessExpire = time.Now().Add(time.Hour * 24 * 7)
+	// 		_, err = loginRepo.Create(loginData)
+	// 		if err != nil {
+	// 			log.Log("login数据创建失败" + err.Error())
+	// 			tx.Rollback()
+	// 			return errors.BadRequest("UserService.Create", "注册失败,账号已经存在")
+	// 		}
+	// 	}
+	// 	tx.Commit()
+	// 	return nil
+}
 
 //User 获取用户信息
 func (s *UserService) User(ctx context.Context, req *usersrv.UserReq, rsp *usersrv.UserRsp) error {

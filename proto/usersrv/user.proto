@@ -4,7 +4,7 @@ package usersrv;
 
 service UserService {
     //手机号密码登陆
-    rpc LoginByPassword(LoginByPasswordReq) returns (AuthRsp) {}
+    rpc Signup(SignupReq) returns (AuthRsp) {}
     //短信验证码登陆
     rpc LoginByCaptcha(LoginByCaptchaReq) returns (AuthRsp) {}
     //第三方授权登陆
@@ -22,7 +22,7 @@ service UserService {
 }
 
 //手机号+密码登陆
-message LoginByPasswordReq {
+message SignupReq {
     string loginname = 1;
     string password = 2;
 }
@@ -83,7 +83,7 @@ message RegisterReq {
     // string lastname = 3;
     // string gender = 4;
     // string avatar = 5;
-    LoginByPasswordReq loginByPassword =6;
+    // LoginByPasswordReq loginByPassword =6;
     // repeated LoginReq login_list = 1;
 }
 message BindReq {
