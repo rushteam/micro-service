@@ -37,11 +37,11 @@ message SigninReq {
 
 //SignupReq 普通注册
 message SignupReq {
-    string nickname = 1;
-    string firstname = 2;
-    string lastname = 3;
-    string gender = 4;
-    string avatar = 5;
+    string phone = 1;//手机号
+    string email = 2;//邮箱
+    string nickname = 3;//昵称
+    int32 gender = 4;//性别
+    string avatar = 5;//头像
 }
 //手机号+验证码登陆
 message SigninByPhoneCaptchaReq {
