@@ -25,8 +25,9 @@ service UserService {
 //权限信息
 message AuthRsp{
     string token = 1;
-    int64 uid = 2;
-    map<string,string> fileds = 3;
+    string ref =2;
+    int64 uid = 3;
+    // map<string,string> fileds = 3;
 }
 
 //手机号+密码登陆
