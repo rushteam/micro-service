@@ -37,11 +37,19 @@ message SigninReq {
 
 //SignupReq 普通注册
 message SignupReq {
-    string phone = 1;//手机号
-    string email = 2;//邮箱
-    string nickname = 3;//昵称
-    int32 gender = 4;//性别
-    string avatar = 5;//头像
+    UserInfo userinfo = 1;
+}
+//用户信息 profile
+message UserInfo {
+    int64 uid = 1;
+    string nickname = 2;//昵称
+    int32 gender = 3;//性别
+    string avatar = 4;//头像
+    int32 status = 5;//状态
+    string updated_at = 6;
+    string created_at = 7;
+    string phone = 8;//手机号
+    string email = 9;//邮箱
 }
 //手机号+验证码登陆
 message SigninByPhoneCaptchaReq {
@@ -63,18 +71,6 @@ message SigninByPhoneCaptchaReq {
 // //通过token请求用户信息
 // message UserReq{
 //     string token = 1;
-// }
-// //user
-// message UerRsp {
-//     int64 uid = 1;
-//     map<string,string> fileds = 2;
-//     // string updated_at = 3;
-//     // string created_at = 4;
-//     // string nickname = 2;
-//     // string firstname = 3;
-//     // string lastname = 4;
-//     // string gender = 5;
-//     // string avatar = 6;
 // }
 // message UserRsp {
 //     int64 uid = 1;

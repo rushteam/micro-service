@@ -42,8 +42,8 @@ func GenToken(uid int64) (string, error) {
 	return jwt, err
 }
 
-//Signup 手机号+密码
-func (s *UserService) Signup(ctx context.Context, req *usersrv.SignupReq, rsp *usersrv.AuthRsp) error {
+//Signin 登陆(手机号+密码)
+func (s *UserService) Signin(ctx context.Context, req *usersrv.SigninReq, rsp *usersrv.AuthRsp) error {
 	log.Log("[access] UserService.Signup")
 	//密码位数不在登陆时候验证，而是在设置时候验证
 	if !validatePhone(req.GetLoginname()) {
@@ -64,9 +64,16 @@ func (s *UserService) Signup(ctx context.Context, req *usersrv.SignupReq, rsp *u
 	return nil
 }
 
-//SignupByCaptcha 手机号+验证码
-func (s *UserService) SignupByCaptcha(ctx context.Context, req *usersrv.SignupByCaptchaReq, rsp *usersrv.AuthRsp) error {
-	log.Log("[access] UserService.SignupByCaptcha")
+//SigninByPhoneCaptcha 手机号+验证码
+func (s *UserService) SigninByPhoneCaptcha(ctx context.Context, req *usersrv.SigninByPhoneCaptchaReq, rsp *usersrv.AuthRsp) error {
+	log.Log("[access] UserService.SigninByPhoneCaptcha")
+	return nil
+}
+
+//Signup 注册用户
+func (s *UserService) Signup(ctx context.Context, req *usersrv.SignupReq, rsp *usersrv.UserInfo) error {
+	log.Log("[access] UserService.Signup")
+	req.GetUserinfo()
 	return nil
 }
 
