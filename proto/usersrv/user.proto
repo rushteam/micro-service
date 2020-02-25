@@ -6,7 +6,7 @@ service UserService {
     //用户登录(账号+密码)
     rpc Signin(SigninReq) returns (AuthRsp) {}
     //用户注册
-    rpc Signup(SignupReq) returns (AuthRsp) {}
+    rpc Signup(SignupReq) returns (UserInfo) {}
     //用户登录(手机号+验证码)
     rpc SigninByPhoneCaptcha(SigninByPhoneCaptchaReq) returns (AuthRsp) {}
     //第三方授权登陆
@@ -27,6 +27,8 @@ message AuthRsp{
     string token = 1;
     string ref =2;
     int64 uid = 3;
+    // UserInfo user =4;
+    
     // map<string,string> fileds = 3;
 }
 
