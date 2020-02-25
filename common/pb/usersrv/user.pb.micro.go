@@ -35,9 +35,9 @@ var _ server.Option
 
 type UserService interface {
 	//用户登录(账号+密码)
-	Singin(ctx context.Context, in *SigninReq, opts ...client.CallOption) (*AuthRsp, error)
+	Signin(ctx context.Context, in *SigninReq, opts ...client.CallOption) (*AuthRsp, error)
 	//用户注册
-	Singup(ctx context.Context, in *SignupReq, opts ...client.CallOption) (*AuthRsp, error)
+	Signup(ctx context.Context, in *SignupReq, opts ...client.CallOption) (*AuthRsp, error)
 	//用户登录(手机号+验证码)
 	SigninByPhoneCaptcha(ctx context.Context, in *SigninByPhoneCaptchaReq, opts ...client.CallOption) (*AuthRsp, error)
 }
@@ -54,8 +54,8 @@ func NewUserService(name string, c client.Client) UserService {
 	}
 }
 
-func (c *userService) Singin(ctx context.Context, in *SigninReq, opts ...client.CallOption) (*AuthRsp, error) {
-	req := c.c.NewRequest(c.name, "UserService.Singin", in)
+func (c *userService) Signin(ctx context.Context, in *SigninReq, opts ...client.CallOption) (*AuthRsp, error) {
+	req := c.c.NewRequest(c.name, "UserService.Signin", in)
 	out := new(AuthRsp)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
@@ -64,8 +64,8 @@ func (c *userService) Singin(ctx context.Context, in *SigninReq, opts ...client.
 	return out, nil
 }
 
-func (c *userService) Singup(ctx context.Context, in *SignupReq, opts ...client.CallOption) (*AuthRsp, error) {
-	req := c.c.NewRequest(c.name, "UserService.Singup", in)
+func (c *userService) Signup(ctx context.Context, in *SignupReq, opts ...client.CallOption) (*AuthRsp, error) {
+	req := c.c.NewRequest(c.name, "UserService.Signup", in)
 	out := new(AuthRsp)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
@@ -88,17 +88,17 @@ func (c *userService) SigninByPhoneCaptcha(ctx context.Context, in *SigninByPhon
 
 type UserServiceHandler interface {
 	//用户登录(账号+密码)
-	Singin(context.Context, *SigninReq, *AuthRsp) error
+	Signin(context.Context, *SigninReq, *AuthRsp) error
 	//用户注册
-	Singup(context.Context, *SignupReq, *AuthRsp) error
+	Signup(context.Context, *SignupReq, *AuthRsp) error
 	//用户登录(手机号+验证码)
 	SigninByPhoneCaptcha(context.Context, *SigninByPhoneCaptchaReq, *AuthRsp) error
 }
 
 func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts ...server.HandlerOption) error {
 	type userService interface {
-		Singin(ctx context.Context, in *SigninReq, out *AuthRsp) error
-		Singup(ctx context.Context, in *SignupReq, out *AuthRsp) error
+		Signin(ctx context.Context, in *SigninReq, out *AuthRsp) error
+		Signup(ctx context.Context, in *SignupReq, out *AuthRsp) error
 		SigninByPhoneCaptcha(ctx context.Context, in *SigninByPhoneCaptchaReq, out *AuthRsp) error
 	}
 	type UserService struct {
@@ -112,12 +112,12 @@ type userServiceHandler struct {
 	UserServiceHandler
 }
 
-func (h *userServiceHandler) Singin(ctx context.Context, in *SigninReq, out *AuthRsp) error {
-	return h.UserServiceHandler.Singin(ctx, in, out)
+func (h *userServiceHandler) Signin(ctx context.Context, in *SigninReq, out *AuthRsp) error {
+	return h.UserServiceHandler.Signin(ctx, in, out)
 }
 
-func (h *userServiceHandler) Singup(ctx context.Context, in *SignupReq, out *AuthRsp) error {
-	return h.UserServiceHandler.Singup(ctx, in, out)
+func (h *userServiceHandler) Signup(ctx context.Context, in *SignupReq, out *AuthRsp) error {
+	return h.UserServiceHandler.Signup(ctx, in, out)
 }
 
 func (h *userServiceHandler) SigninByPhoneCaptcha(ctx context.Context, in *SigninByPhoneCaptchaReq, out *AuthRsp) error {

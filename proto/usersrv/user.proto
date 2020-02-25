@@ -4,9 +4,9 @@ package usersrv;
 
 service UserService {
     //用户登录(账号+密码)
-    rpc Singin(SigninReq) returns (AuthRsp) {}
+    rpc Signin(SigninReq) returns (AuthRsp) {}
     //用户注册
-    rpc Singup(SignupReq) returns (AuthRsp) {}
+    rpc Signup(SignupReq) returns (AuthRsp) {}
     //用户登录(手机号+验证码)
     rpc SigninByPhoneCaptcha(SigninByPhoneCaptchaReq) returns (AuthRsp) {}
     //第三方授权登陆
