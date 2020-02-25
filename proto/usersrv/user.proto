@@ -3,11 +3,12 @@ syntax = "proto3";
 package usersrv;
 
 service UserService {
-    //手机号密码登陆
+    //用户登录(账号+密码)
     rpc Singin(SigninReq) returns (AuthRsp) {}
+    //用户注册
     rpc Singup(SignupReq) returns (AuthRsp) {}
-    //短信验证码登陆
-    rpc SigninByCaptcha(SigninByCaptchaReq) returns (AuthRsp) {}
+    //用户登录(手机号+验证码)
+    rpc SigninByPhoneCaptcha(SigninByPhoneCaptchaReq) returns (AuthRsp) {}
     //第三方授权登陆
     // rpc LoginByOAuth(LoginByOAuthReq) returns (AuthRsp) {}
     // //创建用户
@@ -43,8 +44,8 @@ message SignupReq {
     string avatar = 5;
 }
 //手机号+验证码登陆
-message SigninByCaptchaReq {
-    string loginname = 1; //登陆名
+message SigninByPhoneCaptchaReq {
+    string phone = 1; //手机号
     string captcha = 2; //验证码
     int64 captcha_id = 3;//验证码编号
 }
