@@ -3,14 +3,14 @@ syntax = "proto3";
 package usersrv;
 
 service UserService {
+    //用户注册
+    rpc Signup(SignupReq) returns (UserInfo) {}
     //用户登录(账号+密码)
     rpc Signin(SigninReq) returns (AuthRsp) {}
-    //用户注册
-    rpc Signup(SignupReq) returns (AuthRsp) {}
     //用户登录(手机号+验证码)
     rpc SigninByPhoneCaptcha(SigninByPhoneCaptchaReq) returns (AuthRsp) {}
-    //第三方授权登陆
-    // rpc LoginByOAuth(LoginByOAuthReq) returns (AuthRsp) {}
+    //第三方授权登陆 OAuth
+    rpc Authorize(AuthorizeReq) returns (AuthRsp) {}
     // //创建用户
     // rpc Register(RegisterReq) returns (AuthRsp) {}
     // //绑定用户
@@ -58,16 +58,17 @@ message SigninByPhoneCaptchaReq {
     string captcha = 2; //验证码
     int64 captcha_id = 3;//验证码编号
 }
-// //第三方授权登陆
-// message LoginByOAuthReq {
-//     string platform = 1; //qq/wx/weibo
-//     string appid = 2; //openid
-//     string sercet = 3;
-//     string code = 4;
-//     map<string,string> fileds = 5;
-//     // string openid = 2; //openid
-//     // string access_token = 3;//access_token
-// }
+//第三方授权登陆
+message AuthorizeReq {
+    string platform = 1; //@1:wx @2:qq  @3:weibo
+    string appid = 2; //appid
+    string sercet = 3;
+    string code = 4;
+    string ref =5; //ref url 302跳转地址
+    map<string,string> fileds = 6;
+    // string openid = 2; //openid
+    // string access_token = 3;//access_token
+}
 
 // //通过token请求用户信息
 // message UserReq{
