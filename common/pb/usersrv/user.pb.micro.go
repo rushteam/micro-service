@@ -37,7 +37,7 @@ type UserService interface {
 	//用户登录(账号+密码)
 	Signin(ctx context.Context, in *SigninReq, opts ...client.CallOption) (*AuthRsp, error)
 	//用户注册
-	Signup(ctx context.Context, in *SignupReq, opts ...client.CallOption) (*AuthRsp, error)
+	Signup(ctx context.Context, in *SignupReq, opts ...client.CallOption) (*UserInfo, error)
 	//用户登录(手机号+验证码)
 	SigninByPhoneCaptcha(ctx context.Context, in *SigninByPhoneCaptchaReq, opts ...client.CallOption) (*AuthRsp, error)
 }
@@ -64,9 +64,9 @@ func (c *userService) Signin(ctx context.Context, in *SigninReq, opts ...client.
 	return out, nil
 }
 
-func (c *userService) Signup(ctx context.Context, in *SignupReq, opts ...client.CallOption) (*AuthRsp, error) {
+func (c *userService) Signup(ctx context.Context, in *SignupReq, opts ...client.CallOption) (*UserInfo, error) {
 	req := c.c.NewRequest(c.name, "UserService.Signup", in)
-	out := new(AuthRsp)
+	out := new(UserInfo)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -90,7 +90,7 @@ type UserServiceHandler interface {
 	//用户登录(账号+密码)
 	Signin(context.Context, *SigninReq, *AuthRsp) error
 	//用户注册
-	Signup(context.Context, *SignupReq, *AuthRsp) error
+	Signup(context.Context, *SignupReq, *UserInfo) error
 	//用户登录(手机号+验证码)
 	SigninByPhoneCaptcha(context.Context, *SigninByPhoneCaptchaReq, *AuthRsp) error
 }
@@ -98,7 +98,7 @@ type UserServiceHandler interface {
 func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts ...server.HandlerOption) error {
 	type userService interface {
 		Signin(ctx context.Context, in *SigninReq, out *AuthRsp) error
-		Signup(ctx context.Context, in *SignupReq, out *AuthRsp) error
+		Signup(ctx context.Context, in *SignupReq, out *UserInfo) error
 		SigninByPhoneCaptcha(ctx context.Context, in *SigninByPhoneCaptchaReq, out *AuthRsp) error
 	}
 	type UserService struct {
@@ -116,7 +116,7 @@ func (h *userServiceHandler) Signin(ctx context.Context, in *SigninReq, out *Aut
 	return h.UserServiceHandler.Signin(ctx, in, out)
 }
 
-func (h *userServiceHandler) Signup(ctx context.Context, in *SignupReq, out *AuthRsp) error {
+func (h *userServiceHandler) Signup(ctx context.Context, in *SignupReq, out *UserInfo) error {
 	return h.UserServiceHandler.Signup(ctx, in, out)
 }
 

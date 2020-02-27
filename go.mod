@@ -11,13 +11,12 @@ require (
 	github.com/golang/protobuf v1.3.3
 	github.com/google/go-querystring v1.0.0
 	github.com/jinzhu/gorm v1.9.12
-	github.com/micro/cli v0.2.0 // indirect
-	github.com/micro/cli/v2 v2.1.2-0.20200203150404-894195727d9c
+	github.com/micro/cli/v2 v2.1.2
 	github.com/micro/go-log v0.1.0
-	github.com/micro/go-micro/v2 v2.1.0
+	github.com/micro/go-micro/v2 v2.1.2
 	github.com/mlboy/godb v0.0.0-20200214053743-345d01700a52
 	github.com/pborman/uuid v1.2.0
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22 // indirect
 	gopkg.in/yaml.v2 v2.2.8
-	upper.io/db.v3 v3.6.3+incompatible
+	upper.io/db.v3 v3.6.4+incompatible
 )

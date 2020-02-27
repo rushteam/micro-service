@@ -27,6 +27,8 @@ message AuthRsp{
     string token = 1;
     string ref =2;
     int64 uid = 3;
+    // UserInfo user =4;
+    
     // map<string,string> fileds = 3;
 }
 
