@@ -13,7 +13,8 @@ require (
 	github.com/jinzhu/gorm v1.9.12
 	github.com/micro/cli/v2 v2.1.2
 	github.com/micro/go-log v0.1.0
-	github.com/micro/go-micro/v2 v2.1.2
+	github.com/micro/go-micro/v2 v2.1.3-0.20200226134232-d651b16acd44
+	github.com/micro/micro/v2 v2.1.2-0.20200226134738-1bb52c359a30 // indirect
 	github.com/mlboy/godb v0.0.0-20200214053743-345d01700a52
 	github.com/pborman/uuid v1.2.0
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22 // indirect
