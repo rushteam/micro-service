@@ -41,7 +41,7 @@ type UserService interface {
 	//用户登录(手机号+验证码)
 	SigninByPhoneCaptcha(ctx context.Context, in *SigninByPhoneCaptchaReq, opts ...client.CallOption) (*AuthRsp, error)
 	//第三方授权登陆 OAuth
-	Authorize(ctx context.Context, in *AuthorizeReq, opts ...client.CallOption) (*AuthRsp, error)
+	OAuthAuthorize(ctx context.Context, in *OAuthAuthorizeReq, opts ...client.CallOption) (*OAuthAuthorizeRsp, error)
 }
 
 type userService struct {
@@ -86,9 +86,9 @@ func (c *userService) SigninByPhoneCaptcha(ctx context.Context, in *SigninByPhon
 	return out, nil
 }
 
-func (c *userService) Authorize(ctx context.Context, in *AuthorizeReq, opts ...client.CallOption) (*AuthRsp, error) {
-	req := c.c.NewRequest(c.name, "UserService.Authorize", in)
-	out := new(AuthRsp)
+func (c *userService) OAuthAuthorize(ctx context.Context, in *OAuthAuthorizeReq, opts ...client.CallOption) (*OAuthAuthorizeRsp, error) {
+	req := c.c.NewRequest(c.name, "UserService.OAuthAuthorize", in)
+	out := new(OAuthAuthorizeRsp)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -106,7 +106,7 @@ type UserServiceHandler interface {
 	//用户登录(手机号+验证码)
 	SigninByPhoneCaptcha(context.Context, *SigninByPhoneCaptchaReq, *AuthRsp) error
 	//第三方授权登陆 OAuth
-	Authorize(context.Context, *AuthorizeReq, *AuthRsp) error
+	OAuthAuthorize(context.Context, *OAuthAuthorizeReq, *OAuthAuthorizeRsp) error
 }
 
 func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts ...server.HandlerOption) error {
@@ -114,7 +114,7 @@ func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts .
 		Signup(ctx context.Context, in *SignupReq, out *UserInfo) error
 		Signin(ctx context.Context, in *SigninReq, out *AuthRsp) error
 		SigninByPhoneCaptcha(ctx context.Context, in *SigninByPhoneCaptchaReq, out *AuthRsp) error
-		Authorize(ctx context.Context, in *AuthorizeReq, out *AuthRsp) error
+		OAuthAuthorize(ctx context.Context, in *OAuthAuthorizeReq, out *OAuthAuthorizeRsp) error
 	}
 	type UserService struct {
 		userService
@@ -139,6 +139,6 @@ func (h *userServiceHandler) SigninByPhoneCaptcha(ctx context.Context, in *Signi
 	return h.UserServiceHandler.SigninByPhoneCaptcha(ctx, in, out)
 }
 
-func (h *userServiceHandler) Authorize(ctx context.Context, in *AuthorizeReq, out *AuthRsp) error {
-	return h.UserServiceHandler.Authorize(ctx, in, out)
+func (h *userServiceHandler) OAuthAuthorize(ctx context.Context, in *OAuthAuthorizeReq, out *OAuthAuthorizeRsp) error {
+	return h.UserServiceHandler.OAuthAuthorize(ctx, in, out)
 }
