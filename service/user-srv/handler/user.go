@@ -76,6 +76,10 @@ func (s *UserService) Signup(ctx context.Context, req *usersrv.SignupReq, rsp *u
 	req.GetUserinfo()
 	return nil
 }
+func (s *UserService) Authorize(ctx context.Context, req *usersrv.AuthorizeReq, rsp *usersrv.AuthorizeReq) error {
+	log.Log("[access] UserService.Signup")
+	return nil
+}
 
 //Register ..
 // func (s *UserService) Register(ctx context.Context, req *usersrv.RegisterData, rsp *usersrv.UserData) error {
