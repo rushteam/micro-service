@@ -76,8 +76,8 @@ func (s *UserService) Signup(ctx context.Context, req *usersrv.SignupReq, rsp *u
 	req.GetUserinfo()
 	return nil
 }
-func (s *UserService) Authorize(ctx context.Context, req *usersrv.AuthorizeReq, rsp *usersrv.AuthorizeReq) error {
-	log.Log("[access] UserService.Signup")
+func (s *UserService) OAuthAuthorize(ctx context.Context, req *usersrv.OAuthAuthorizeReq, rsp *usersrv.OAuthAuthorizeRsp) error {
+	log.Log("[access] UserService.OAuthAuthorize")
 	return nil
 }
 
