@@ -44,21 +44,21 @@ func GenToken(uid int64) (string, error) {
 
 //Signin 登陆(手机号+密码)
 func (s *UserService) Signin(ctx context.Context, req *usersrv.SigninReq, rsp *usersrv.AuthRsp) error {
-	log.Log("[access] UserService.Signup")
+	log.Tracef("[access] UserService.Signin")
 	//密码位数不在登陆时候验证，而是在设置时候验证
 	if !validatePhone(req.GetLoginname()) {
-		return errors.BadRequest("UserService.Signup", "手机号格式错误")
+		return errors.BadRequest("UserService.Signin", "手机号格式错误")
 	}
 	loginRepo := &repository.LoginRepository{Db: s.db}
 	login, err := loginRepo.FindByPassword("phone", req.GetLoginname(), req.GetPassword())
 	if err != nil {
-		return errors.BadRequest("UserService.Signup", "账号或密码错误")
+		return errors.BadRequest("UserService.Signin", "账号或密码错误")
 	}
 	rsp.Uid = login.UID
 	// gen token
 	jwt, err := GenToken(login.UID)
 	if err != nil {
-		return errors.BadRequest("UserService.Signup", "登录异常,请请联系客服")
+		return errors.BadRequest("UserService.Signin", "登录异常,请请联系客服")
 	}
 	rsp.Token = jwt
 	return nil
@@ -66,18 +66,18 @@ func (s *UserService) Signin(ctx context.Context, req *usersrv.SigninReq, rsp *u
 
 //SigninByPhoneCaptcha 手机号+验证码
 func (s *UserService) SigninByPhoneCaptcha(ctx context.Context, req *usersrv.SigninByPhoneCaptchaReq, rsp *usersrv.AuthRsp) error {
-	log.Log("[access] UserService.SigninByPhoneCaptcha")
+	log.Tracef("[access] UserService.SigninByPhoneCaptcha")
 	return nil
 }
 
 //Signup 注册用户
 func (s *UserService) Signup(ctx context.Context, req *usersrv.SignupReq, rsp *usersrv.UserInfo) error {
-	log.Log("[access] UserService.Signup")
+	log.Tracef("[access] UserService.Signup")
 	req.GetUserinfo()
 	return nil
 }
 func (s *UserService) OAuthAuthorize(ctx context.Context, req *usersrv.OAuthAuthorizeReq, rsp *usersrv.OAuthAuthorizeRsp) error {
-	log.Log("[access] UserService.OAuthAuthorize")
+	log.Tracef("[access] UserService.OAuthAuthorize")
 	return nil
 }
 

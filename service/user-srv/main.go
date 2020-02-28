@@ -40,7 +40,7 @@ func main() {
 			settings, _ := mysql.ParseURL("root:dream@tcp(127.0.0.1:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s")
 			sess, err := mysql.Open(settings)
 			if err != nil {
-				log.Fatalf("db.Open(): %q\n", err)
+				// log.Fatalf("db.Open(): %q\n", err)
 			}
 			// defer sess.Close()
 			handler.RegisterUserServiceHandler(service, sess)
