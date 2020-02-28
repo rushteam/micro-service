@@ -61,7 +61,7 @@ message SigninByPhoneCaptchaReq {
     int64 captcha_id = 3;//验证码编号
 }
 //第三方授权登陆
-message AuthorizeReq {
+message OAuthAuthorizeReq {
     string platform = 1; //@1:wx @2:qq  @3:weibo
     string appid = 2; //appid
     string sercet = 3;
@@ -70,6 +70,15 @@ message AuthorizeReq {
     map<string,string> fileds = 6;
     // string openid = 2; //openid
     // string access_token = 3;//access_token
+}
+message OAuthAuthorizeRsp {
+    string url = 1;
+}
+
+//第三方授权登陆
+message OAuthCallbackReq {
+    string code = 1;
+    string state = 2;
 }
 
 // //通过token请求用户信息
