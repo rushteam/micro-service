@@ -10,7 +10,7 @@ service UserService {
     //用户登录(手机号+验证码)
     rpc SigninByPhoneCaptcha(SigninByPhoneCaptchaReq) returns (AuthRsp) {}
     //第三方授权登陆 OAuth
-    rpc Authorize(AuthorizeReq) returns (AuthRsp) {}
+    rpc OAuthAuthorize(OAuthAuthorizeReq) returns (OAuthAuthorizeRsp) {}
     // //创建用户
     // rpc Register(RegisterReq) returns (AuthRsp) {}
     // //绑定用户
