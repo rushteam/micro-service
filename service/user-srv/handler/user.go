@@ -91,17 +91,11 @@ func (s *UserService) Signup(ctx context.Context, req *usersrv.SignupReq, rsp *u
 	rsp.Gender = user.Gender
 	rsp.Avatar = user.Avatar
 	rsp.Status = user.Status
-	
+	rsp.CreatedAt = user.CreatedAt.Format("2006-01-02 15:04:05")
+	rsp.UpdatedAt = user.UpdatedAt.Format("2006-01-02 15:04:05")
 
-	int64 uid = 1;
-    string nickname = 2;//昵称
-    string gender = 3;//性别
-    string avatar = 4;//头像
-    int32 status = 5;//状态
-    string updated_at = 6;
-    string created_at = 7;
-    string phone = 8;//手机号
-    string email = 9;//邮箱
+	// string phone = 8;//手机号
+	// string email = 9;//邮箱
 	return nil
 }
 
