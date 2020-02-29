@@ -12,7 +12,7 @@ type UserModel struct {
 	Nickname  string    `db:"nickname"`
 	Gender    string    `db:"gender"`
 	Avatar    string    `db:"avatar"`
-	Status    string    `db:"status"`
+	Status    int32     `db:"status"`
 	CreatedAt time.Time `db:"created_at"`
 	UpdatedAt time.Time `db:"updated_at"`
 }
