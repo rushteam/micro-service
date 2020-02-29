@@ -76,6 +76,8 @@ func (s *UserService) Signup(ctx context.Context, req *usersrv.SignupReq, rsp *u
 	req.GetUserinfo()
 	return nil
 }
+
+//OAuthAuthorize ..
 func (s *UserService) OAuthAuthorize(ctx context.Context, req *usersrv.OAuthAuthorizeReq, rsp *usersrv.OAuthAuthorizeRsp) error {
 	log.Tracef("[access] UserService.OAuthAuthorize")
 	return nil
