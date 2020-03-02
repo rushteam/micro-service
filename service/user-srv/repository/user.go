@@ -12,6 +12,7 @@ type UserModel struct {
 	Nickname  string    `db:"nickname"`
 	Gender    string    `db:"gender"`
 	Avatar    string    `db:"avatar"`
+	Status    int32     `db:"status"`
 	CreatedAt time.Time `db:"created_at"`
 	UpdatedAt time.Time `db:"updated_at"`
 }
@@ -38,14 +39,13 @@ func (repo UserRepository) FindByUID(uid int64) (*UserModel, error) {
 }
 
 //Create ..
-func (repo UserRepository) Create(user UserModel) (*UserModel, error) {
+func (repo UserRepository) Create(user *UserModel) (int64, error) {
 	now := time.Now()
 	user.CreatedAt = now
 	user.UpdatedAt = now
 	uid, err := repo.Db.Collection(user.TableName()).Insert(user)
-	copy := &user
-	copy.UID = uid.(int64)
-	return copy, err
+	user.UID = uid.(int64)
+	return uid.(int64), err
 }
 
 // //UserByUID ...

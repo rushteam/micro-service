@@ -73,9 +73,33 @@ func (s *UserService) SigninByPhoneCaptcha(ctx context.Context, req *usersrv.Sig
 //Signup 注册用户
 func (s *UserService) Signup(ctx context.Context, req *usersrv.SignupReq, rsp *usersrv.UserInfo) error {
 	log.Tracef("[access] UserService.Signup")
-	req.GetUserinfo()
+	//注册新用户逻辑
+	if req.GetNickname() == "" {
+		return errors.BadRequest("UserService.Create", "注册失败,昵称不能为空")
+	}
+	if req.GetPhone() == "" {
+		return errors.BadRequest("UserService.Create", "注册失败,手机号不能为空")
+	}
+	var user = &repository.UserModel{}
+	var userRepo repository.UserRepository
+	uid, err := userRepo.Create(user)
+	if err != nil {
+		return errors.BadRequest("UserService.Create", "注册失败,%s", err.Error())
+	}
+	rsp.Uid = uid
+	rsp.Nickname = user.Nickname
+	rsp.Gender = user.Gender
+	rsp.Avatar = user.Avatar
+	rsp.Status = user.Status
+	rsp.CreatedAt = user.CreatedAt.Format("2006-01-02 15:04:05")
+	rsp.UpdatedAt = user.UpdatedAt.Format("2006-01-02 15:04:05")
+
+	// string phone = 8;//手机号
+	// string email = 9;//邮箱
 	return nil
 }
+
+//OAuthAuthorize ..
 func (s *UserService) OAuthAuthorize(ctx context.Context, req *usersrv.OAuthAuthorizeReq, rsp *usersrv.OAuthAuthorizeRsp) error {
 	log.Tracef("[access] UserService.OAuthAuthorize")
 	return nil
@@ -84,19 +108,6 @@ func (s *UserService) OAuthAuthorize(ctx context.Context, req *usersrv.OAuthAuth
 //Register ..
 // func (s *UserService) Register(ctx context.Context, req *usersrv.RegisterData, rsp *usersrv.UserData) error {
 // 	log.Log("[access] UserService.Create")
-// 	if len(req.LoginList) < 1 {
-// 		return errors.BadRequest("UserService.Create", "注册失败,账号信息不全")
-// 	}
-// 	if req.GetUser() == nil {
-// 		return errors.BadRequest("UserService.Create", "注册失败,用户信息不全")
-// 	}
-// 	//注册新用户逻辑
-// 	if req.User.GetNickname() == "" {
-// 		return errors.BadRequest("UserService.Create", "注册失败,昵称不能为空")
-// 	}
-// 	if req.User.GetNickname() == "" {
-// 		return errors.BadRequest("UserService.Create", "注册失败,昵称不能为空")
-// 	}
 // 	var userData repository.UserModel
 // 	tx, err := s.db.NewTx(ctx)
 // 	userRepo := &repository.UserRepository{Db: tx}
