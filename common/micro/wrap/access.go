@@ -12,13 +12,13 @@ import (
 func Access(fn server.HandlerFunc) server.HandlerFunc {
 	return func(ctx context.Context, req server.Request, rsp interface{}) error {
 		start := time.Now()
-		log.Tracef("[access] %s start:%s", req.Method(), start)
+		log.Tracef("[access] %v start: %v", req.Method(), start)
 		res := fn(ctx, req, rsp)
 		if res != nil {
-			log.Errorf("[service] %s %s", req.Method(), res.Error())
+			log.Errorf("[service] %v %v", req.Method(), res.Error())
 		}
 		elapsed := time.Since(start).Round(time.Millisecond).String()
-		log.Tracef("[elapsed] %s elapsed:%s", req.Method(), elapsed)
+		log.Tracef("[elapsed] %v elapsed: %v", req.Method(), elapsed)
 		return res
 	}
 }
