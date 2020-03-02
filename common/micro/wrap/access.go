@@ -15,7 +15,7 @@ func Access(fn server.HandlerFunc) server.HandlerFunc {
 		log.Tracef("[access] %s start:%s", req.Method(), start)
 		res := fn(ctx, req, rsp)
 		if res != nil {
-			log.Errorf("[service] %s %s", req.Method(), res.Error())
+			log.Tracef("[service] %s %s", req.Method(), res.Error())
 		}
 		elapsed := time.Since(start).Round(time.Millisecond).String()
 		log.Tracef("[elapsed] %s elapsed:%s", req.Method(), elapsed)

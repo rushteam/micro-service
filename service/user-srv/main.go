@@ -1,11 +1,11 @@
 package main
 
 import (
-	"log"
 	"time"
 
 	"github.com/micro/cli/v2"
 	"github.com/micro/go-micro/v2"
+	"github.com/micro/go-micro/v2/util/log"
 	"github.com/rushteam/micro-service/common/micro/wrap"
 	"github.com/rushteam/micro-service/service/user-srv/handler"
 	"upper.io/db.v3/mysql"
@@ -19,6 +19,7 @@ var (
 )
 
 func main() {
+	log.SetLevel(log.LevelTrace)
 	service := micro.NewService(
 		micro.RegisterTTL(time.Second*15),
 		micro.RegisterInterval(time.Second*5),
