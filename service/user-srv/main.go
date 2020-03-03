@@ -10,7 +10,7 @@ import (
 	"github.com/rushteam/micro-service/service/user-srv/handler"
 
 	// "upper.io/db.v3/mysql"
-
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/mlboy/godb/db"
 )
 
