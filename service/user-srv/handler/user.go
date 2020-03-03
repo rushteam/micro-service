@@ -46,8 +46,7 @@ func (s *UserService) Signin(ctx context.Context, req *usersrv.SigninReq, rsp *u
 	if !validatePhone(req.GetLoginname()) {
 		return errors.BadRequest("UserService.Signin", "手机号格式错误")
 	}
-	loginRepo := &repository.LoginRepository{}
-	login, err := loginRepo.FindByPassword("phone", req.GetLoginname(), req.GetPassword())
+	login, err := repository.Login.FindByPassword("phone", req.GetLoginname(), req.GetPassword())
 	if err != nil {
 		return errors.BadRequest("UserService.Signin", "账号或密码错误")
 	}
@@ -77,13 +76,12 @@ func (s *UserService) Signup(ctx context.Context, req *usersrv.SignupReq, rsp *u
 	if req.GetPhone() == "" {
 		return errors.BadRequest("UserService.Create", "注册失败,手机号不能为空")
 	}
-	var user repository.UserModel
-	userRepo := &repository.UserRepository{}
-	uid, err := userRepo.Create(&user)
+	user := &repository.UserModel{}
+	err := repository.User.Create(user)
 	if err != nil {
 		return errors.BadRequest("UserService.Create", "注册失败,%s", err.Error())
 	}
-	rsp.Uid = uid
+	rsp.Uid = user.UID
 	rsp.Nickname = user.Nickname
 	rsp.Gender = user.Gender
 	rsp.Avatar = user.Avatar

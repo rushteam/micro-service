@@ -3,8 +3,12 @@ package repository
 import (
 	"time"
 
-	"upper.io/db.v3"
+	"github.com/mlboy/godb/builder"
+	"github.com/mlboy/godb/db"
 )
+
+//User ..
+var User = newUserRepo()
 
 //UserModel ..
 type UserModel struct {
@@ -22,30 +26,30 @@ func (UserModel) TableName() string {
 	return "uc_user"
 }
 
-//UserRepository ..
-type UserRepository struct {
-	Db Database
+func newUserRepo() *userRepository {
+	return &userRepository{}
 }
 
+//userRepository ..
+type userRepository struct{}
+
 //FindByUID ...
-func (repo UserRepository) FindByUID(uid int64) (*UserModel, error) {
-	var user UserModel
-	res := repo.Db.Collection(user.TableName()).Find(db.Cond{
-		"uid": uid,
-	})
-	// fmt.Println(res)
-	err := res.One(&user)
-	return &user, err
+func (repo userRepository) FindByUID(uid int64) (*UserModel, error) {
+	user := &UserModel{}
+	err := db.Fetch(
+		user,
+		builder.Where("uid", uid),
+	)
+	return user, err
 }
 
 //Create ..
-func (repo UserRepository) Create(user *UserModel) (int64, error) {
+func (repo userRepository) Create(user *UserModel) error {
 	now := time.Now()
 	user.CreatedAt = now
 	user.UpdatedAt = now
-	uid, err := repo.Db.Collection(user.TableName()).Insert(user)
-	user.UID = uid.(int64)
-	return uid.(int64), err
+	_, err := db.Insert(user)
+	return err
 }
 
 // //UserByUID ...

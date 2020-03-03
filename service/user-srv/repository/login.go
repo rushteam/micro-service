@@ -6,7 +6,9 @@ import (
 	"errors"
 	"time"
 
-	"upper.io/db.v3"
+	"github.com/mlboy/godb/builder"
+	"github.com/mlboy/godb/db"
+	// "upper.io/db.v3"
 )
 
 var (
@@ -16,9 +18,11 @@ var (
 	LocalLoginList = map[string]bool{"phone": true, "email": true, "username": true}
 )
 
+//Login ..
+var Login = newLoginRepo()
+
 //LoginModel ..
 type LoginModel struct {
-	// gorm.Model
 	ID           int64     `db:"id,omitempty"`
 	UID          int64     `db:"uid"`
 	Platform     string    `db:"platform"`
@@ -35,37 +39,36 @@ func (LoginModel) TableName() string {
 	return "uc_login"
 }
 
-//LoginRepository ..
-type LoginRepository struct {
-	Db Database
+func newLoginRepo() *loginRepository {
+	return &loginRepository{}
 }
 
+type loginRepository struct{}
+
 //FindByPassword ...
-func (repo LoginRepository) FindByPassword(platform, openid, password string) (*LoginModel, error) {
-	var login LoginModel
-	res := repo.Db.Collection(login.TableName()).Find(db.Cond{
-		"platform": platform,
-	}, db.Cond{
-		"openid": openid,
-	})
-	err := res.One(&login)
+func (repo loginRepository) FindByPassword(platform, openid, password string) (*LoginModel, error) {
+	login := &LoginModel{}
+	err := db.Fetch(
+		login,
+		builder.Where("platform", platform),
+		builder.Where("openid", openid),
+	)
 	if login.AccessToken != password {
 		return nil, ErrPassword
 	}
-	return &login, err
+	return login, err
 }
 
 //Create ..
-func (repo LoginRepository) Create(login LoginModel) (*LoginModel, error) {
+func (repo loginRepository) Create(login *LoginModel) (*LoginModel, error) {
 	if _, ok := LocalLoginList[login.Platform]; ok {
 
 	}
 	now := time.Now()
 	login.CreatedAt = now
 	login.UpdatedAt = now
-	_, err := repo.Db.Collection(login.TableName()).Insert(login)
-	obj := &login
-	return obj, err
+	_, err := db.Insert(login)
+	return login, err
 }
 
 //获取哈希密码
