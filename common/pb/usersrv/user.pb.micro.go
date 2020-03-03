@@ -5,13 +5,14 @@ package usersrv
 
 import (
 	fmt "fmt"
-	proto "github.com/golang/protobuf/proto"
 	math "math"
-)
 
-import (
+	proto "github.com/golang/protobuf/proto"
+
 	context "context"
+
 	client "github.com/micro/go-micro/v2/client"
+
 	server "github.com/micro/go-micro/v2/server"
 )
 

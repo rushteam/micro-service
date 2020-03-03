@@ -8,7 +8,10 @@ import (
 	"github.com/micro/go-micro/v2/util/log"
 	"github.com/rushteam/micro-service/common/micro/wrap"
 	"github.com/rushteam/micro-service/service/user-srv/handler"
-	"upper.io/db.v3/mysql"
+
+	// "upper.io/db.v3/mysql"
+
+	"github.com/mlboy/godb/db"
 )
 
 var (
@@ -38,13 +41,13 @@ func main() {
 	// var ctx = context.TODO()
 	service.Init(
 		micro.Action(func(c *cli.Context) error {
-			settings, _ := mysql.ParseURL("root:dream@tcp(127.0.0.1:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s")
-			sess, err := mysql.Open(settings)
-			if err != nil {
-				// log.Fatalf("db.Open(): %q\n", err)
+			var settings = make(map[string][]string, 0)
+			settings["default"] = []string{
+				"root:dream@tcp(127.0.0.1:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s",
 			}
+			_ = db.InitPool("mysql", settings)
 			// defer sess.Close()
-			handler.RegisterUserServiceHandler(service, sess)
+			handler.RegisterUserServiceHandler(service)
 			return nil
 		}),
 	)

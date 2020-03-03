@@ -11,19 +11,16 @@ import (
 	"github.com/rushteam/micro-service/common/pb/usersrv"
 	"github.com/rushteam/micro-service/service/user-srv/repository"
 	"github.com/rushteam/micro-service/service/user-srv/session"
-
-	"upper.io/db.v3/lib/sqlbuilder"
 	// "go.uber.org/zap"
 )
 
 //RegisterUserServiceHandler ..
-func RegisterUserServiceHandler(service micro.Service, d sqlbuilder.Database) {
-	usersrv.RegisterUserServiceHandler(service.Server(), &UserService{db: d})
+func RegisterUserServiceHandler(service micro.Service) {
+	usersrv.RegisterUserServiceHandler(service.Server(), &UserService{})
 }
 
 //UserService ...
 type UserService struct {
-	db sqlbuilder.Database
 	// logger *zap.Logger
 }
 
@@ -49,7 +46,7 @@ func (s *UserService) Signin(ctx context.Context, req *usersrv.SigninReq, rsp *u
 	if !validatePhone(req.GetLoginname()) {
 		return errors.BadRequest("UserService.Signin", "手机号格式错误")
 	}
-	loginRepo := &repository.LoginRepository{Db: s.db}
+	loginRepo := &repository.LoginRepository{}
 	login, err := loginRepo.FindByPassword("phone", req.GetLoginname(), req.GetPassword())
 	if err != nil {
 		return errors.BadRequest("UserService.Signin", "账号或密码错误")
@@ -80,9 +77,9 @@ func (s *UserService) Signup(ctx context.Context, req *usersrv.SignupReq, rsp *u
 	if req.GetPhone() == "" {
 		return errors.BadRequest("UserService.Create", "注册失败,手机号不能为空")
 	}
-	var user = &repository.UserModel{}
-	var userRepo repository.UserRepository
-	uid, err := userRepo.Create(user)
+	var user repository.UserModel
+	userRepo := &repository.UserRepository{}
+	uid, err := userRepo.Create(&user)
 	if err != nil {
 		return errors.BadRequest("UserService.Create", "注册失败,%s", err.Error())
 	}
