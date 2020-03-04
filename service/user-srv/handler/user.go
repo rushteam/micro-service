@@ -77,6 +77,8 @@ func (s *UserService) Signup(ctx context.Context, req *usersrv.SignupReq, rsp *u
 		return errors.BadRequest("UserService.Create", "注册失败,手机号不能为空")
 	}
 	user := &repository.UserModel{}
+	user.Nickname = req.GetNickname()
+	user.Avatar = req.GetAvatar()
 	err := repository.User.Create(user)
 	if err != nil {
 		return errors.BadRequest("UserService.Create", "注册失败,%s", err.Error())
