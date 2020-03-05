@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"fmt"
 	"regexp"
 	"strconv"
 
@@ -10,6 +9,7 @@ import (
 	"github.com/micro/go-micro/v2/errors"
 	"github.com/micro/go-micro/v2/util/log"
 	"github.com/rushteam/micro-service/common/pb/usersrv"
+	"github.com/rushteam/micro-service/service/user-srv/model"
 	"github.com/rushteam/micro-service/service/user-srv/repository"
 	"github.com/rushteam/micro-service/service/user-srv/session"
 	// "go.uber.org/zap"
@@ -47,7 +47,7 @@ func (s *UserService) Signin(ctx context.Context, req *usersrv.SigninReq, rsp *u
 	if !validatePhone(req.GetLoginname()) {
 		return errors.BadRequest("UserService.Signin", "手机号格式错误")
 	}
-	login, err := repository.Login.FindByPassword("phone", req.GetLoginname(), req.GetPassword())
+	login, err := repository.User.SigninByPwd("phone", req.GetLoginname(), req.GetPassword())
 	if err != nil {
 		return errors.BadRequest("UserService.Signin", "账号或密码错误")
 	}
@@ -77,34 +77,21 @@ func (s *UserService) Signup(ctx context.Context, req *usersrv.SignupReq, rsp *u
 	if req.GetPhone() == "" {
 		return errors.BadRequest("UserService.Create", "注册失败,手机号不能为空")
 	}
-	var err error
-	//user
-	user := &repository.UserModel{}
+	//todo 验证手机号 和 验证码 是否正确 (phone + vcode)
+	user := &model.UserModel{}
 	user.Nickname = req.GetNickname()
+	user.Gender = req.GetGender()
 	user.Avatar = req.GetAvatar()
-	err = repository.User.Create(user)
+	user.Status = 1
+	err := repository.User.CreateByPhone(user, req.GetPhone(), req.GetPassword())
 	if err != nil {
 		return errors.BadRequest("UserService.Create", "注册失败,%s", err.Error())
 	}
-	//login
-	if req.GetPhone() != "" {
-
-	}
-	fmt.Println("--uid--", user.UID)
-	login := &repository.LoginModel{}
-	login.UID = user.UID
-	login.Openid = req.GetPhone()
-	login.Platform = "phone"
-	login.AccessToken = req.GetPassword()
-	err = repository.Login.Create(login)
-	if err != nil {
-		return errors.BadRequest("UserService.Create", "注册失败,%s", err.Error())
-	}
-
 	rsp.Uid = user.UID
-	rsp.Nickname = user.Nickname
-	rsp.Gender = user.Gender
-	rsp.Avatar = user.Avatar
+	rsp.Nickname = req.GetNickname()
+	rsp.Gender = req.GetGender()
+	rsp.Avatar = req.GetAvatar()
+	rsp.Phone = req.GetPhone()
 	rsp.Status = user.Status
 	rsp.CreatedAt = user.CreatedAt.Format("2006-01-02 15:04:05")
 	rsp.UpdatedAt = user.UpdatedAt.Format("2006-01-02 15:04:05")
