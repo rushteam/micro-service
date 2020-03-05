@@ -46,6 +46,7 @@ func (repo userRepository) FindByUID(uid int64) (*UserModel, error) {
 //Create ..
 func (repo userRepository) Create(user *UserModel) error {
 	now := time.Now()
+	user.Status = 1
 	user.CreatedAt = now
 	user.UpdatedAt = now
 	_, err := db.Insert(user)
