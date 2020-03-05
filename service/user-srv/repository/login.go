@@ -69,6 +69,7 @@ func (repo loginRepository) Create(login *LoginModel) (*LoginModel, error) {
 	if f, ok := loginMaps[login.Platform]; !ok || !f {
 		return nil, ErrUnvaildLoginType
 	}
+	login.Status = 1
 	now := time.Now()
 	login.CreatedAt = now
 	login.UpdatedAt = now
