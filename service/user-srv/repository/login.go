@@ -65,16 +65,16 @@ func (repo loginRepository) FindByPassword(platform, openid, password string) (*
 }
 
 //Create ..
-func (repo loginRepository) Create(login *LoginModel) (*LoginModel, error) {
+func (repo loginRepository) Create(login *LoginModel) error {
 	if f, ok := loginMaps[login.Platform]; !ok || !f {
-		return nil, ErrUnvaildLoginType
+		return ErrUnvaildLoginType
 	}
 	login.Status = 1
 	now := time.Now()
 	login.CreatedAt = now
 	login.UpdatedAt = now
 	_, err := db.Insert(login)
-	return login, err
+	return err
 }
 
 //获取哈希密码
