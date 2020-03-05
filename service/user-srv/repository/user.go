@@ -12,7 +12,7 @@ var User = newUserRepo()
 
 //UserModel ..
 type UserModel struct {
-	UID       int64     `db:"uid"`
+	UID       int64     `db:"uid,pk"`
 	Nickname  string    `db:"nickname"`
 	Gender    string    `db:"gender"`
 	Avatar    string    `db:"avatar"`

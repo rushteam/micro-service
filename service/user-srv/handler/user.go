@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"regexp"
 	"strconv"
 
@@ -89,6 +90,7 @@ func (s *UserService) Signup(ctx context.Context, req *usersrv.SignupReq, rsp *u
 	if req.GetPhone() != "" {
 
 	}
+	fmt.Println("--uid--", user.UID)
 	login := &repository.LoginModel{}
 	login.UID = user.UID
 	login.Openid = req.GetPhone()
