@@ -76,6 +76,7 @@ func (s *UserService) Signup(ctx context.Context, req *usersrv.SignupReq, rsp *u
 	if req.GetPhone() == "" {
 		return errors.BadRequest("UserService.Create", "注册失败,手机号不能为空")
 	}
+	//user
 	user := &repository.UserModel{}
 	user.Nickname = req.GetNickname()
 	user.Avatar = req.GetAvatar()
@@ -83,6 +84,20 @@ func (s *UserService) Signup(ctx context.Context, req *usersrv.SignupReq, rsp *u
 	if err != nil {
 		return errors.BadRequest("UserService.Create", "注册失败,%s", err.Error())
 	}
+	//login
+	if req.GetPhone() != "" {
+
+	}
+	login := &repository.LoginModel{}
+	login.UID = user.UID
+	login.Openid = req.GetPhone()
+	login.Platform = "phone"
+	login.AccessToken = req.GetPassword()
+	err := repository.Login.Create(login)
+	if err != nil {
+		return errors.BadRequest("UserService.Create", "注册失败,%s", err.Error())
+	}
+
 	rsp.Uid = user.UID
 	rsp.Nickname = user.Nickname
 	rsp.Gender = user.Gender

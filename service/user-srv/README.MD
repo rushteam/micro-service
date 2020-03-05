@@ -9,5 +9,5 @@ micro call go.micro.srv.usersrv UserService.Signin '{"loginname":"18310497688","
 ## UserService.Signup 注册
 
 ```micro cli
-micro call go.micro.srv.usersrv UserService.Signup '{"loginname":"18310497688","password":"test"}'
+micro call go.micro.srv.usersrv UserService.Signup '{"nickname":"小姜","phone":"18310497688"}'
 ```

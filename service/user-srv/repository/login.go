@@ -13,9 +13,11 @@ import (
 
 var (
 	//ErrPassword 密码不正确
-	ErrPassword = errors.New(`upper: no more rows in this result set`)
-	//LocalLoginList 本地登陆方式,即需要加密密码
-	LocalLoginList = map[string]bool{"phone": true, "email": true, "username": true}
+	ErrPassword = errors.New(`密码错误`)
+	//ErrUnvaildLoginType 无效的登陆方式
+	ErrUnvaildLoginType = errors.New("无效的登陆方式")
+	//loginMaps 本地登陆方式,即需要加密密码
+	loginMaps = map[string]bool{"phone": true, "email": true, "username": true}
 )
 
 //Login ..
@@ -64,8 +66,8 @@ func (repo loginRepository) FindByPassword(platform, openid, password string) (*
 
 //Create ..
 func (repo loginRepository) Create(login *LoginModel) (*LoginModel, error) {
-	if _, ok := LocalLoginList[login.Platform]; ok {
-
+	if f, ok := loginMaps[login.Platform]; !ok || !f {
+		return nil, ErrUnvaildLoginType
 	}
 	now := time.Now()
 	login.CreatedAt = now
@@ -75,11 +77,11 @@ func (repo loginRepository) Create(login *LoginModel) (*LoginModel, error) {
 }
 
 //获取哈希密码
-func getHashPwd(password string) string {
-	pwdHash := md5.New()
-	pwdHash.Write([]byte(password))
-	pwd := hex.EncodeToString(pwdHash.Sum(nil))
-	return pwd
+func getHash(password string) string {
+	hash := md5.New()
+	hash.Write([]byte(password))
+	str := hex.EncodeToString(hash.Sum(nil))
+	return str
 }
 
 //LoginByPassword ...
