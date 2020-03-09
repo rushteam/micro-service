@@ -62,6 +62,17 @@ type AuthClaims struct {
 
 // Generate a new JWT
 func (s *svc) Generate(id string, ops ...auth.GenerateOption) (*auth.Account, error) {
+	// decode the private key
+	priv, err := base64.StdEncoding.DecodeString(s.options.PrivateKey)
+	if err != nil {
+		return nil, err
+	}
+
+	key, err := jwt.ParseRSAPrivateKeyFromPEM(priv)
+	if err != nil {
+		return nil, ErrEncodingToken
+	}
+
 	options := auth.NewGenerateOptions(ops...)
 	account := jwt.NewWithClaims(jwt.SigningMethodRS256, AuthClaims{
 		id, options.Roles, options.Metadata, jwt.StandardClaims{
@@ -69,9 +80,10 @@ func (s *svc) Generate(id string, ops ...auth.GenerateOption) (*auth.Account, er
 			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
 		},
 	})
-	token, err := account.SignedString(s.options.PrivateKey)
+
+	token, err := account.SignedString(key)
 	if err != nil {
-		return nil, errors.New("test")
+		return nil, err
 	}
 
 	return &auth.Account{
