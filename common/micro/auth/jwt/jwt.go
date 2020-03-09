@@ -70,7 +70,8 @@ func (s *svc) Generate(id string, ops ...auth.GenerateOption) (*auth.Account, er
 
 	key, err := jwt.ParseRSAPrivateKeyFromPEM(priv)
 	if err != nil {
-		return nil, ErrEncodingToken
+		return nil, err
+		// return nil, ErrEncodingToken
 	}
 
 	options := auth.NewGenerateOptions(ops...)

@@ -26,7 +26,7 @@ var (
 func main() {
 	log.SetLevel(log.LevelTrace)
 	authd := jwt.NewAuth(
-		auth.PrivateKey("test"),
+		auth.PrivateKey(`privateSecure.pem`),
 		auth.Exclude("UserService.Signin"),
 	)
 	service := micro.NewService(
