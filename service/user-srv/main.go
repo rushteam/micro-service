@@ -5,7 +5,9 @@ import (
 
 	cli "github.com/micro/cli/v2"
 	micro "github.com/micro/go-micro/v2"
+	"github.com/micro/go-micro/v2/auth"
 	log "github.com/micro/go-micro/v2/util/log"
+	"github.com/rushteam/micro-service/common/micro/auth/jwt"
 	"github.com/rushteam/micro-service/common/micro/wrap"
 	"github.com/rushteam/micro-service/service/user-srv/handler"
 
@@ -23,11 +25,16 @@ var (
 
 func main() {
 	log.SetLevel(log.LevelTrace)
+	authd := jwt.NewAuth(
+		auth.PrivateKey("test"),
+		auth.Exclude("UserService.Signin"),
+	)
 	service := micro.NewService(
 		micro.RegisterTTL(time.Second*15),
 		micro.RegisterInterval(time.Second*5),
 		micro.Name(SERVICE_NAME),
 		micro.Version(SERVICE_VERSION),
+		micro.Auth(authd), //是否开启校验
 		micro.Flags(
 			&cli.StringFlag{
 				Name:    "config_path",

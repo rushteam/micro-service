@@ -46,6 +46,7 @@ message SignupReq {
     string email = 4;//邮箱
     string phone = 5;//手机号
     string password =6;//密码
+    string captcha = 7; //验证码
 }
 //用户信息 profile
 message UserInfo {
@@ -58,6 +59,11 @@ message UserInfo {
     string created_at = 7;
     string phone = 8;//手机号
     string email = 9;//邮箱
+}
+message PhoneCaptcha{
+    int64 captcha_id = 1;//验证码编号
+    string captcha = 2; //验证码
+    string phone = 3; //手机号
 }
 //手机号+验证码登陆
 message SigninByPhoneCaptchaReq {

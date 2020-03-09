@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/micro/go-micro/v2"
+	"github.com/micro/go-micro/v2/auth"
 	"github.com/micro/go-micro/v2/errors"
 	"github.com/micro/go-micro/v2/util/log"
 	"github.com/rushteam/micro-service/common/pb/usersrv"
@@ -16,12 +17,15 @@ import (
 )
 
 //RegisterUserServiceHandler ..
-func RegisterUserServiceHandler(service micro.Service) {
-	usersrv.RegisterUserServiceHandler(service.Server(), &UserService{})
+func RegisterUserServiceHandler(srv micro.Service) {
+	usersrv.RegisterUserServiceHandler(srv.Server(), &UserService{
+		auth: srv.Options().Auth,
+	})
 }
 
 //UserService ...
 type UserService struct {
+	auth auth.Auth
 	// logger *zap.Logger
 }
 
@@ -52,12 +56,20 @@ func (s *UserService) Signin(ctx context.Context, req *usersrv.SigninReq, rsp *u
 		return errors.BadRequest("UserService.Signin", "账号或密码错误")
 	}
 	rsp.Uid = login.UID
-	// gen token
-	jwt, err := GenToken(login.UID)
+	// Generate an auth account
+	// acc, err := s.auth.Generate(strconv.FormatInt(login.UID, 10))
+	acc, err := s.auth.Generate("test-test-test")
 	if err != nil {
-		return errors.BadRequest("UserService.Signin", "登录异常,请请联系客服")
+		return errors.InternalServerError("UserService.Signin", "登录异常,请联系客服(%v)", err)
 	}
-	rsp.Token = jwt
+	rsp.Token = acc.Token
+
+	// gen token
+	// jwt, err := GenToken(login.UID)
+	// if err != nil {
+	// 	return errors.BadRequest("UserService.Signin", "登录异常,请联系客服")
+	// }
+	// rsp.Token = jwt
 	return nil
 }
 
