@@ -26,7 +26,20 @@ var (
 func main() {
 	log.SetLevel(log.LevelTrace)
 	authd := jwt.NewAuth(
-		auth.PrivateKey(`privateSecure.pem`),
+		auth.PrivateKey(`MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBALT41nn2U3v6zm5v
+/9FfbUqUxspk3Q29VqcuyjwhFuOTjdu/eAr3uhKrGNcGmhv9rynmxQXtk8sijlDm
+E01rO+XYIPDaazhqqwosfXrp2Bo7t+0xFhTLZWUfVUWHNK2uXcVikoUhdtHNKcQk
+QzTKGtbv3lZ5bjflOV0oJZgTqjMbAgMBAAECgYBl8Qo395b9bsGcGkD7ewrAiWAV
+oI2Y8MAAOu42wtj25yZw08FWREevvmumrJRhEhz6uIDhnvuy4MtULNZQtQgutIGd
+GPi29ZCpTUykdvAoskUX2aWVlINeFIwUdI4HhiNPYz1flDvVil/8H2QsjaOhOAGI
+++Gr+IvUEZ9qLQpBiQJBAOtqgjzSnNAJtXshCSvRE9r55FyNFQHPfPptWnWwm5sK
+huprztQJ4j4n+vssoJmD6AUtDa5OiaDNqLknOhvlzJcCQQDEy6sPMq92YSAdq8pK
+oGPp/3JRuiYu1hFAmBv+YVzulmTR8ogNXnG88bja3YIuqRh8CnKpMh0UIyp7ob6j
+YOodAkBkhYY3EneDHaIwgVq5Kv2fczTfkB54N3DWPftyZYcMHOKfFomqYM4KXGf+
++H9bDcf07df5pe9+ilKRPP7DCszhAkBm35zdRf6pIF6chBgsaKmyQeGtzWR2aVr9
+bEZ99MGSyzWK9oCelHdacPXUG6UY5TYyaXfE8Lh4tWVY2ZWBbIEVAkEA08YA88j7
+2zeM/qyIXyaGw9l899h8aLPrN+kIsF45oRmfdl9d3qUejxgk8bmpWRBucLA+XeLx
+tMkmw/XoEI6vDQ==`),
 		auth.Exclude("UserService.Signin"),
 	)
 	service := micro.NewService(
