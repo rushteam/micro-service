@@ -3,7 +3,6 @@ package jwt
 import (
 	"encoding/base64"
 	"errors"
-	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/micro/go-micro/v2/auth"
@@ -70,15 +69,14 @@ func (s *svc) Generate(id string, ops ...auth.GenerateOption) (*auth.Account, er
 
 	key, err := jwt.ParseRSAPrivateKeyFromPEM(priv)
 	if err != nil {
-		return nil, err
-		// return nil, ErrEncodingToken
+		return nil, ErrEncodingToken
 	}
 
 	options := auth.NewGenerateOptions(ops...)
 	account := jwt.NewWithClaims(jwt.SigningMethodRS256, AuthClaims{
 		id, options.Roles, options.Metadata, jwt.StandardClaims{
 			Subject:   id,
-			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
+			ExpiresAt: options.Expiry.Unix(),
 		},
 	})
 
