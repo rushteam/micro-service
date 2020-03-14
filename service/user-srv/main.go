@@ -8,8 +8,8 @@ import (
 	cli "github.com/micro/cli/v2"
 	micro "github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/auth"
+	"github.com/micro/go-micro/v2/auth/jwt"
 	log "github.com/micro/go-micro/v2/util/log"
-	"github.com/rushteam/micro-service/common/micro/auth/jwt"
 	"github.com/rushteam/micro-service/common/micro/wrap"
 	"github.com/rushteam/micro-service/service/user-srv/handler"
 

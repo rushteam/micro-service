@@ -4,6 +4,7 @@ import (
 	"context"
 	"regexp"
 	"strconv"
+	"time"
 
 	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/auth"
@@ -12,7 +13,6 @@ import (
 	"github.com/rushteam/micro-service/common/pb/usersrv"
 	"github.com/rushteam/micro-service/service/user-srv/model"
 	"github.com/rushteam/micro-service/service/user-srv/repository"
-	"github.com/rushteam/micro-service/service/user-srv/session"
 	// "go.uber.org/zap"
 )
 
@@ -36,14 +36,6 @@ func validatePhone(phone string) bool {
 	return reg.MatchString(phone)
 }
 
-//GenToken 生成token
-func GenToken(uid int64) (string, error) {
-	subject := strconv.FormatInt(uid, 10)
-	token := session.New("user-srv", subject, "")
-	jwt, err := session.Encode(token, "")
-	return jwt, err
-}
-
 //Signin 登陆(手机号+密码)
 func (s *UserService) Signin(ctx context.Context, req *usersrv.SigninReq, rsp *usersrv.AuthRsp) error {
 	log.Tracef("[access] UserService.Signin")
@@ -57,7 +49,7 @@ func (s *UserService) Signin(ctx context.Context, req *usersrv.SigninReq, rsp *u
 	}
 	rsp.Uid = login.UID
 	// Generate an auth account
-	acc, err := s.auth.Generate(strconv.FormatInt(login.UID, 10))
+	acc, err := s.auth.Generate(strconv.FormatInt(login.UID, 10), auth.Expiry(time.Now().Add(time.Now().Day()*7)))
 	if err != nil {
 		return errors.InternalServerError("UserService.Signin", "登录异常,请联系客服(%v)", err)
 	}
