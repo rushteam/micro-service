@@ -61,6 +61,7 @@ type AuthClaims struct {
 
 // Generate a new JWT
 func (s *svc) Generate(id string, ops ...auth.GenerateOption) (*auth.Account, error) {
+	// key, err := jwt.ParseRSAPrivateKeyFromPEM([]byte(s.options.PrivateKey))
 	// decode the private key
 	priv, err := base64.StdEncoding.DecodeString(s.options.PrivateKey)
 	if err != nil {
