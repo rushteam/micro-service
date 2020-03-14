@@ -57,8 +57,7 @@ func (s *UserService) Signin(ctx context.Context, req *usersrv.SigninReq, rsp *u
 	}
 	rsp.Uid = login.UID
 	// Generate an auth account
-	// acc, err := s.auth.Generate(strconv.FormatInt(login.UID, 10))
-	acc, err := s.auth.Generate("test-test-test")
+	acc, err := s.auth.Generate(strconv.FormatInt(login.UID, 10))
 	if err != nil {
 		return errors.InternalServerError("UserService.Signin", "登录异常,请联系客服(%v)", err)
 	}
