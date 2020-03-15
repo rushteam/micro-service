@@ -19,10 +19,10 @@ import (
 )
 
 var (
-	//SERVICE_NAME service's name
-	SERVICE_NAME = "go.micro.srv.usersrv"
-	//SERVICE_VERSION service's version
-	SERVICE_VERSION = "latest"
+	//ServiceName service's name
+	ServiceName = "go.micro.srv.usersrv"
+	//ServiceVersion service's version
+	ServiceVersion = "latest"
 )
 
 func main() {
@@ -35,8 +35,8 @@ func main() {
 	service := micro.NewService(
 		micro.RegisterTTL(time.Second*15),
 		micro.RegisterInterval(time.Second*5),
-		micro.Name(SERVICE_NAME),
-		micro.Version(SERVICE_VERSION),
+		micro.Name(ServiceName),
+		micro.Version(ServiceVersion),
 		micro.Auth(authd), //是否开启校验
 		micro.Flags(
 			&cli.StringFlag{

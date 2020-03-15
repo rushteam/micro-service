@@ -49,18 +49,17 @@ func (s *UserService) Signin(ctx context.Context, req *usersrv.SigninReq, rsp *u
 	}
 	rsp.Uid = login.UID
 	// Generate an auth account
-	acc, err := s.auth.Generate(strconv.FormatInt(login.UID, 10), auth.Expiry(time.Now().Add(time.Now().Day()*7)))
+	roles := []*auth.Role{}
+	roles = append(roles, &auth.Role{Name: "user"})
+	acc, err := s.auth.Generate(
+		strconv.FormatInt(login.UID, 10),
+		auth.Expiry(time.Now().Add(time.Hour*24*7)),
+		auth.Roles(roles),
+	)
 	if err != nil {
 		return errors.InternalServerError("UserService.Signin", "登录异常,请联系客服(%v)", err)
 	}
 	rsp.Token = acc.Token
-
-	// gen token
-	// jwt, err := GenToken(login.UID)
-	// if err != nil {
-	// 	return errors.BadRequest("UserService.Signin", "登录异常,请联系客服")
-	// }
-	// rsp.Token = jwt
 	return nil
 }
 
