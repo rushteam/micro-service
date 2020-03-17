@@ -6,6 +6,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/go-sql-driver/mysql"
 	"github.com/mlboy/godb/builder"
 	"github.com/mlboy/godb/db"
 	"github.com/rushteam/micro-service/service/user-srv/model"
@@ -15,6 +16,8 @@ import (
 var (
 	//ErrPassword 密码不正确
 	ErrPassword = errors.New(`密码错误`)
+	//ErrHasCreated 已注册
+	ErrHasCreated = errors.New(`用户已注册`)
 	//ErrUnvaildLoginType 无效的登陆方式
 	ErrUnvaildLoginType = errors.New("无效的登陆方式")
 	//loginMaps 本地登陆方式,即需要加密密码
@@ -72,6 +75,11 @@ func (repo userRepository) CreateByPhone(user *model.UserModel, phone, pwd strin
 	_, err = tx.Insert(login)
 	if err != nil {
 		tx.Rollback()
+		if sqlerr, ok := err.(*mysql.MySQLError); ok {
+			if sqlerr.Number == 1062 {
+				return ErrHasCreated
+			}
+		}
 		return err
 	}
 	return tx.Commit()

@@ -97,9 +97,6 @@ func (s *UserService) Signup(ctx context.Context, req *usersrv.SignupReq, rsp *u
 	rsp.Status = user.Status
 	rsp.CreatedAt = user.CreatedAt.Format("2006-01-02 15:04:05")
 	rsp.UpdatedAt = user.UpdatedAt.Format("2006-01-02 15:04:05")
-
-	// string phone = 8;//手机号
-	// string email = 9;//邮箱
 	return nil
 }
 
