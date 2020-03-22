@@ -9,7 +9,7 @@ import (
 	micro "github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/auth"
 	"github.com/micro/go-micro/v2/auth/jwt"
-	log "github.com/micro/go-micro/v2/util/log"
+	"github.com/micro/go-micro/v2/logger"
 	"github.com/rushteam/micro-service/common/micro/wrap"
 	"github.com/rushteam/micro-service/service/user-srv/handler"
 
@@ -26,7 +26,6 @@ var (
 )
 
 func main() {
-	log.SetLevel(log.LevelTrace)
 	privateKey, _ := ioutil.ReadFile("/Users/maliang/Documents/hoonet/rushteam/micro-service/rsa_private_key.pem")
 	authd := jwt.NewAuth(
 		auth.PrivateKey(base64.StdEncoding.EncodeToString(privateKey)),
@@ -62,7 +61,7 @@ func main() {
 		}),
 	)
 	if err := service.Run(); err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 }
 

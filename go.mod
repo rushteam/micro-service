@@ -4,6 +4,7 @@ go 1.13
 
 require (
 	github.com/RangelReale/osin v1.0.1
+	github.com/containerd/containerd v1.3.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gbrlsnchs/jwt/v3 v3.0.0-rc.1
 	github.com/gin-gonic/gin v1.5.0
@@ -20,3 +21,5 @@ require (
 	github.com/pborman/uuid v1.2.0
 	gopkg.in/yaml.v2 v2.2.8
 )
+
+replace github.com/mlboy/godb => ../godb

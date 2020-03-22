@@ -40,6 +40,8 @@ type UserService interface {
 	Signin(ctx context.Context, in *SigninReq, opts ...client.CallOption) (*AuthRsp, error)
 	//用户登录(手机号+验证码)
 	SigninByPhoneCaptcha(ctx context.Context, in *SigninByPhoneCaptchaReq, opts ...client.CallOption) (*AuthRsp, error)
+	//用户登录（第三方登陆）
+	SigninByOAuth(ctx context.Context, in *SigninByOAuthReq, opts ...client.CallOption) (*AuthRsp, error)
 	//第三方授权登陆 OAuth
 	OAuthAuthorize(ctx context.Context, in *OAuthAuthorizeReq, opts ...client.CallOption) (*OAuthAuthorizeRsp, error)
 }
@@ -86,6 +88,16 @@ func (c *userService) SigninByPhoneCaptcha(ctx context.Context, in *SigninByPhon
 	return out, nil
 }
 
+func (c *userService) SigninByOAuth(ctx context.Context, in *SigninByOAuthReq, opts ...client.CallOption) (*AuthRsp, error) {
+	req := c.c.NewRequest(c.name, "UserService.SigninByOAuth", in)
+	out := new(AuthRsp)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userService) OAuthAuthorize(ctx context.Context, in *OAuthAuthorizeReq, opts ...client.CallOption) (*OAuthAuthorizeRsp, error) {
 	req := c.c.NewRequest(c.name, "UserService.OAuthAuthorize", in)
 	out := new(OAuthAuthorizeRsp)
@@ -105,6 +117,8 @@ type UserServiceHandler interface {
 	Signin(context.Context, *SigninReq, *AuthRsp) error
 	//用户登录(手机号+验证码)
 	SigninByPhoneCaptcha(context.Context, *SigninByPhoneCaptchaReq, *AuthRsp) error
+	//用户登录（第三方登陆）
+	SigninByOAuth(context.Context, *SigninByOAuthReq, *AuthRsp) error
 	//第三方授权登陆 OAuth
 	OAuthAuthorize(context.Context, *OAuthAuthorizeReq, *OAuthAuthorizeRsp) error
 }
@@ -114,6 +128,7 @@ func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts .
 		Signup(ctx context.Context, in *SignupReq, out *UserInfo) error
 		Signin(ctx context.Context, in *SigninReq, out *AuthRsp) error
 		SigninByPhoneCaptcha(ctx context.Context, in *SigninByPhoneCaptchaReq, out *AuthRsp) error
+		SigninByOAuth(ctx context.Context, in *SigninByOAuthReq, out *AuthRsp) error
 		OAuthAuthorize(ctx context.Context, in *OAuthAuthorizeReq, out *OAuthAuthorizeRsp) error
 	}
 	type UserService struct {
@@ -137,6 +152,10 @@ func (h *userServiceHandler) Signin(ctx context.Context, in *SigninReq, out *Aut
 
 func (h *userServiceHandler) SigninByPhoneCaptcha(ctx context.Context, in *SigninByPhoneCaptchaReq, out *AuthRsp) error {
 	return h.UserServiceHandler.SigninByPhoneCaptcha(ctx, in, out)
+}
+
+func (h *userServiceHandler) SigninByOAuth(ctx context.Context, in *SigninByOAuthReq, out *AuthRsp) error {
+	return h.UserServiceHandler.SigninByOAuth(ctx, in, out)
 }
 
 func (h *userServiceHandler) OAuthAuthorize(ctx context.Context, in *OAuthAuthorizeReq, out *OAuthAuthorizeRsp) error {

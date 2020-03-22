@@ -4,21 +4,21 @@ import (
 	"context"
 	"time"
 
+	"github.com/micro/go-micro/v2/logger"
 	"github.com/micro/go-micro/v2/server"
-	"github.com/micro/go-micro/v2/util/log"
 )
 
 //Access is a middleware to log request/responses.
 func Access(fn server.HandlerFunc) server.HandlerFunc {
 	return func(ctx context.Context, req server.Request, rsp interface{}) error {
 		start := time.Now()
-		log.Tracef("[access] %v start: %v", req.Method(), start)
+		logger.Infof("[access] %v start: %v", req.Method(), start)
 		res := fn(ctx, req, rsp)
 		if res != nil {
-			log.Tracef("[service] %v %v", req.Method(), res.Error())
+			logger.Infof("[service] %v %v", req.Method(), res.Error())
 		}
 		elapsed := time.Since(start).Round(time.Millisecond).String()
-		log.Tracef("[elapsed] %v elapsed: %v", req.Method(), elapsed)
+		logger.Infof("[elapsed] %v elapsed: %v", req.Method(), elapsed)
 		return res
 	}
 }

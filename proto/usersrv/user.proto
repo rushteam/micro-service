@@ -9,6 +9,8 @@ service UserService {
     rpc Signin(SigninReq) returns (AuthRsp) {}
     //用户登录(手机号+验证码)
     rpc SigninByPhoneCaptcha(SigninByPhoneCaptchaReq) returns (AuthRsp) {}
+    //用户登录（第三方登陆）
+    rpc SigninByOAuth (SigninByOAuthReq) returns (AuthRsp) {}
     //第三方授权登陆 OAuth
     rpc OAuthAuthorize(OAuthAuthorizeReq) returns (OAuthAuthorizeRsp) {}
     // //创建用户
@@ -70,6 +72,9 @@ message SigninByPhoneCaptchaReq {
     string phone = 1; //手机号
     string captcha = 2; //验证码
     int64 captcha_id = 3;//验证码编号
+}
+message SigninByOAuthReq {
+    string platform = 1;
 }
 //第三方授权登陆
 message OAuthAuthorizeReq {
