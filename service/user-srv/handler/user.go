@@ -12,6 +12,7 @@ import (
 	"github.com/micro/go-micro/v2/logger"
 	"github.com/rushteam/micro-service/common/pb/usersrv"
 	"github.com/rushteam/micro-service/common/sdk/wxsdk"
+	"github.com/rushteam/micro-service/common/utils"
 	"github.com/rushteam/micro-service/service/user-srv/model"
 	"github.com/rushteam/micro-service/service/user-srv/repository"
 	// "go.uber.org/zap"
@@ -145,33 +146,41 @@ func (s *UserService) SigninByOAuthCode(ctx context.Context, req *usersrv.Signin
 //SignupByOAuthCode 三方注册
 
 //User 获取用户信息
-// func (s *UserService) User(ctx context.Context, req *usersrv.UserReq, rsp *usersrv.UserRsp) error {
-// 	log.Log("[access] UserService.User")
-// 	// Model := model.Db()
-// 	token, err := session.Decode(req.GetToken(), "")
-// 	if err != nil {
-// 		return errors.BadRequest("UserService.Login", "登录超时或TOKEN非法")
-// 	}
-// 	if token.Subject == "" || token.Subject == "0" {
-// 		return errors.BadRequest("UserService.Login", "当前TOKEN未绑定用户")
-// 	}
-// 	uid, err := strconv.ParseInt(token.Subject, 10, 64)
-// 	if err != nil {
-// 		return errors.BadRequest("UserService.Login", "当前TOKEN无法解析用户")
-// 	}
-// 	userRepo := &repository.UserRepository{Db: s.db}
-// 	user, err := userRepo.FindByUID(uid)
-// 	if err != nil {
-// 		return errors.BadRequest("UserService.Login", "用户不存在或已被锁定")
-// 	}
-// 	rsp.Uid = user.UID
-// 	rsp.Nickname = user.Nickname
-// 	rsp.Gender = user.Gender
-// 	rsp.Avatar = user.Avatar
-// 	rsp.CreatedAt = utils.FormatDate(user.CreatedAt)
-// 	rsp.UpdatedAt = utils.FormatDate(user.UpdatedAt)
-// 	return nil
-// }
+func (s *UserService) User(ctx context.Context, req *usersrv.UserReq, rsp *usersrv.UserRsp) error {
+	logger.Tracef("[access] UserService.User")
+	account, err := auth.AccountFromContext(ctx)
+	if err != nil {
+		return errors.BadRequest("UserService.Login", "登录超时或TOKEN非法")
+	}
+	if account.Id == "" || account.Id == "0" {
+		return errors.BadRequest("UserService.Login", "当前TOKEN未绑定用户")
+	}
+
+	// Model := model.Db()
+	// token, err := session.Decode(req.GetToken(), "")
+	// if err != nil {
+	// 	return errors.BadRequest("UserService.Login", "登录超时或TOKEN非法")
+	// }
+	// if token.Subject == "" || token.Subject == "0" {
+	// 	return errors.BadRequest("UserService.Login", "当前TOKEN未绑定用户")
+	// }
+	uid, err := strconv.ParseInt(token.Subject, 10, 64)
+	if err != nil {
+		return errors.BadRequest("UserService.Login", "当前TOKEN无法解析用户")
+	}
+	userRepo := &repository.UserRepository{Db: s.db}
+	user, err := userRepo.FindByUID(uid)
+	if err != nil {
+		return errors.BadRequest("UserService.Login", "用户不存在或已被锁定")
+	}
+	rsp.Uid = user.UID
+	rsp.Nickname = user.Nickname
+	rsp.Gender = user.Gender
+	rsp.Avatar = user.Avatar
+	rsp.CreatedAt = utils.FormatDate(user.CreatedAt)
+	rsp.UpdatedAt = utils.FormatDate(user.UpdatedAt)
+	return nil
+}
 
 // //Update 更新字段
 // func (s *UserService) Update(ctx context.Context, req *usersrv.UpdateReq, rsp *usersrv.UserRsp) error {
