@@ -150,28 +150,19 @@ func (s *UserService) User(ctx context.Context, req *usersrv.UserReq, rsp *users
 	logger.Tracef("[access] UserService.User")
 	account, err := auth.AccountFromContext(ctx)
 	if err != nil {
-		return errors.BadRequest("UserService.Login", "登录超时或TOKEN非法")
+		return errors.BadRequest("UserService.User", "登录超时或TOKEN非法")
 	}
 	if account.Id == "" || account.Id == "0" {
-		return errors.BadRequest("UserService.Login", "当前TOKEN未绑定用户")
+		return errors.BadRequest("UserService.User", "当前TOKEN未绑定用户")
 	}
-
-	// Model := model.Db()
-	// token, err := session.Decode(req.GetToken(), "")
-	// if err != nil {
-	// 	return errors.BadRequest("UserService.Login", "登录超时或TOKEN非法")
-	// }
-	// if token.Subject == "" || token.Subject == "0" {
-	// 	return errors.BadRequest("UserService.Login", "当前TOKEN未绑定用户")
-	// }
-	uid, err := strconv.ParseInt(token.Subject, 10, 64)
+	uid, err := strconv.ParseInt(account.Id, 10, 64)
 	if err != nil {
-		return errors.BadRequest("UserService.Login", "当前TOKEN无法解析用户")
+		return errors.BadRequest("UserService.User", "当前TOKEN无法解析用户")
 	}
 	userRepo := &repository.UserRepository{Db: s.db}
 	user, err := userRepo.FindByUID(uid)
 	if err != nil {
-		return errors.BadRequest("UserService.Login", "用户不存在或已被锁定")
+		return errors.BadRequest("UserService.User", "用户不存在或已被锁定")
 	}
 	rsp.Uid = user.UID
 	rsp.Nickname = user.Nickname
