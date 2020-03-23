@@ -23,13 +23,15 @@ var (
 	ServiceName = "go.micro.srv.usersrv"
 	//ServiceVersion service's version
 	ServiceVersion = "latest"
+
+	excludeMethods = []string{"UserService.Signin", "UserService.Signup", "UserService.OAuthAuthorize"}
 )
 
 func main() {
 	privateKey, _ := ioutil.ReadFile("/Users/maliang/Documents/hoonet/rushteam/micro-service/rsa_private_key.pem")
 	authd := jwt.NewAuth(
 		auth.PrivateKey(base64.StdEncoding.EncodeToString(privateKey)),
-		auth.Exclude("UserService.Signin", "UserService.Signup"),
+		auth.Exclude(excludeMethods...),
 	)
 	service := micro.NewService(
 		micro.RegisterTTL(time.Second*15),

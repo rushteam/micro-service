@@ -11,6 +11,7 @@ import (
 	"github.com/micro/go-micro/v2/errors"
 	"github.com/micro/go-micro/v2/logger"
 	"github.com/rushteam/micro-service/common/pb/usersrv"
+	"github.com/rushteam/micro-service/common/sdk/wxsdk"
 	"github.com/rushteam/micro-service/service/user-srv/model"
 	"github.com/rushteam/micro-service/service/user-srv/repository"
 	// "go.uber.org/zap"
@@ -100,17 +101,48 @@ func (s *UserService) SigninByPhoneCaptcha(ctx context.Context, req *usersrv.Sig
 	return nil
 }
 
-//SigninByOAuth 登陆（三方账号登陆）
-func (s *UserService) SigninByOAuth(ctx context.Context, req *usersrv.SigninByOAuthReq, rsp *usersrv.AuthRsp) error {
-	logger.Infof("[access] UserService.SigninByOAuth")
-	return nil
-}
-
-//OAuthAuthorize ..
+//OAuthAuthorize 三方登陆 获取授权URL
 func (s *UserService) OAuthAuthorize(ctx context.Context, req *usersrv.OAuthAuthorizeReq, rsp *usersrv.OAuthAuthorizeRsp) error {
 	logger.Tracef("[access] UserService.OAuthAuthorize")
-	return nil
+	if oac, ok := model.OAuthChanels[req.GetChannel()]; ok {
+		if oac.Provider == "wx" {
+			oauth := wxsdk.NewOAuth(oac.AppID, oac.Secret)
+			rsp.Url = oauth.GetAuthorizeURL(req.GetRedirect(), "")
+			return nil
+		}
+	}
+	return errors.InternalServerError("UserService.OAuthAuthorize", "非法的登陆方式")
 }
+
+//SigninByOAuthCode 三方登陆 处理回调 获取AccessToken
+func (s *UserService) SigninByOAuthCode(ctx context.Context, req *usersrv.SigninByOAuthCodeReq, rsp *usersrv.AuthRsp) error {
+	logger.Tracef("[access] UserService.SigninByOAuthCode")
+	if oac, ok := model.OAuthChanels[req.GetChannel()]; ok {
+		if oac.Provider == "wx" {
+			oauth := wxsdk.NewOAuth(oac.AppID, oac.Secret)
+			ac, err := oauth.GetAccessToken(req.GetCode())
+			if err != nil {
+				return err
+			}
+			if len(ac.Unionid) > 0 {
+				//ac.Unionid
+			}
+			if len(ac.OpenID) > 0 {
+				//ac.Unionid
+			}
+			//获取用户信息
+			userinfo := &wxsdk.Userinfo{}
+			err = userinfo.Request(ac.AccessToken, ac.OpenID)
+			if err != nil {
+
+			}
+			return nil
+		}
+	}
+	return errors.InternalServerError("UserService.OAuthAuthorize", "非法的登陆方式")
+}
+
+//SignupByOAuthCode 三方注册
 
 //User 获取用户信息
 // func (s *UserService) User(ctx context.Context, req *usersrv.UserReq, rsp *usersrv.UserRsp) error {
