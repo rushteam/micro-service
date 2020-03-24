@@ -6,6 +6,7 @@ package usersrv
 import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	empty "github.com/golang/protobuf/ptypes/empty"
 	math "math"
 )
 
@@ -44,6 +45,7 @@ type UserService interface {
 	OAuthAuthorize(ctx context.Context, in *OAuthAuthorizeReq, opts ...client.CallOption) (*OAuthAuthorizeRsp, error)
 	//用户登录 三方授权 code登陆
 	SigninByOAuthCode(ctx context.Context, in *SigninByOAuthCodeReq, opts ...client.CallOption) (*AuthRsp, error)
+	Userinfo(ctx context.Context, in *empty.Empty, opts ...client.CallOption) (*UserInfo, error)
 }
 
 type userService struct {
@@ -108,6 +110,16 @@ func (c *userService) SigninByOAuthCode(ctx context.Context, in *SigninByOAuthCo
 	return out, nil
 }
 
+func (c *userService) Userinfo(ctx context.Context, in *empty.Empty, opts ...client.CallOption) (*UserInfo, error) {
+	req := c.c.NewRequest(c.name, "UserService.Userinfo", in)
+	out := new(UserInfo)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for UserService service
 
 type UserServiceHandler interface {
@@ -121,6 +133,7 @@ type UserServiceHandler interface {
 	OAuthAuthorize(context.Context, *OAuthAuthorizeReq, *OAuthAuthorizeRsp) error
 	//用户登录 三方授权 code登陆
 	SigninByOAuthCode(context.Context, *SigninByOAuthCodeReq, *AuthRsp) error
+	Userinfo(context.Context, *empty.Empty, *UserInfo) error
 }
 
 func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts ...server.HandlerOption) error {
@@ -130,6 +143,7 @@ func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts .
 		SigninByPhoneCaptcha(ctx context.Context, in *SigninByPhoneCaptchaReq, out *AuthRsp) error
 		OAuthAuthorize(ctx context.Context, in *OAuthAuthorizeReq, out *OAuthAuthorizeRsp) error
 		SigninByOAuthCode(ctx context.Context, in *SigninByOAuthCodeReq, out *AuthRsp) error
+		Userinfo(ctx context.Context, in *empty.Empty, out *UserInfo) error
 	}
 	type UserService struct {
 		userService
@@ -160,4 +174,8 @@ func (h *userServiceHandler) OAuthAuthorize(ctx context.Context, in *OAuthAuthor
 
 func (h *userServiceHandler) SigninByOAuthCode(ctx context.Context, in *SigninByOAuthCodeReq, out *AuthRsp) error {
 	return h.UserServiceHandler.SigninByOAuthCode(ctx, in, out)
+}
+
+func (h *userServiceHandler) Userinfo(ctx context.Context, in *empty.Empty, out *UserInfo) error {
+	return h.UserServiceHandler.Userinfo(ctx, in, out)
 }

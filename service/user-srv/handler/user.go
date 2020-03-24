@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/auth"
 	"github.com/micro/go-micro/v2/errors"
@@ -145,8 +146,8 @@ func (s *UserService) SigninByOAuthCode(ctx context.Context, req *usersrv.Signin
 
 //SignupByOAuthCode 三方注册
 
-//User 获取用户信息
-func (s *UserService) User(ctx context.Context, req *usersrv.UserReq, rsp *usersrv.UserRsp) error {
+//Userinfo 获取用户信息
+func (s *UserService) Userinfo(ctx context.Context, req *empty.Empty, rsp *usersrv.UserInfo) error {
 	logger.Tracef("[access] UserService.User")
 	account, err := auth.AccountFromContext(ctx)
 	if err != nil {
@@ -159,8 +160,7 @@ func (s *UserService) User(ctx context.Context, req *usersrv.UserReq, rsp *users
 	if err != nil {
 		return errors.BadRequest("UserService.User", "当前TOKEN无法解析用户")
 	}
-	userRepo := &repository.UserRepository{Db: s.db}
-	user, err := userRepo.FindByUID(uid)
+	user, err := repository.User.FindUserByUID(uid)
 	if err != nil {
 		return errors.BadRequest("UserService.User", "用户不存在或已被锁定")
 	}

@@ -1,7 +1,8 @@
 syntax = "proto3";
 
-package usersrv;
+import "google/protobuf/empty.proto";
 
+package usersrv;
 service UserService {
     //用户注册
     rpc Signup(SignupReq) returns (UserInfo) {}
@@ -14,6 +15,7 @@ service UserService {
     rpc OAuthAuthorize (OAuthAuthorizeReq) returns (OAuthAuthorizeRsp) {}
     //用户登录 三方授权 code登陆
     rpc SigninByOAuthCode (SigninByOAuthCodeReq) returns (AuthRsp) {}
+    rpc Userinfo(google.protobuf.Empty) returns (UserInfo) {}
 
     
     // //创建用户
@@ -103,7 +105,7 @@ message SigninByOAuthCodeReq {
 }
 
 // //通过token请求用户信息
-// message UserReq{
+// message UserInfoReq{
 //     string token = 1;
 // }
 // message UserRsp {
