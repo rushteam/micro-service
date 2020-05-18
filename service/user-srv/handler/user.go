@@ -132,7 +132,7 @@ func (s *UserService) SigninByOAuthCode(ctx context.Context, req *usersrv.Signin
 			if len(ac.OpenID) > 0 {
 				//ac.Unionid
 			}
-			//获取用户信息
+			//获取微信用户信息
 			userinfo := &wxsdk.Userinfo{}
 			err = userinfo.Request(ac.AccessToken, ac.OpenID)
 			if err != nil {
