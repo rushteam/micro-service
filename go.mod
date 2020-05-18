@@ -15,11 +15,11 @@ require (
 	github.com/jinzhu/gorm v1.9.12
 	github.com/micro/cli/v2 v2.1.2
 	github.com/micro/go-log v0.1.0
-	github.com/micro/go-micro/v2 v2.2.1-0.20200313221509-609f4826b35d
+	github.com/micro/go-micro/v2 v2.6.0
 	github.com/micro/micro/v2 v2.2.0 // indirect
-	github.com/mlboy/godb v0.0.0-20200305224957-f3ad7954ff89
 	github.com/pborman/uuid v1.2.0
+	github.com/rushteam/gosql v0.0.0-20200305224957-f3ad7954ff89
 	gopkg.in/yaml.v2 v2.2.8
 )
 
-replace github.com/mlboy/godb => ../godb
+replace github.com/rushteam/gosql => ../gosql
