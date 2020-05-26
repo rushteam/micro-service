@@ -5,9 +5,6 @@ import (
 	"encoding/hex"
 	"errors"
 	"time"
-
-	"github.com/mlboy/godb/builder"
-	"github.com/mlboy/godb/db"
 	"github.com/rushteam/micro-service/service/user-srv/model"
 	// "upper.io/db.v3"
 )
@@ -36,9 +33,9 @@ type userRepository struct{}
 //FindByUID ...
 func (repo userRepository) FindUserByUID(uid int64) (*model.UserModel, error) {
 	user := &model.UserModel{}
-	err := db.Fetch(
+	err := gosql.Fetch(
 		user,
-		builder.Where("uid", uid),
+		gosql.Where("uid", uid),
 	)
 	return user, err
 }

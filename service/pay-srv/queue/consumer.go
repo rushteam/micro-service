@@ -7,10 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/rushteam/micro-service/service/pay-srv/model"
-
 	log "github.com/micro/go-log"
-	"github.com/mlboy/godb/orm"
 
 	"github.com/rushteam/micro-service/common/pb/pay_srv"
 	// "github.com/go-log/log"
@@ -54,24 +51,19 @@ func (s *Consumer) Process(ctx context.Context, event *pay_srv.NotifyEvent) erro
 		break
 	}
 	//更新状态
-	t := &model.TradeModel{}
-	if state == false {
-		_, err = orm.Model(t).UpdateField("[+]notify_num", 1).Where("pay_no", event.GetPayNo()).Update()
-		if err != nil {
-			log.Logf("[Consumer.Process] ERROR update error %s", err.Error())
+	/*
+		t := &model.TradeModel{}
+		if state == false {
+			_, err = gosql.Model(t).UpdateField("[+]notify_num", 1).Where("pay_no", event.GetPayNo()).Update()
+			if err != nil {
+				log.Logf("[Consumer.Process] ERROR update error %s", err.Error())
+			}
+			return fmt.Errorf("failed")
 		}
-		return fmt.Errorf("failed")
-	}
-	_, err = orm.Model(t).UpdateField("[+]notify_num", 1).UpdateField("[+]notify_state", 1).Where("pay_no", event.GetPayNo()).Update()
-	if err != nil {
-		log.Logf("[Consumer.Process] INFO update error %s", err.Error())
-	}
+		_, err = orm.Model(t).UpdateField("[+]notify_num", 1).UpdateField("[+]notify_state", 1).Where("pay_no", event.GetPayNo()).Update()
+		if err != nil {
+			log.Logf("[Consumer.Process] INFO update error %s", err.Error())
+		}
+	*/
 	return nil
 }
-
-// orm.Model(t).Update(func(s *builder.SQLSegments) {
-// 	s.Where("")
-// })
-// orm.Model(t).UpdateField("[+]notify_num", 1).Update()
-// orm.Exec("")
-// orm.Model(t).Update()

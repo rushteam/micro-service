@@ -17,7 +17,7 @@ require (
 	github.com/micro/go-micro/v2 v2.6.0
 	github.com/micro/micro/v2 v2.2.0 // indirect
 	github.com/pborman/uuid v1.2.0
-	github.com/rushteam/gosql v0.0.0-20200305224957-f3ad7954ff89
+	github.com/rushteam/gosql v0.0.0-20200305224957-f3ad7954ff89 // indirect
 	gopkg.in/yaml.v2 v2.2.8
 )
 

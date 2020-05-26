@@ -1,12 +1,7 @@
 package model
 
-import (
-	"github.com/mlboy/godb/orm"
-)
-
 //OrderModel ..
 type OrderModel struct {
-	// gorm.Model
 	OrderNo    string `db:"order_no,pk"`
 	Total      int64  `db:"order_no,pk"`
 	Discount   int64  `db:"order_no,pk"`
@@ -31,13 +26,6 @@ func (OrderModel) TableName() string {
 func (m *OrderModel) GetOrderByOrderNo(no string) error {
 	order := OrderModel{}
 	order.OrderNo = no
-	orm.Model(m).Fetch()
+	gosql.Fetch(order)
 	return nil
 }
-
-//GetOrderByOrderNo ...
-// func (sess *Session) GetOrderByOrderNo(no string) (OrderModel, error) {
-// 	order := OrderModel{}
-// 	order.OrderNo = no
-// 	return order, nil
-// }

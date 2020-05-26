@@ -1,13 +1,11 @@
 package main
 
 import (
-	"database/sql"
 	"log"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 
-	"github.com/mlboy/godb/orm"
 	"github.com/rushteam/micro-service/common/pb/pay_srv"
 	"github.com/rushteam/micro-service/service/pay-srv/config"
 	"github.com/rushteam/micro-service/service/pay-srv/queue"
@@ -57,20 +55,10 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
-			//初始化db
-			// dbSource := dbConf + "?parseTime=true&loc=Asia%2FShanghai&readTimeout=3s&writeTimeout=3s&timeout=3s"
-			// dbConf := c.String("app_db")
-			// dbSource := dbConf +  "?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"
 			dbConf, err := config.App.Db.Default()
 			if err != nil {
 				log.Fatal(err)
 			}
-			// fmt.Println(dbConf.Nodes[0])
-			db, err := sql.Open(dbConf.DbType, dbConf.Nodes[0])
-			if err != nil {
-				log.Fatal(err)
-			}
-			orm.InitDefaultDb(db)
 			queue.RegisterPublisher("pay_notify", micro.NewPublisher("go.micro.evt.pay_srv.pay_notify", service.Client()))
 			micro.RegisterSubscriber("go.micro.evt.pay_srv.pay_notify", service.Server(), new(queue.Consumer))
 			pay_srv.RegisterPayServiceHandler(service.Server(), &handler.PayService{Service: service})

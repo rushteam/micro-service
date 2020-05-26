@@ -1,11 +1,10 @@
 package model
 
-import "github.com/mlboy/godb/orm"
-
 //SkuModel ..
 type SkuModel struct {
 	// gorm.Model
-	SkuID  int64 `gorm:"PRIMARY_KEY;AUTO_INCREMENT;"`
+	// SkuID  int64 `gorm:"PRIMARY_KEY;AUTO_INCREMENT;"`
+	SkuID  int64
 	Price  int64
 	Weight int64
 }
@@ -18,7 +17,7 @@ func (SkuModel) TableName() string {
 //GetSkuListBySkuIds ..
 func (m *SkuModel) GetSkuListBySkuIds(skuIds []int64) ([]SkuModel, error) {
 	var skuList []SkuModel
-	orm.Model(m).Where("[in]sku_id", skuIds).FindAll()
+	gosql.FetchAll(&skuList,gosql.Where("[in]sku_id",skuIds))
 	return skuList, nil
 }
 

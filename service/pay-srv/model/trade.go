@@ -2,8 +2,6 @@ package model
 
 import (
 	"time"
-
-	"github.com/mlboy/godb/orm"
 )
 
 /*
@@ -88,7 +86,7 @@ func (m *TradeModel) GetTradeByOrderNo(no string) (*TradeModel, error) {
 
 //Save ..
 func (m *TradeModel) Save() error {
-	_, err := orm.Model(m).Update()
+	_, err := gosql.Update(m)
 	if err != nil {
 		return err
 	}

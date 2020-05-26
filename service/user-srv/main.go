@@ -15,7 +15,6 @@ import (
 
 	// "upper.io/db.v3/mysql"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/mlboy/godb/db"
 )
 
 var (
@@ -28,7 +27,7 @@ var (
 )
 
 func main() {
-	privateKey, _ := ioutil.ReadFile("/Users/maliang/Documents/hoonet/rushteam/micro-service/rsa_private_key.pem")
+	privateKey, _ := ioutil.ReadFile("./rsa_private_key.pem")
 	authd := jwt.NewAuth(
 		auth.PrivateKey(base64.StdEncoding.EncodeToString(privateKey)),
 		auth.Exclude(excludeMethods...),
@@ -52,11 +51,9 @@ func main() {
 	// var ctx = context.TODO()
 	service.Init(
 		micro.Action(func(c *cli.Context) error {
-			var settings = make(map[string][]string, 0)
-			settings["default"] = []string{
-				"root:dream@tcp(127.0.0.1:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s",
-			}
-			_ = db.InitPool("mysql", settings)
+			_ = gosql.NewCluster(
+				gosql.AddDb("mysql","root:dream@tcp(127.0.0.1:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s")
+			)
 			// defer sess.Close()
 			handler.RegisterUserServiceHandler(service)
 			return nil

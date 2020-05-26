@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 
@@ -10,8 +9,6 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/micro/cli/v2"
 	micro "github.com/micro/go-micro/v2"
-	"github.com/mlboy/godb/orm"
-	"github.com/rushteam/micro-service/common/pb/order_srv"
 	"github.com/rushteam/micro-service/service/order-srv/handler"
 )
 
@@ -31,7 +28,7 @@ func main() {
 				Name:   "app_db",
 				EnvVar: "MS_ORDER_SRV_DB",
 				Usage:  "Db config for mysql",
-				Value:  "root:dream@tcp(127.0.0.1:3306)/rushteam",
+				Value:  "",
 				// Value: "root:dream@tcp(mysql:3306)/rushteam",
 			},
 		),
@@ -45,13 +42,10 @@ func main() {
 			// fmt.Println(service.Server().Options().Id)
 			// fmt.Println(srvs)
 			// fmt.Println(srvs[0].Nodes[0].Id)
-			dbConf := c.String("app_db")
-			dbSource := dbConf + "?" + "parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"
-			db, err := sql.Open("mysql", dbSource)
-			if err != nil {
-				log.Fatal(err)
+			dbSource := c.String("app_db")
+			if dbSource == "" {
+				dbSource = "root:dream@tcp(127.0.0.1:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"
 			}
-			orm.InitDefaultDb(db)
 			order_srv.RegisterOrderServiceHandler(service.Server(), &handler.OrderService{Service: service})
 			fmt.Printf("%s", c.String("server_id"))
 		}),

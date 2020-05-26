@@ -17,8 +17,6 @@ import (
 
 	"github.com/pborman/uuid"
 
-	"github.com/mlboy/godb/orm"
-
 	"github.com/micro/go-micro/v2/errors"
 	"github.com/rushteam/micro-service/common/sdk/wxsdk/wxpay"
 	"github.com/rushteam/micro-service/common/utils"
@@ -169,7 +167,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 	tradeModel.FeeType = "RMB"
 
 	//保存订单到数据库
-	_, err = orm.Model(tradeModel).Insert()
+	_, err = gosql.Insert(tradeModel)
 	if err != nil {
 		if me, ok := err.(*mysql.MySQLError); ok {
 			if me.Number == 1062 {
@@ -247,7 +245,7 @@ func (s *PayService) Create(ctx context.Context, req *pay_srv.CreateReq, rsp *pa
 		return errors.BadRequest("PayService.Create", "pay channel is undefined")
 	}
 	//保存订单到数据库
-	_, err = orm.Model(tradeModel).Update()
+	_, err = gosql.Update(tradeModel)
 	if err != nil {
 		return errors.BadRequest("PayService.Create", "save trade record error")
 	}
@@ -296,7 +294,7 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 		//支付成功后
 		//查找订单
 		tm := &model.TradeModel{}
-		err = orm.Model(tm).Where("pay_no", notify.OutTradeNo).Find()
+		err = gosql.Fetch(tm,gosql.Where("pay_no", notify.OutTradeNo))
 		if err != nil {
 			log.Logf("PayService.Notify not_found_trade_record %+v", notify)
 			return errors.BadRequest("PayService.Notify", fmt.Sprintf("not found trade record, pay_no=%s", notify.OutTradeNo))
@@ -305,7 +303,7 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 		//修改状态
 		tm.PayState = 1
 		tm.PayAt = time.Now()
-		_, err = orm.Model(tm).Where("pay_no", notify.OutTradeNo).Update()
+		_, err = gosql.Update(tm,gosql.Where("pay_no", notify.OutTradeNo))
 		if err != nil {
 			rsp.Result = wxpay.NotifyReplyFail("存储交易数据时发生错误")
 			return errors.BadRequest("PayService.Notify", "Failed update trade record")
@@ -355,7 +353,8 @@ func (s *PayService) Query(ctx context.Context, req *pay_srv.QueryReq, rsp *pay_
 	// req.GetUniTradeNo()
 	//查找订单
 	tm := &model.TradeModel{}
-	err := orm.Model(tm).Where("pay_no", "554988925916024832").Find()
+	// gosql.Fetch(tm,gosql.Where("pay_no", notify.OutTradeNo))
+	err := gosql.Fetch(tm,gosql.Where("pay_no", "554988925916024832"))
 	if err != nil {
 		return errors.BadRequest("PayService.Query", fmt.Sprintf("not found trade record, pay_no=%s, %s", "554988925916024832", err.Error()))
 	}
