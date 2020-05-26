@@ -6,6 +6,7 @@ import (
 	"errors"
 	"time"
 	"github.com/rushteam/micro-service/service/user-srv/model"
+	"github.com/rushteam/gosql"
 	// "upper.io/db.v3"
 )
 
@@ -42,7 +43,7 @@ func (repo userRepository) FindUserByUID(uid int64) (*model.UserModel, error) {
 
 //Create user
 func (repo userRepository) CreateByPhone(user *model.UserModel, phone, pwd string) error {
-	tx, err := db.Begin()
+	tx, err := gosql.Begin()
 	if err != nil {
 		return err
 	}
@@ -84,10 +85,10 @@ func (repo userRepository) CreateByPhone(user *model.UserModel, phone, pwd strin
 //SigninByPwd ...
 func (repo userRepository) SigninByPwd(platform, openid, password string) (*model.LoginModel, error) {
 	login := &model.LoginModel{}
-	err := db.Fetch(
+	err := gosql.Fetch(
 		login,
-		builder.Where("platform", platform),
-		builder.Where("openid", openid),
+		gosql.Where("platform", platform),
+		gosql.Where("openid", openid),
 	)
 	if login.AccessToken != password {
 		return nil, ErrPassword
