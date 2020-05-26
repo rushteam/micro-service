@@ -2,6 +2,8 @@ module github.com/rushteam/micro-service
 
 go 1.13
 
+replace github.com/rushteam/gosql => ../gosql
+
 require (
 	github.com/RangelReale/osin v1.0.1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
@@ -19,5 +21,3 @@ require (
 	github.com/rushteam/gosql v0.0.0-00010101000000-000000000000
 	gopkg.in/yaml.v2 v2.3.0
 )
-
-replace github.com/rushteam/gosql => ../gosql

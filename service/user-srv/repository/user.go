@@ -5,8 +5,9 @@ import (
 	"encoding/hex"
 	"errors"
 	"time"
-	"github.com/rushteam/micro-service/service/user-srv/model"
+
 	"github.com/rushteam/gosql"
+	"github.com/rushteam/micro-service/service/user-srv/model"
 	// "upper.io/db.v3"
 )
 
@@ -21,29 +22,19 @@ var (
 	loginMaps = map[string]bool{"phone": true, "email": true, "username": true}
 )
 
-//User ..
-var User = newUserRepo()
+//userRepository ..
+type userRepository struct{}
 
 func newUserRepo() *userRepository {
 	return &userRepository{}
 }
 
-//userRepository ..
-type userRepository struct{}
-
-//FindByUID ...
-func (repo userRepository) FindUserByUID(uid int64) (*model.UserModel, error) {
-	user := &model.UserModel{}
-	err := gosql.Fetch(
-		user,
-		gosql.Where("uid", uid),
-	)
-	return user, err
-}
+//User ..
+var User = newUserRepo()
 
 //Create user
 func (repo userRepository) CreateByPhone(user *model.UserModel, phone, pwd string) error {
-	tx, err := gosql.Begin()
+	tx, err := model.DB.Begin()
 	if err != nil {
 		return err
 	}
@@ -72,7 +63,7 @@ func (repo userRepository) CreateByPhone(user *model.UserModel, phone, pwd strin
 	_, err = tx.Insert(login)
 	if err != nil {
 		tx.Rollback()
-		if e, ok := err.(*db.Error); ok {
+		if e, ok := err.(*gosql.Error); ok {
 			if e.Number == 1062 {
 				return ErrHasCreated
 			}
@@ -85,7 +76,7 @@ func (repo userRepository) CreateByPhone(user *model.UserModel, phone, pwd strin
 //SigninByPwd ...
 func (repo userRepository) SigninByPwd(platform, openid, password string) (*model.LoginModel, error) {
 	login := &model.LoginModel{}
-	err := gosql.Fetch(
+	err := DB.Fetch(
 		login,
 		gosql.Where("platform", platform),
 		gosql.Where("openid", openid),

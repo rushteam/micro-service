@@ -55,7 +55,7 @@ func (s *UserService) Signup(ctx context.Context, req *usersrv.SignupReq, rsp *u
 	user.Gender = req.GetGender()
 	user.Avatar = req.GetAvatar()
 	user.Status = 1
-	err := repository.User.CreateByPhone(user, req.GetPhone(), req.GetPassword())
+	err := user.CreateByPhone(req.GetPhone(), req.GetPassword())
 	if err != nil {
 		return errors.BadRequest("UserService.Create", "注册失败,%s", err.Error())
 	}
@@ -149,18 +149,19 @@ func (s *UserService) SigninByOAuthCode(ctx context.Context, req *usersrv.Signin
 //Userinfo 获取用户信息
 func (s *UserService) Userinfo(ctx context.Context, req *empty.Empty, rsp *usersrv.UserInfo) error {
 	logger.Tracef("[access] UserService.User")
-	account, err := auth.AccountFromContext(ctx)
-	if err != nil {
+	account, ok := auth.AccountFromContext(ctx)
+	if !ok {
 		return errors.BadRequest("UserService.User", "登录超时或TOKEN非法")
 	}
-	if account.Id == "" || account.Id == "0" {
+	if account.ID == "" || account.ID == "0" {
 		return errors.BadRequest("UserService.User", "当前TOKEN未绑定用户")
 	}
-	uid, err := strconv.ParseInt(account.Id, 10, 64)
+	uid, err := strconv.ParseInt(account.ID, 10, 64)
 	if err != nil {
 		return errors.BadRequest("UserService.User", "当前TOKEN无法解析用户")
 	}
-	user, err := repository.User.FindUserByUID(uid)
+	user := &model.UserModel{}
+	err = user.Fetch(uid)
 	if err != nil {
 		return errors.BadRequest("UserService.User", "用户不存在或已被锁定")
 	}
