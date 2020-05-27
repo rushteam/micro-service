@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"time"
 
+	"github.com/rushteam/gosql"
+
 	cli "github.com/micro/cli/v2"
 	micro "github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/auth"
@@ -52,7 +54,7 @@ func main() {
 	service.Init(
 		micro.Action(func(c *cli.Context) error {
 			_ = gosql.NewCluster(
-				gosql.AddDb("mysql","root:dream@tcp(127.0.0.1:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"),
+				gosql.AddDb("mysql", "root:dream@tcp(127.0.0.1:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"),
 			)
 			// defer sess.Close()
 			handler.RegisterUserServiceHandler(service)
