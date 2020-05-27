@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/go-log/log"
+	"github.com/micro/go-micro/v2/logger"
 
 	"github.com/micro/go-micro/v2/client"
 	"github.com/micro/go-micro/v2/config/cmd"
