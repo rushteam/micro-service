@@ -1,6 +1,10 @@
 package model
 
-import "time"
+import (
+	"time"
+
+	"github.com/rushteam/gosql"
+)
 
 //UserModel ..
 type UserModel struct {
@@ -16,4 +20,9 @@ type UserModel struct {
 //TableName ..
 func (UserModel) TableName() string {
 	return "uc_user"
+}
+
+//Fetch ..
+func (u *UserModel) Fetch(uid int64) error {
+	return DB.Fetch(u, gosql.Where("uid", uid))
 }
