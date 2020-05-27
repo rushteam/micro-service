@@ -37,7 +37,7 @@ type Handler struct{}
 //Create ..
 func (h Handler) Create(c *gin.Context) {
 	if c.Request.Method != "POST" {
-		log.Log("Method not must POST")
+		logger.Log("Method not must POST")
 		return
 	}
 	ct := c.GetHeader("Content-Type")
@@ -47,7 +47,7 @@ func (h Handler) Create(c *gin.Context) {
 	defer c.Request.Body.Close()
 
 	badRequest := func(description string) {
-		log.Log(description)
+		logger.Log(description)
 		e := errors.BadRequest("go.micro.gateway", description)
 		c.JSON(400, e)
 	}
