@@ -9,7 +9,6 @@ import (
 
 	"github.com/micro/go-micro/v2/errors"
 	// "github.com/rushteam/micro-service/common/utils"
-	"github.com/micro/go-log"
 	micro "github.com/micro/go-micro/v2"
 	"github.com/rushteam/micro-service/common/pb/order_srv"
 	"github.com/rushteam/micro-service/service/order-srv/model"
@@ -68,7 +67,7 @@ func calOrder(req *order_srv.CreateReq) error {
 	// Model := model.Db()
 	// skuList, err := Model.GetSkuListBySkuIds(skuIds)
 	if err != nil || len(skuList) < 1 {
-		log.Log("[error] OrderService.Create ", err.Error())
+		logger.Log("[error] OrderService.Create ", err.Error())
 		return errs.New("选择的商品已失效")
 	}
 	var skuMaps = make(map[int64]*model.SkuModel, len(skuList))
@@ -202,6 +201,6 @@ func (s *OrderService) Order(ctx context.Context, req *order_srv.QueryReq, rsp *
 
 //OrderList ..
 func (s *OrderService) OrderList(ctx context.Context, req *order_srv.QueryReq, rsp *order_srv.OrderRsp) error {
-	log.Log("[access] OrderService.OrderList")
+	logger.Log("[access] OrderService.OrderList")
 	return nil
 }

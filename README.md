@@ -91,33 +91,3 @@ https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6
 
 
 使用--registry=consul
-
-
-
-package handler
-import (
-	"context"
-	"github.com/micro/go-log"
-	example "{{.Dir}}/proto/example"
-)
-type Example struct{}
-// Call is a single request handler called via client.Call or the generated client code
-func (e *Example) Call(ctx context.Context, req *example.Request, rsp *example.Response) error {
-	log.Log("Received Example.Call request")
-	rsp.Msg = "Hello " + req.Name
-	return nil
-}
-
-// PingPong is a bidirectional stream handler called via client.Stream or the generated client code
-func (e *Example) PingPong(ctx context.Context, stream example.Example_PingPongStream) error {
-	for {
-		req, err := stream.Recv()
-		if err != nil {
-			return err
-		}
-		log.Logf("Got ping %v", req.Stroke)
-		if err := stream.Send(&example.Pong{Stroke: req.Stroke}); err != nil {
-			return err
-		}
-	}
-}

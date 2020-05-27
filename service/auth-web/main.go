@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/micro/cli/v2"
-	"github.com/micro/go-log"
+	"github.com/micro/go-micro/v2/logger"
 	micro "github.com/micro/go-micro/v2/web"
 )
 
@@ -109,6 +109,6 @@ func main() {
 	)
 
 	if err := service.Run(); err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 }
