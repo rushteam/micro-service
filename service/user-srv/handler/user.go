@@ -4,7 +4,6 @@ import (
 	"context"
 	"regexp"
 	"strconv"
-	"time"
 
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/micro/go-micro/v2"
@@ -83,17 +82,15 @@ func (s *UserService) Signin(ctx context.Context, req *usersrv.SigninReq, rsp *u
 	}
 	rsp.Uid = login.UID
 	// Generate an auth account
-	roles := []*auth.Role{}
-	roles = append(roles, &auth.Role{Name: "user"})
 	acc, err := s.auth.Generate(
 		strconv.FormatInt(login.UID, 10),
-		auth.Expiry(time.Now().Add(time.Hour*24*7)),
-		auth.Roles(roles),
+		auth.WithRoles("user"),
+		//auth.WithExpiry(time.Hour*24*7),
 	)
 	if err != nil {
 		return errors.InternalServerError("UserService.Signin", "登录异常,请联系客服(%v)", err)
 	}
-	rsp.Token = acc.Token
+	rsp.Token = acc.Secret
 	return nil
 }
 
