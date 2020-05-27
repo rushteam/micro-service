@@ -55,7 +55,7 @@ func (s *UserService) Signup(ctx context.Context, req *usersrv.SignupReq, rsp *u
 	user.Gender = req.GetGender()
 	user.Avatar = req.GetAvatar()
 	user.Status = 1
-	err := user.CreateByPhone(req.GetPhone(), req.GetPassword())
+	err := repository.User.CreateByPhone(user, req.GetPhone(), req.GetPassword())
 	if err != nil {
 		return errors.BadRequest("UserService.Create", "注册失败,%s", err.Error())
 	}

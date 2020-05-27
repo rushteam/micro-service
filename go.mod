@@ -15,6 +15,11 @@ require (
 	github.com/micro/go-micro/v2 v2.7.0
 	github.com/pborman/uuid v1.2.0
 	github.com/rushteam/gosql v0.0.0-00010101000000-000000000000
+	github.com/yuin/goldmark v1.1.31 // indirect
+	golang.org/x/mod v0.3.0 // indirect
+	golang.org/x/net v0.0.0-20200520182314-0ba52f642ac2 // indirect
+	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a // indirect
+	golang.org/x/tools v0.0.0-20200526224456-8b020aee10d2 // indirect
 	gopkg.in/yaml.v2 v2.3.0
 )
 
