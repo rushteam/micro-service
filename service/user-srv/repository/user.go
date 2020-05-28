@@ -43,6 +43,7 @@ func (repo userRepository) CreateByPhone(user *model.UserModel, phone, pwd strin
 	user.CreatedAt = now
 	user.UpdatedAt = now
 	_, err = tx.Insert(user)
+
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -76,7 +77,7 @@ func (repo userRepository) CreateByPhone(user *model.UserModel, phone, pwd strin
 //SigninByPwd ...
 func (repo userRepository) SigninByPwd(platform, openid, password string) (*model.LoginModel, error) {
 	login := &model.LoginModel{}
-	err := DB.Fetch(
+	err := model.DB.Fetch(
 		login,
 		gosql.Where("platform", platform),
 		gosql.Where("openid", openid),

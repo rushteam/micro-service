@@ -24,7 +24,6 @@ import (
 	"github.com/rushteam/micro-service/service/pay-srv/model"
 	"github.com/rushteam/micro-service/service/pay-srv/queue"
 
-	log "github.com/micro/go-log"
 	micro "github.com/micro/go-micro/v2"
 	"github.com/rushteam/micro-service/common/pb/pay_srv"
 	// "go.uber.org/zap"
@@ -296,7 +295,7 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 		tm := &model.TradeModel{}
 		err = gosql.Fetch(tm,gosql.Where("pay_no", notify.OutTradeNo))
 		if err != nil {
-			log.Logf("PayService.Notify not_found_trade_record %+v", notify)
+			logger.Logf("PayService.Notify not_found_trade_record %+v", notify)
 			return errors.BadRequest("PayService.Notify", fmt.Sprintf("not found trade record, pay_no=%s", notify.OutTradeNo))
 		}
 		// utils.FormatDate(time.Now()),
@@ -335,7 +334,7 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 		}
 		err = queue.Publish(ctx, "pay_notify", ev)
 		if err != nil {
-			log.Fatal(err)
+			logger.Fatal(err)
 		}
 		//返回支付成功信息
 		rsp.Result = wxpay.NotifyReplySuccess()
@@ -349,7 +348,7 @@ func (s *PayService) Notify(ctx context.Context, req *pay_srv.NotifyReq, rsp *pa
 
 //Query ..
 func (s *PayService) Query(ctx context.Context, req *pay_srv.QueryReq, rsp *pay_srv.PayRsp) error {
-	// log.Log("[access] PayService.Query")
+	// logger.Log("[access] PayService.Query")
 	// req.GetUniTradeNo()
 	//查找订单
 	tm := &model.TradeModel{}

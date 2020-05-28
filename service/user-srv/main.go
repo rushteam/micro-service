@@ -1,9 +1,10 @@
 package main
 
 import (
-	"encoding/base64"
 	"io/ioutil"
 	"time"
+
+	"github.com/rushteam/gosql"
 
 	cli "github.com/micro/cli/v2"
 	micro "github.com/micro/go-micro/v2"
@@ -13,7 +14,6 @@ import (
 	"github.com/rushteam/gosql"
 	"github.com/rushteam/micro-service/common/micro/wrap"
 	"github.com/rushteam/micro-service/service/user-srv/handler"
-	"github.com/rushteam/micro-service/service/user-srv/model"
 
 	// "upper.io/db.v3/mysql"
 	_ "github.com/go-sql-driver/mysql"
@@ -29,10 +29,13 @@ var (
 )
 
 func main() {
-	privateKey, _ := ioutil.ReadFile("./rsa_private_key.pem")
+	//base64.StdEncoding.EncodeToString(
+	privateKey, _ := ioutil.ReadFile("./key")
+	publicKey, _ := ioutil.ReadFile("./key.pub")
 	authd := jwt.NewAuth(
-		auth.PrivateKey(base64.StdEncoding.EncodeToString(privateKey)),
-		auth.Exclude(excludeMethods...),
+		auth.PrivateKey(string(privateKey)),
+		auth.PublicKey(string(publicKey)),
+		// auth.Exclude(excludeMethods...),
 	)
 	service := micro.NewService(
 		micro.RegisterTTL(time.Second*15),
@@ -54,10 +57,9 @@ func main() {
 	service.Init(
 		micro.Action(func(c *cli.Context) error {
 			gosql.NewCollect(
-				
-			)
-			model.DB = gosql.NewCluster(
-				gosql.AddDb("mysql","root:dream@tcp(127.0.0.1:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s")
+				gosql.NewCluster(
+					gosql.AddDb("mysql", "root:dream@tcp(127.0.0.1:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"),
+				),
 			)
 			// defer sess.Close()
 			handler.RegisterUserServiceHandler(service)

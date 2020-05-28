@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/go-log/log"
+	"github.com/micro/go-micro/v2/logger"
 
 	"github.com/gin-gonic/gin"
 	"github.com/micro/go-micro/v2/client"
@@ -36,7 +36,7 @@ type RpcHandler struct{}
 //Handler ..
 func (h RpcHandler) Handler(c *gin.Context) {
 	if c.Request.Method != "POST" {
-		log.Log("Method not must POST")
+		logger.Log("Method not must POST")
 		return
 	}
 	ct := c.GetHeader("Content-Type")
@@ -46,7 +46,7 @@ func (h RpcHandler) Handler(c *gin.Context) {
 	defer c.Request.Body.Close()
 
 	badRequest := func(description string) {
-		log.Log(description)
+		logger.Log(description)
 		e := errors.BadRequest("go.micro.gateway", description)
 		c.JSON(400, e)
 	}
