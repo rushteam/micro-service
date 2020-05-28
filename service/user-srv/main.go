@@ -10,8 +10,10 @@ import (
 	"github.com/micro/go-micro/v2/auth"
 	"github.com/micro/go-micro/v2/auth/jwt"
 	"github.com/micro/go-micro/v2/logger"
+	"github.com/rushteam/gosql"
 	"github.com/rushteam/micro-service/common/micro/wrap"
 	"github.com/rushteam/micro-service/service/user-srv/handler"
+	"github.com/rushteam/micro-service/service/user-srv/model"
 
 	// "upper.io/db.v3/mysql"
 	_ "github.com/go-sql-driver/mysql"
@@ -51,7 +53,10 @@ func main() {
 	// var ctx = context.TODO()
 	service.Init(
 		micro.Action(func(c *cli.Context) error {
-			_ = gosql.NewCluster(
+			gosql.NewCollect(
+				
+			)
+			model.DB = gosql.NewCluster(
 				gosql.AddDb("mysql","root:dream@tcp(127.0.0.1:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s")
 			)
 			// defer sess.Close()
