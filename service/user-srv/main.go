@@ -32,7 +32,7 @@ func main() {
 	privateKey, _ := ioutil.ReadFile("./rsa_private_key.pem")
 	authd := jwt.NewAuth(
 		auth.PrivateKey(base64.StdEncoding.EncodeToString(privateKey)),
-		auth.Exclude(excludeMethods...),
+		// auth.Exclude(excludeMethods...),
 	)
 	service := micro.NewService(
 		micro.RegisterTTL(time.Second*15),
@@ -53,9 +53,12 @@ func main() {
 	// var ctx = context.TODO()
 	service.Init(
 		micro.Action(func(c *cli.Context) error {
-			_ = gosql.NewCluster(
-				gosql.AddDb("mysql", "root:dream@tcp(127.0.0.1:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"),
+			gosql.NewCollect(
+				gosql.NewCluster(
+					gosql.AddDb("mysql", "root:dream@tcp(127.0.0.1:3306)/rushteam?parseTime=true&readTimeout=3s&writeTimeout=3s&timeout=3s"),
+				),
 			)
+
 			// defer sess.Close()
 			handler.RegisterUserServiceHandler(service)
 			return nil
