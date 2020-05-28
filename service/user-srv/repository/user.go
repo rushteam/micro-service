@@ -34,7 +34,7 @@ var User = newUserRepo()
 
 //Create user
 func (repo userRepository) CreateByPhone(user *model.UserModel, phone, pwd string) error {
-	tx, err := model.DB.Begin()
+	tx, err := gosql.Collect().Begin()
 	if err != nil {
 		return err
 	}
@@ -77,7 +77,7 @@ func (repo userRepository) CreateByPhone(user *model.UserModel, phone, pwd strin
 //SigninByPwd ...
 func (repo userRepository) SigninByPwd(platform, openid, password string) (*model.LoginModel, error) {
 	login := &model.LoginModel{}
-	err := model.DB.Fetch(
+	err := gosql.Collect().Fetch(
 		login,
 		gosql.Where("platform", platform),
 		gosql.Where("openid", openid),

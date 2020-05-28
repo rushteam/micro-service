@@ -4,8 +4,6 @@ import (
 	"io/ioutil"
 	"time"
 
-	"github.com/rushteam/gosql"
-
 	cli "github.com/micro/cli/v2"
 	micro "github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/auth"

@@ -24,5 +24,5 @@ func (UserModel) TableName() string {
 
 //Fetch ..
 func (u *UserModel) Fetch(uid int64) error {
-	return DB.Fetch(u, gosql.Where("uid", uid))
+	return gosql.Collect().Fetch(u, gosql.Where("uid", uid))
 }
