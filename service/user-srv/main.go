@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/base64"
 	"io/ioutil"
 	"time"
 
@@ -29,9 +28,12 @@ var (
 )
 
 func main() {
-	privateKey, _ := ioutil.ReadFile("./rsa_private_key.pem")
+	//base64.StdEncoding.EncodeToString(
+	privateKey, _ := ioutil.ReadFile("./key")
+	publicKey, _ := ioutil.ReadFile("./key.pub")
 	authd := jwt.NewAuth(
-		auth.PrivateKey(base64.StdEncoding.EncodeToString(privateKey)),
+		auth.PrivateKey(string(privateKey)),
+		auth.PublicKey(string(publicKey)),
 		// auth.Exclude(excludeMethods...),
 	)
 	service := micro.NewService(
