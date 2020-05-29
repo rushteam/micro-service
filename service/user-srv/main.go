@@ -35,7 +35,7 @@ func main() {
 		auth.PublicKey(string(publicKey)),
 		// auth.Exclude(excludeMethods...),
 	)
-	service := micro.NewService(
+	srv := micro.NewService(
 		micro.RegisterTTL(time.Second*15),
 		micro.RegisterInterval(time.Second*5),
 		micro.Name(ServiceName),
@@ -52,7 +52,7 @@ func main() {
 		micro.WrapHandler(wrap.Access),
 	)
 	// var ctx = context.TODO()
-	service.Init(
+	srv.Init(
 		micro.Action(func(c *cli.Context) error {
 			gosql.NewCollect(
 				gosql.NewCluster(
@@ -60,11 +60,20 @@ func main() {
 				),
 			)
 			// defer sess.Close()
-			handler.RegisterUserServiceHandler(service)
+			handler.RegisterUserServiceHandler(srv)
 			return nil
 		}),
 	)
-	if err := service.Run(); err != nil {
+	acc, err := srv.Options().Auth.Generate("test", auth.WithType("api"))
+	if err != nil {
+		logger.Fatal(err)
+	}
+	tok, err := srv.Options().Auth.Token(auth.WithCredentials(acc.ID, acc.Secret))
+	if err != nil {
+		logger.Fatal(err)
+	}
+	srv.Options().Auth.Init(auth.ClientToken(tok))
+	if err := srv.Run(); err != nil {
 		logger.Fatal(err)
 	}
 }
