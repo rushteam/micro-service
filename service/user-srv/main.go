@@ -65,15 +65,6 @@ func main() {
 			return nil
 		}),
 	)
-	acc, err := srv.Options().Auth.Generate("test", auth.WithType("api"))
-	if err != nil {
-		logger.Fatal(err)
-	}
-	tok, err := srv.Options().Auth.Token(auth.WithCredentials(acc.ID, acc.Secret))
-	if err != nil {
-		logger.Fatal(err)
-	}
-	srv.Options().Auth.Init(auth.ClientToken(tok))
 	if err := srv.Run(); err != nil {
 		logger.Fatal(err)
 	}

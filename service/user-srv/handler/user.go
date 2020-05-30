@@ -84,7 +84,8 @@ func (s *UserService) Signin(ctx context.Context, req *usersrv.SigninReq, rsp *u
 	// Generate an auth account
 	acc, err := s.auth.Generate(
 		strconv.FormatInt(login.UID, 10),
-		auth.WithRoles("user"),
+		auth.WithScopes("user"),
+		auth.WithType("api"),
 		//auth.WithExpiry(time.Hour*24*7),
 	)
 	if err != nil {
