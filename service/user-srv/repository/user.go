@@ -6,6 +6,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/go-sql-driver/mysql"
 	"github.com/rushteam/gosql"
 	"github.com/rushteam/micro-service/service/user-srv/model"
 	// "upper.io/db.v3"
@@ -64,7 +65,7 @@ func (repo userRepository) CreateByPhone(user *model.UserModel, phone, pwd strin
 	_, err = tx.Insert(login)
 	if err != nil {
 		tx.Rollback()
-		if e, ok := err.(*gosql.Error); ok {
+		if e, ok := err.(*mysql.MySQLError); ok {
 			if e.Number == 1062 {
 				return ErrHasCreated
 			}
