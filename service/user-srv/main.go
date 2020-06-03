@@ -35,7 +35,7 @@ func main() {
 	authd := jwt.NewAuth(
 		auth.PrivateKey(string(privateKey)),
 		auth.PublicKey(string(publicKey)),
-		auth.LoginURL("UserService.Signup"),
+		auth.LoginURL("UserService.Signin"),
 		// auth.Exclude(excludeMethods...),
 	)
 	srv := micro.NewService(
